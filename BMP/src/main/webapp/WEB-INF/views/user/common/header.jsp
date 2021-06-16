@@ -81,7 +81,7 @@ img {
 }
 
 #nav li#t-search {
-	padding-top: 14px;
+	padding-top: 15px;
 	padding-left: 10px;
 	position: relative;
 }
@@ -224,7 +224,7 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 	border-radius: 4px;
 	position: relative;
 	justify-content: space-between;
-	padding: 6px 10px 3px;
+	padding: 7px 10px 4px;
 	font-size: 12px;
 	background: white;
 	border: 1px solid #e0e0e0;
@@ -311,13 +311,18 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 	background: #f4f4f4;
 	cursor: pointer;
 }
+
+.tab-selected {
+	background: rgba(58, 139, 187, 0.15);
+	color: #3a8bbb;
+}
 </style>
 </head>
 <body>
 	<div id="header">
 		<div id="header-inner">
 			<div id="logo">
-				<a href="#">Blog My Pet</a>
+				<a href="explorer">Blog My Pet</a>
 			</div>
 			<ul id="nav" role="navigation">
 				<c:choose>
@@ -351,7 +356,7 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 		<div class="filter">
 			<div id="filter-inner">
 				<c:if test="${isBlog ne null and accessor.no eq no}">
-					<ul>
+					<ul id="blog-tab">
 						<li>포스트</li>
 						<li>좋아요</li>
 						<li>보관함</li>
@@ -360,7 +365,7 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 				<div class="filter-right">
 					<a id="post-btn" href="write">✎&nbsp;Post&nbsp;</a>
 					<div class="select">
-						<p id="sort">${sort }</p>
+						<p id="sort">${listInfo.sort }</p>
 						<p id="sort-menu">⌵</p>
 						<ul id="sort-dropdown">
 							<li id="Like">인기순</li>
@@ -419,26 +424,20 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 						}
 					});
 
-	$(document)
-			.on(
-					'click',
-					'#search-result li',
-					function() {
-						var text = $('.search-text').val();
-						var keyword;
-						var url;
-						if (text.charAt(0) != '#') {
-							keyword = $(this).attr('no');
-							url = 'blog?no='
-									+ keyword;
-						} else {
-							keyword = $(this).text();
-							keyword = keyword.substring(1, keyword.length);
-							url = 'explorer?keyword='
-									+ keyword;
-						}
-						location.href = url;
-					});
+	$(document).on('click', '#search-result li', function() {
+		var text = $('.search-text').val();
+		var keyword;
+		var url;
+		if (text.charAt(0) != '#') {
+			keyword = $(this).attr('no');
+			url = 'blog?no=' + keyword;
+		} else {
+			keyword = $(this).text();
+			keyword = keyword.substring(1, keyword.length);
+			url = 'explorer?keyword=' + keyword;
+		}
+		location.href = url;
+	});
 
 	$(document).on('click', '.select', function() {
 		if ($(this).children('ul').css('display') == 'none') {
@@ -446,6 +445,15 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 		} else {
 			$(this).children('ul').hide();
 		}
+	});
+
+	$(document).on('click', '#sort-dropdown li', function() {
+		var sort = $(this).text();
+		var keyword = '${listInfo.keyword}';
+		var url = '${loc}?sort=' + sort;
+		if (keyword != '')
+			url += '&keyword=' + keyword;
+		location.href = url;
 	});
 
 	$(document).on('mouseover', '#t-profile img', function() {
@@ -491,6 +499,12 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 		else
 			$('#New').attr('class', 'selected');
 		$('#form_sort').val(sort);
+		var menu = $('#blog-tab li').eq(1).text();
+		
+		if('${blog-tab}'!=null){
+			var menu = $('#blog-tab li').eq(${blog-tab});
+			menu.attr('class','tab-selected');
+		}
 	}
 </script>
 </html>

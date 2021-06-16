@@ -28,7 +28,7 @@ form#content>div:first-child {
 	height: 600px;
 }
 
-#title {
+#content input {
 	background: white;
 	border: 1px solid #c4c4c4;
 	width: calc(100% - 22px);
@@ -36,15 +36,42 @@ form#content>div:first-child {
 	font-size: 16px;
 	color: #444444;
 }
+
+.btns {
+	display: flex;
+	padding: 15px 0;
+	justify-content: flex-end;
+}
+
+.btns a {
+	text-align: center;
+	border-radius: 4px;
+	padding: 11px 50px 9px;
+	color: #fff;
+	cursor: pointer;
+	text-shadow: 1px 1px 1px rgb(0 0 0/ 15%);
+}
+
+#writeBtn {
+	background: #ea4c88;
+}
+
+#writeBtn:hover {
+	background: #df3e7b;
+}
+
 </style>
 <body>
 	<c:import url="../common/header.jsp" />
 	<div>
-		<form id="content">
+		<form id="content" action="write.do">
 			<div>
 				<input type="text" id="title">
 			</div>
-			<textarea id="editor"></textarea>
+			<div id="editor"></div>
+			<div class="btns">
+				<a id="writeBtn">등록</a>
+			</div>
 		</form>
 	</div>
 </body>
@@ -66,5 +93,6 @@ form#content>div:first-child {
 	 .catch( error => {
 	 console.error( error );
 	 } );
+	 
 </script>
 </html>

@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 
 import com.google.gson.Gson;
 import com.project.bmp.user.model.service.UserService;
@@ -53,5 +54,11 @@ public class UserController {
 	@RequestMapping(value = "signUp.do", produces = "application/json;charset=utf-8")
 	public String signUp(User u) {
 		return null;
+	}
+	
+	@RequestMapping(value = "signOut")
+	public String signOut(SessionStatus status) {
+		status.setComplete();
+		return "redirect:explorer";
 	}
 }

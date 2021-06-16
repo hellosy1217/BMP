@@ -8,10 +8,6 @@
 <title>Blog My Pet</title>
 <script type="text/javascript"
 	src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link rel="preconnect" href="https://fonts.gstatic.com">
-<link
-	href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100&display=swap"
-	rel="stylesheet">
 <style>
 * {
 	margin: 0;
@@ -34,77 +30,8 @@ img {
 .blog ol {
 	display: grid;
 	grid-gap: 30px;
-	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 }
-
-.post {
-	position: relative;
-}
-
-.post>div:first-child {
-	background: #fff;
-	padding: 12px 12px 30px 12px;
-	box-shadow: 0 1px 2px rgb(0 0 0/ 7%);
-	height: calc(100% - 42px);
-}
-
-.post .thumbnail {
-	width: 100%;
-	height: 100%;
-}
-
-.post-content {
-	position: absolute;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	height: -webkit-fill-available;
-	top: 0;
-	color: #888;
-	background: rgba(255, 255, 255, 0.96);
-	overflow: hidden;
-	padding: 20px;
-	transition: opacity 0.3s;
-	font-size: 13px;
-	opacity: 0;
-	width: -webkit-fill-available;
-}
-
-.post-content:hover {
-	opacity: unset;
-	cursor: pointer;
-}
-
-.post-content>div>p {
-	display: flex;
-}
-
-.post-content>div>p:first-child {
-	padding-bottom: 10px;
-}
-
-.post-content img {
-	width: 16px;
-	height: 16px;
-	border-radius: 50%;
-	margin-top: 1px;
-}
-
-.post-content span {
-	display: inline-flex;
-}
-
-.post-content .nickname {
-	font-size: 15px;
-	font-weight: 600;
-	padding-left: 5px;
-}
-
-.post-content>.date {
-	font-size: 11px;
-	color: #777;
-}
-
 </style>
 </head>
 <body>
@@ -112,34 +39,23 @@ img {
 	<div id="container">
 		<input type="hidden" id="page" value="${listInfo.paging.currentPage }">
 		<div class="blog">
-			<ol>
-				<c:forEach items="${list }" var="post">
-					<li class="post">
-						<div>
-							<img class="thumbnail"
-								src="https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/dog-puppy-on-garden-royalty-free-image-1586966191.jpg">
-						</div>
-						<div class="post-content" no="${post.no }">
-							<div>
-								<p>
-									<span><img
-										src="https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/dog-puppy-on-garden-royalty-free-image-1586966191.jpg">
-									</span><span class="nickname">${post.nickname }</span>
-								</p>
-								<p>${post.content }</p>
-								<p class="tags">${post.tag }</p>
-							</div>
-							<p class="date">${post.regDate }</p>
-						</div>
-					</li>
-				</c:forEach>
-			</ol>
+			<c:import url="list.jsp" />
 		</div>
 	</div>
 	<%-- <c:import url="detail.jsp"/> --%>
 </body>
 <script>
-	$(window).scroll(function(){
+	$(document).on('click', '.post-content>div', function(e) {
+		if ($(e.target).attr('class') != 'likeBtn') {
+			var post = $(this).attr('no');
+			var blog = $(this).attr('blog');
+			location.href = "blog?blog=" + blog + '&post=' + post;
+		} else {
+			$('span.likeBtn').css('color', 'red');
+		}
+	});
+
+	/* $(window).scroll(function(){
 		if($(document).height() <= $(window).scrollTop() + $(window).height()){
 			var page = Number($('#page').val())+1;
 			var keyword = '${keyword}';
@@ -194,6 +110,6 @@ img {
 				}, 4000);
 			}
 		}
-	});
+	}); */
 </script>
 </html>

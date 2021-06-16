@@ -17,6 +17,7 @@ import com.project.bmp.common.Paging;
 import com.project.bmp.post.model.service.PostService;
 import com.project.bmp.post.model.vo.ListInfo;
 import com.project.bmp.post.model.vo.Post;
+import com.project.bmp.user.model.service.UserService;
 import com.project.bmp.user.model.vo.User;
 
 @Controller
@@ -59,8 +60,24 @@ public class PostController {
 
 	@ResponseBody
 	@RequestMapping(value = "write.do", produces = "application/json;charset=utf-8")
-	public String write() {
+	public String write(String title, String content) {
 		return null;
+	}
+
+	@RequestMapping("blog")
+	public ModelAndView blog(HttpSession session, @RequestParam(value = "sort", defaultValue = "인기순") String sort,
+			@RequestParam(value = "keyword", defaultValue = "") String keyword,
+			@RequestParam(value = "page", defaultValue = "1") int page, int blog, int post, ModelAndView mav) {
+		ListInfo listInfo = getListInfo(session, sort, keyword, page, 16);
+		listInfo.setBlog_no(blog);
+		
+		ArrayList<Post> list = pService.getPost(listInfo);
+
+		mav.addObject("listInfo", listInfo);
+		mav.addObject("list", list);
+		mav.addObject("postNo", post);
+		mav.setViewName("user/post/blog");
+		return mav;
 	}
 
 	public ListInfo getListInfo(HttpSession session, String sort, String keyword, int currentPage, int boardLimit) {

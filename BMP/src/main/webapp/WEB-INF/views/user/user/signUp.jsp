@@ -60,14 +60,13 @@ form div {
 	transition: opacity 0.7s;
 }
 
-#signUpForm>div:first-child {
+#signUpForm>div {
 	padding-bottom: 15px;
 }
 
 label {
-	font-weight: 600;
+	font-weight: 500;
 	padding-bottom: 2px;
-	color: rgba(255, 255, 255, 0.8);
 }
 
 label>a {
@@ -93,7 +92,7 @@ input {
 }
 
 .btn {
-	padding-top: 20px;
+	padding-top: 15px;
 }
 
 .btn a {
@@ -113,6 +112,10 @@ input {
 	background-color: #df3e7b;
 }
 
+#google {
+	padding-top: 5px;
+}
+
 #google>a {
 	background: #4285f4;
 }
@@ -125,6 +128,16 @@ input {
 	position: fixed;
 	z-index: 5;
 	background: skyblue;
+}
+
+#signUpForm input {
+	background: #00000012;
+	box-shadow: 0 1px 2px #00000026 inset;
+}
+
+#signUpForm input::placeholder {
+	font-size: 15px;
+	color: #999;
 }
 </style>
 </head>
@@ -143,8 +156,19 @@ input {
 				</div>
 				<div>
 					<div>
-						<label> Password<a id="findPw">Forgot?</a>
-						</label> <input type="password" name="password">
+						<label>Nickname</label> <input type="text" name="nickname">
+					</div>
+				</div>
+				<div>
+					<div>
+						<label>Password</label> <input type="password" name="password"
+							placeholder="Minimum 6 characters">
+					</div>
+				</div>
+				<div>
+					<div>
+						<label>Confirm Password</label> <input type="password"
+							name="confirmPassword">
 					</div>
 				</div>
 				<div id="signUpBtn" class="btn">

@@ -379,66 +379,6 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 	</c:if>
 </body>
 <script>
-	$(document)
-			.on(
-					'keyup paste change',
-					'.search-text',
-					function() {
-						var keyword = $('.search-text').val();
-						if (keyword != null && keyword != '') {
-							var filter = '닉네임';
-							if (keyword.charAt(0) == '#')
-								filter = '태그';
-							$
-									.ajax({
-										url : 'search',
-										data : {
-											filter : filter,
-											keyword : keyword
-										},
-										success : function(data) {
-											var str = '';
-											if (data == null
-													|| data.length == 0) {
-												str += ('<li class="nonehover"><p>검색 결과가 없습니다.</p></li>');
-											} else {
-												if (keyword.charAt(0) == '#') {
-													for (var i = 0; i < data.length; i++) {
-														str += ('<li><p>'
-																+ data[i] + '</p></li>');
-													}
-												} else {
-													for (var i = 0; i < data.length; i++) {
-														str += ('<li no="'+data[i].no+'"><p class="search-pr"><img src="https://t1.daumcdn.net/liveboard/holapet/7dd0ffdc19294528b5de0ffb31829366.JPG"></p><p>'
-																+ data[i].nickname + '</p></li>');
-													}
-												}
-											}
-											$('#search-result').html(str);
-											$('#search-result').show();
-										}
-									});
-						} else {
-							$('#search-result').hide();
-							$('#search-result').html('');
-						}
-					});
-
-	$(document).on('click', '#search-result li', function() {
-		var text = $('.search-text').val();
-		var keyword;
-		var url;
-		if (text.charAt(0) != '#') {
-			keyword = $(this).attr('no');
-			url = 'blog?no=' + keyword;
-		} else {
-			keyword = $(this).text();
-			keyword = keyword.substring(1, keyword.length);
-			url = 'explorer?keyword=' + keyword;
-		}
-		location.href = url;
-	});
-
 	$(document).on('click', '.select', function() {
 		if ($(this).children('ul').css('display') == 'none') {
 			$(this).children('ul').show();
@@ -448,9 +388,16 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 	});
 
 	$(document).on('click', '#sort-dropdown li', function() {
+		var blog = '${listInfo.blog_no}';
+		var post = '${postNo}';
+		console.log('blog='+blog+' post='+post);
 		var sort = $(this).text();
 		var keyword = '${listInfo.keyword}';
 		var url = '${loc}?sort=' + sort;
+		if(blog!=null&&blog!='')
+			url+='&blog='+blog;
+		if(post!=null&post!='')
+			url+='&post='+post;
 		if (keyword != '')
 			url += '&keyword=' + keyword;
 		location.href = url;

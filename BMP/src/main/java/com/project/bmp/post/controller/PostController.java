@@ -72,7 +72,6 @@ public class PostController {
 		listInfo.setBlog_no(blog);
 		
 		ArrayList<Post> list = pService.getPost(listInfo);
-
 		mav.addObject("listInfo", listInfo);
 		mav.addObject("list", list);
 		mav.addObject("postNo", post);

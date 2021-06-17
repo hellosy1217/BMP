@@ -45,14 +45,10 @@ img {
 	<%-- <c:import url="detail.jsp"/> --%>
 </body>
 <script>
-	$(document).on('click', '.post-content>div', function(e) {
-		if ($(e.target).attr('class') != 'likeBtn') {
-			var post = $(this).attr('no');
-			var blog = $(this).attr('blog');
-			location.href = "blog?blog=" + blog + '&post=' + post;
-		} else {
-			$('span.likeBtn').css('color', 'red');
-		}
+	$(document).on('click', '.post-content>div>div:first-child', function(e) {
+		var post = $(this).parent().attr('no');
+		var blog = $(this).parent().attr('blog');
+		location.href = "blog?blog=" + blog + '&post=' + post;
 	});
 
 	/* $(window).scroll(function(){

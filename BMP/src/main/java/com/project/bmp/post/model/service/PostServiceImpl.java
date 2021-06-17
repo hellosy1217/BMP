@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.project.bmp.post.model.dao.PostDAO;
+import com.project.bmp.post.model.vo.Like;
 import com.project.bmp.post.model.vo.ListInfo;
 import com.project.bmp.post.model.vo.Post;
 
@@ -26,5 +27,15 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public ArrayList<Post> getPost(ListInfo listInfo) {
 		return pDAO.getPost(sqlSession, listInfo);
+	}
+
+	@Override
+	public int addLike(Like like) {
+		return pDAO.addLike(sqlSession,like);
+	}
+
+	@Override
+	public int delLike(Like like) {
+		return pDAO.delLike(sqlSession,like);
 	}
 }

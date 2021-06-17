@@ -15,9 +15,9 @@ import com.google.gson.Gson;
 import com.project.bmp.common.Pagination;
 import com.project.bmp.common.Paging;
 import com.project.bmp.post.model.service.PostService;
+import com.project.bmp.post.model.vo.Like;
 import com.project.bmp.post.model.vo.ListInfo;
 import com.project.bmp.post.model.vo.Post;
-import com.project.bmp.user.model.service.UserService;
 import com.project.bmp.user.model.vo.User;
 
 @Controller
@@ -36,6 +36,7 @@ public class PostController {
 		mav.addObject("listInfo", listInfo);
 		mav.addObject("list", list);
 		mav.setViewName("user/post/explorer");
+
 		return mav;
 	}
 
@@ -70,13 +71,36 @@ public class PostController {
 			@RequestParam(value = "page", defaultValue = "1") int page, int blog, int post, ModelAndView mav) {
 		ListInfo listInfo = getListInfo(session, sort, keyword, page, 16);
 		listInfo.setBlog_no(blog);
-		
+
 		ArrayList<Post> list = pService.getPost(listInfo);
 		mav.addObject("listInfo", listInfo);
 		mav.addObject("list", list);
 		mav.addObject("postNo", post);
 		mav.setViewName("user/post/blog");
 		return mav;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "like.do", produces = "application/json;charset=utf-8")
+	public String like(Like like, HttpSession session) {
+		int result = 0;
+		User accessor = (User) session.getAttribute("accessor");
+		if (accessor == null) {
+			return "signIn";
+		}
+		like.setUserNo(accessor.getNo());
+
+		System.out.println(like.toString());
+		if (like.getNo() == 0) {
+			result = pService.addLike(like);
+			if (result > 0)
+				result = 2;
+		} else {
+			result = pService.delLike(like);
+			if (result > 0)
+				result = 1;
+		}
+		return result + "";
 	}
 
 	public ListInfo getListInfo(HttpSession session, String sort, String keyword, int currentPage, int boardLimit) {

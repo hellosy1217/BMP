@@ -77,8 +77,6 @@ img {
 			var post = $(this).attr('no');
 			var blog = $(this).attr('blog');
 			location.href = "blog?blog=" + blog + '&post=' + post;
-		} else {
-			$('span.likeBtn').css('color', 'red');
 		}
 	});
 

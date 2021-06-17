@@ -61,4 +61,9 @@ public class UserController {
 		status.setComplete();
 		return "redirect:explorer";
 	}
+	
+	@RequestMapping(value = "message")
+	public String message(SessionStatus status) {
+		return "user/user/message";
+	}
 }

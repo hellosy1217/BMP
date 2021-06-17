@@ -119,6 +119,10 @@
 	padding-top: 10px;
 	text-overflow: ellipsis;
 }
+
+.liked {
+	color: #ea4c89;
+}
 </style>
 </head>
 <body>
@@ -135,9 +139,18 @@
 							<p class="post-title">${post.title }</p>
 							<p class="date">${post.regDate }</p>
 						</div>
-						<div class="likeBtn">
-							<a class="likeBtn"><span class="likeBtn">♥︎</span>Like</a>
-						</div>
+						<c:choose>
+							<c:when test="${post.like eq 0 }">
+								<div class="likeBtn" like="${post.like }">
+									<a><span>♥︎</span>Like</a>
+								</div>
+							</c:when>
+							<c:otherwise>
+								<div class="likeBtn liked" like="${post.like }">
+									<a><span>♥︎</span>Like</a>
+								</div>
+							</c:otherwise>
+						</c:choose>
 					</div>
 				</div>
 			</li>
@@ -145,6 +158,37 @@
 	</ol>
 </body>
 <script>
-	
+	$(document).on('click', '.likeBtn', function() {
+		var div = $(this);
+		var no = $(this).attr('like');
+		var postNo = $(this).parent().attr('no');
+
+		console.log('test:' + no);
+		if ('${accessor}' != '') {
+			$.ajax({
+				url : 'like.do',
+				data : {
+					no : no,
+					postNo : postNo
+				},
+				success : function(data) {
+					console.log("data: "+data);
+					if (data == 2) {
+						div.attr({
+							'class' : 'likeBtn liked',
+							'like' : '1'
+						});
+					} else if (data == 1) {
+						div.attr({
+							'class' : 'likeBtn',
+							'like' : '0'
+						});
+					}
+				}
+			});
+		} else {
+			location.href = 'signIn';
+		}
+	});
 </script>
 </html>

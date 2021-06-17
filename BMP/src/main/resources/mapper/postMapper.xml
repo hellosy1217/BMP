@@ -6,10 +6,10 @@
 		select count(*) pcount
 		from plist
 		left join (select user_no, block_no from bmp_user
-			left join bmp_block on (to_user=user_no) where from_user=#{accessor_no}) using (user_no)
+			left join bmp_block on (to_user=user_no) where from_user=#{accessorNo}) using (user_no)
 			left join (select user_no, follow_no from bmp_user
 				left join (select user_no, follow_no from bmp_user
-					left join bmp_follow on (to_user=user_no) where from_user=#{accessor_no} and
+					left join bmp_follow on (to_user=user_no) where from_user=#{accessorNo} and
 					follow_permission='Y') using (user_no)) using (user_no)
 		where (user_private='N' or (user_private='Y' and follow_no>0)) and block_no is null
 		<if test="blog_no > 0">
@@ -20,27 +20,26 @@
 		</if>
 	</select>
 	<select id="getPost" resultMap="postResultMap_explorer" resultType="Post" parameterType="ListInfo">
-		select post_no, post_title, post_content, post_count, reg_date, edit_date, user_no, file_name, file_path, nvl(tags,'') tag,
-			countLike, profile_file, profile_path, user_nickname, nvl(like_no,0) liked, nvl(repost_no,0) repost 
-		from plist
-			left join (select like_no, post_no from bmp_like where user_no=#{accessor_no}) using (post_no)
-			left join (select repost_no, post_no from bmp_repost where user_no=#{accessor_no}) using (post_no)
-			left join (select user_no, block_no from bmp_user
-				left join bmp_block on (to_user=user_no) where from_user=#{accessor_no}) using (user_no)
+		select post_no, post_title, post_content, post_count, reg_date, edit_date, user_no, file_name, file_path, tags, 
+		count_like, profile_file, profile_path, user_nickname, nvl(like_no,0) liked, nvl(repost_no,0) repost from plist
+			left join (select like_no, post_no from bmp_like where user_no=#{accessorNo}) using (post_no)
+			left join (select repost_no, post_no from bmp_repost where user_no=#{accessorNo}) using (post_no)
+			left join (select user_no, block_no from bmp_user 
+				left join bmp_block on (to_user=user_no) where from_user=#{accessorNo}) using (user_no)
 			left join (select user_no, follow_no from bmp_user
-				left join (select user_no, follow_no from bmp_user
-					left join bmp_follow on (to_user=user_no) where from_user=#{accessor_no} and follow_permission='Y')
-						using (user_no)) using (user_no)
-		where (user_private='N' or (user_private='Y' and follow_no>0)) and block_no is null
+				left join (select user_no, follow_no from bmp_user 
+					left join bmp_follow on (to_user=user_no) where from_user=#{accessorNo} and follow_permission='Y') 
+				using (user_no)) using (user_no)
+		where (user_private='N' or (user_private='Y' and follow_no>0)) and block_no is null 
 		<if test="keyword != ''">
 			and (tags like '%'||#{keyword} or tags like '%'||#{keyword}||' %') 
 		</if>
-		<if test="blog_no > 0">
-			and user_no=#{blog_no}
+		<if test="blogNo > 0">
+			and user_no=#{blogNo}
 		</if>
 		<choose>
 			<when test="sort == '인기순'">
-				order by countlike
+				order by count_like
 			</when>
 			<when test="sort == '조회순'">
 				order by post_count
@@ -51,6 +50,30 @@
 		</choose>
 		desc
 	</select>
+	<insert id="addLike" parameterType="Like">
+		insert into bmp_like
+		values (like_seq.nextval,sysdate,#{userNo},
+		<choose>
+			<when test="commentNo==0">
+				null,#{postNo})
+			</when>
+			<otherwise>
+				#{commentNo},null)
+			</otherwise>
+		</choose>
+	</insert>
+	<delete id="delLike" parameterType="Like">
+		delete from bmp_like
+		where user_no=#{userNo} and
+		<choose>
+			<when test="postNo > 0">
+				post_no=#{postNo}
+			</when>
+			<otherwise>
+				comment_no=#{commentNo}
+			</otherwise>
+		</choose>
+	</delete>
 	<resultMap type="Post" id="postResultMap_explorer">
 		<id property="no" column="post_no" />
 		<result property="title" column="post_title" />
@@ -62,7 +85,7 @@
 		<result property="tag" column="tag" />
 		<result property="file" column="file_name" />
 		<result property="path" column="file_path" />
-		<result property="countLike" column="countlike" />
+		<result property="countLike" column="count_like" />
 		<result property="like" column="liked" />
 		<result property="repost" column="repost" />
 		<result property="nickname" column="user_nickname" />

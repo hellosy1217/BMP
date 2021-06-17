@@ -6,6 +6,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.project.bmp.post.model.vo.Like;
 import com.project.bmp.post.model.vo.ListInfo;
 import com.project.bmp.post.model.vo.Post;
 
@@ -20,6 +21,14 @@ public class PostDAO {
 		int offset = (listInfo.getPaging().getCurrentPage() - 1) * listInfo.getPaging().getBoardLimit();
 		RowBounds rowBounds = new RowBounds(offset, listInfo.getPaging().getBoardLimit());
 		return (ArrayList) sqlSession.selectList("postMapper.getPost", listInfo, rowBounds);
+	}
+
+	public int addLike(SqlSessionTemplate sqlSession, Like like) {
+		return sqlSession.insert("postMapper.addLike",like);
+	}
+
+	public int delLike(SqlSessionTemplate sqlSession, Like like) {
+		return sqlSession.delete("postMapper.delLike",like);
 	}
 
 }

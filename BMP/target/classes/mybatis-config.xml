@@ -13,6 +13,8 @@
 			alias="Post" />
 		<typeAlias type="com.project.bmp.post.model.vo.ListInfo"
 			alias="ListInfo" />
+		<typeAlias type="com.project.bmp.post.model.vo.Like"
+			alias="Like" />
 	</typeAliases>
 
 	<mappers>

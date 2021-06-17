@@ -121,8 +121,8 @@
 
 .follow>div p:nth-child(even) {
 	font-size: 12px;
-    margin-top: 2.7px;
-    padding-left: 3px;
+	margin-top: 2.7px;
+	padding-left: 3px;
 }
 
 .follow>div p:nth-child(3) {
@@ -197,6 +197,13 @@
 			$('#dm-p').css('display', 'none');
 			$(this).attr('class', '');
 		}
+	});
+
+	$(document).on('click', '#dm-btn', function() {
+		if('${accessor.no}'=='${profile.no}')
+			location.href='message';
+		else
+			console.log('hi');
 	});
 </script>
 </html>

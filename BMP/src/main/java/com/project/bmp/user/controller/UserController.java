@@ -1,5 +1,7 @@
 package com.project.bmp.user.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.project.bmp.user.model.service.UserService;
@@ -63,7 +66,18 @@ public class UserController {
 	}
 	
 	@RequestMapping(value = "message")
-	public String message(SessionStatus status) {
-		return "user/user/message";
+	public ModelAndView message(HttpSession session, ModelAndView mav) {
+		User accessor = (User)session.getAttribute("accessor");
+		User profile = uService.getProfile(accessor.getNo());
+		
+		
+		mav.addObject("profile",profile);
+		mav.setViewName("user/user/message");
+		
+		return mav;
+	}
+	
+	public String follow() {
+		return "";
 	}
 }

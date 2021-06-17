@@ -18,6 +18,7 @@ import com.project.bmp.post.model.service.PostService;
 import com.project.bmp.post.model.vo.Like;
 import com.project.bmp.post.model.vo.ListInfo;
 import com.project.bmp.post.model.vo.Post;
+import com.project.bmp.user.model.service.UserService;
 import com.project.bmp.user.model.vo.User;
 
 @Controller
@@ -25,7 +26,10 @@ public class PostController {
 
 	@Autowired
 	private PostService pService;
-
+	
+	@Autowired
+	private UserService uService;
+	
 	@RequestMapping("explorer")
 	public ModelAndView explorer(HttpSession session, @RequestParam(value = "sort", defaultValue = "인기순") String sort,
 			@RequestParam(value = "keyword", defaultValue = "") String keyword, ModelAndView mav) {
@@ -68,13 +72,16 @@ public class PostController {
 	@RequestMapping("blog")
 	public ModelAndView blog(HttpSession session, @RequestParam(value = "sort", defaultValue = "인기순") String sort,
 			@RequestParam(value = "keyword", defaultValue = "") String keyword,
-			@RequestParam(value = "page", defaultValue = "1") int page, int blog, int post, ModelAndView mav) {
+			@RequestParam(value = "page", defaultValue = "1") int page, int blog, @RequestParam(value = "post", defaultValue = "0") int post, ModelAndView mav) {
 		ListInfo listInfo = getListInfo(session, sort, keyword, page, 16);
 		listInfo.setBlog_no(blog);
 
 		ArrayList<Post> list = pService.getPost(listInfo);
+		User profile = uService.getProfile(blog);
+		
 		mav.addObject("listInfo", listInfo);
 		mav.addObject("list", list);
+		mav.addObject("profile", profile);
 		mav.addObject("postNo", post);
 		mav.setViewName("user/post/blog");
 		return mav;

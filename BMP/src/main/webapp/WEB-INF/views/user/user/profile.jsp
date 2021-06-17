@@ -76,25 +76,25 @@
 	padding: 20px 0 10px 0;
 }
 
-#userInfo-comment {
+#profile-comment {
 	font-size: 13px;
 	text-align: center;
 	padding: 5px 0;
 }
 
-#userInfo-btns {
+#profile-btns {
 	position: relative;
 	flex-direction: column;
 	padding-top: 15px;
 	align-items: center;
 }
 
-#userInfo-btns>p:first-child {
+#profile-btns>p:first-child {
 	display: flex;
 }
 
 #dm-p {
-	padding-top: 5px;
+	padding-top: 8px;
 	display: none;
 	transition: display 0.3s;
 }
@@ -120,8 +120,9 @@
 }
 
 .follow>div p:nth-child(even) {
-	font-size: 13px;
-	margin-top: 1px;
+	font-size: 12px;
+    margin-top: 2.7px;
+    padding-left: 3px;
 }
 
 .follow>div p:nth-child(3) {
@@ -160,11 +161,11 @@
 				<img
 					src="https://www.unboxingdeals.com/wp-content/uploads/2018/08/Dogs.jpg">
 			</div>
-			<div>${userInfo.nickname }</div>
-			<c:if test="${userInfo.comment ne null and userInfo.comment ne '' }">
-				<div id="userInfo-comment">${userInfo.comment }</div>
+			<div>${profile.nickname }</div>
+			<c:if test="${profile.comment ne null and profile.comment ne '' }">
+				<div id="profile-comment">${profile.comment }</div>
 			</c:if>
-			<div id="userInfo-btns">
+			<div id="profile-btns">
 				<p>
 					<a class="follow-btn">Follow</a>
 				</p>
@@ -178,9 +179,9 @@
 		</div>
 		<div class="follow">
 			<div>
-				<p>${userInfo.follow }</p>
+				<p>${profile.follow }</p>
 				<p>팔로잉</p>
-				<p>${userInfo.follower }</p>
+				<p>${profile.follower }</p>
 				<p>팔로워</p>
 			</div>
 

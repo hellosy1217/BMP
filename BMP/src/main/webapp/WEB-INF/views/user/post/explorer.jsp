@@ -42,7 +42,6 @@ img {
 			<c:import url="list.jsp" />
 		</div>
 	</div>
-	<%-- <c:import url="detail.jsp"/> --%>
 </body>
 <script>
 	$(document).on('click', '.post-content>div>div:first-child', function(e) {

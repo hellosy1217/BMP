@@ -390,11 +390,10 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 	$(document).on('click', '#sort-dropdown li', function() {
 		var blog = '${listInfo.blog_no}';
 		var post = '${postNo}';
-		console.log('blog='+blog+' post='+post);
 		var sort = $(this).text();
 		var keyword = '${listInfo.keyword}';
 		var url = '${loc}?sort=' + sort;
-		if(blog!=null&&blog!='')
+		if(blog!=null&&blog!=''&&blog>0)
 			url+='&blog='+blog;
 		if(post!=null&post!='')
 			url+='&post='+post;
@@ -403,6 +402,13 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 		location.href = url;
 	});
 
+	$(document).on('click', '#profile-dropdown li', function() {
+		if($(this).text()=='내 블로그')
+			location.href='blog?blog=${accessor.no}';
+		else
+			location.href='signOut';
+	});
+	
 	$(document).on('mouseover', '#t-profile img', function() {
 		$('#profile-dropdown').show();
 	});

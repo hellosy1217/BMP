@@ -12,4 +12,8 @@ public class UserDAO {
 		return sqlSession.selectOne("userMapper.selectUser", email);
 	}
 
+	public User getProfile(SqlSessionTemplate sqlSession, int no) {
+		return sqlSession.selectOne("userMapper.getProfile", no);
+	}
+
 }

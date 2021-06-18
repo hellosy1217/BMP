@@ -26,10 +26,10 @@ public class PostController {
 
 	@Autowired
 	private PostService pService;
-	
+
 	@Autowired
 	private UserService uService;
-	
+
 	@RequestMapping("explorer")
 	public ModelAndView explorer(HttpSession session, @RequestParam(value = "sort", defaultValue = "인기순") String sort,
 			@RequestParam(value = "keyword", defaultValue = "") String keyword, ModelAndView mav) {
@@ -72,13 +72,14 @@ public class PostController {
 	@RequestMapping("blog")
 	public ModelAndView blog(HttpSession session, @RequestParam(value = "sort", defaultValue = "인기순") String sort,
 			@RequestParam(value = "keyword", defaultValue = "") String keyword,
-			@RequestParam(value = "page", defaultValue = "1") int page, int blog, @RequestParam(value = "post", defaultValue = "0") int post, ModelAndView mav) {
+			@RequestParam(value = "page", defaultValue = "1") int page, int blog,
+			@RequestParam(value = "post", defaultValue = "0") int post, ModelAndView mav) {
 		ListInfo listInfo = getListInfo(session, sort, keyword, page, 16);
 		listInfo.setBlog_no(blog);
 
 		ArrayList<Post> list = pService.getPost(listInfo);
 		User profile = uService.getProfile(blog);
-		
+
 		mav.addObject("listInfo", listInfo);
 		mav.addObject("list", list);
 		mav.addObject("profile", profile);
@@ -108,6 +109,12 @@ public class PostController {
 				result = 1;
 		}
 		return result + "";
+	}
+
+	@RequestMapping("admin")
+	public ModelAndView admin(ModelAndView mav) {
+		mav.setViewName("admin/common/dashboard");
+		return mav;
 	}
 
 	public ListInfo getListInfo(HttpSession session, String sort, String keyword, int currentPage, int boardLimit) {

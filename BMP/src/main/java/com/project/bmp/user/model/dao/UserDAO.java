@@ -16,4 +16,12 @@ public class UserDAO {
 		return sqlSession.selectOne("userMapper.getProfile", no);
 	}
 
+	public User googleSignIn(SqlSessionTemplate sqlSession, User user) {
+		return null;
+	}
+
+	public User googleSignUp(SqlSessionTemplate sqlSession, User user) {
+		return null;
+	}
+
 }

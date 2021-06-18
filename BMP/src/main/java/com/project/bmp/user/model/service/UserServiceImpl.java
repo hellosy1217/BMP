@@ -1,7 +1,5 @@
 package com.project.bmp.user.model.service;
 
-import java.util.ArrayList;
-
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +22,16 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User getProfile(int no) {
 		return uDAO.getProfile(sqlSession, no);
+	}
+
+	@Override
+	public User googleSignIn(User user) {
+		return uDAO.googleSignIn(sqlSession, user);
+	}
+
+	@Override
+	public User googleSignUp(User user) {
+		return uDAO.googleSignUp(sqlSession, user);
 	}
 
 }

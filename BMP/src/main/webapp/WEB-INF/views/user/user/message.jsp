@@ -16,11 +16,8 @@
 	list-style: none;
 	border: 0;
 	background: transparent;
-}
-
-::selection {
-	background: #ea4c89;
-	color: rgba(255, 255, 255, 0.85);
+	font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial,
+		sans-serif;
 }
 
 table {

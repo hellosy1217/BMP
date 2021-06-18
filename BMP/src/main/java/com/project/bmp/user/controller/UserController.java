@@ -41,7 +41,7 @@ public class UserController {
 			if (bcryptPasswordEncoder.matches(password, user.getPassword())) {
 				model.addAttribute("accessor", user);
 				if (user.getAdmin() == 'Y')
-					msg = "signUp";
+					msg = "admin";
 				else
 					msg = "explorer";
 			}
@@ -58,25 +58,29 @@ public class UserController {
 	public String signUp(User u) {
 		return null;
 	}
-	
-	@RequestMapping(value = "signOut")
+
+	@RequestMapping("signOut")
 	public String signOut(SessionStatus status) {
 		status.setComplete();
 		return "redirect:explorer";
 	}
-	
-	@RequestMapping(value = "message")
+
+	@RequestMapping("googleSign")
+	public String googleSign() {
+		return null;
+	}
+
+	@RequestMapping("message")
 	public ModelAndView message(HttpSession session, ModelAndView mav) {
-		User accessor = (User)session.getAttribute("accessor");
+		User accessor = (User) session.getAttribute("accessor");
 		User profile = uService.getProfile(accessor.getNo());
-		
-		
-		mav.addObject("profile",profile);
+
+		mav.addObject("profile", profile);
 		mav.setViewName("user/user/message");
-		
+
 		return mav;
 	}
-	
+
 	public String follow() {
 		return "";
 	}

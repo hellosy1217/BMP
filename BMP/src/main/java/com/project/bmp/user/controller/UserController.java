@@ -49,11 +49,14 @@ public class UserController {
 		String msg = "error";
 		if (user != null) {
 			if (bcryptPasswordEncoder.matches(password, user.getPassword())) {
-				model.addAttribute("accessor", user);
-				if (user.getAdmin() == 'Y')
-					msg = "admin";
-				else
-					msg = "explorer";
+				if(user.getConfirm()=='Y') {
+					model.addAttribute("accessor", user);
+					if (user.getAdmin() == 'Y')
+						msg = "admin";
+					else
+						msg = "explorer";
+				}else
+					msg="checkEmail";
 			}
 		}
 		return gson.toJson(msg);
@@ -66,14 +69,16 @@ public class UserController {
 		return mav;
 	}
 
+	@ResponseBody
 	@RequestMapping(value = "signUp.do", produces = "application/json;charset=utf-8")
 	public String signUp(User user) {
 		Gson gson = new Gson();
-		user.setPassword(bcryptPasswordEncoder.encode(user.getPassword()));
+		String encPassword = bcryptPasswordEncoder.encode(user.getPassword());
+		user.setPassword(encPassword);
 		int result = uService.addUser(user);
 		String msg = null;
 		if (result > 0) {
-			msg = "success";
+			msg = "이메일 인증번호 넘기기........... .. . . . . . .";
 		}
 		return gson.toJson(msg);
 	}

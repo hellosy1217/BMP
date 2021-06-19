@@ -186,7 +186,7 @@ label>a:hover {
 </head>
 <body>
 	<div id="sign">
-		<h1>Blog My Pet</h1>
+		<h1 onclick="location.href='explorer'">Blog My Pet</h1>
 		<c:choose>
 			<c:when test="${view ne null }">
 				<c:import url="signUp.jsp" />

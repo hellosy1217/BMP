@@ -50,7 +50,7 @@ img {
 		location.href = "blog?blog=" + blog + '&post=' + post;
 	});
 
-	/* $(window).scroll(function(){
+	$(window).scroll(function(){
 		if($(document).height() <= $(window).scrollTop() + $(window).height()){
 			var page = Number($('#page').val())+1;
 			var keyword = '${keyword}';
@@ -105,6 +105,6 @@ img {
 				}, 4000);
 			}
 		}
-	}); */
+	});
 </script>
 </html>

@@ -37,8 +37,8 @@ public class UserController {
 	private BCryptPasswordEncoder bcryptPasswordEncoder;
 
 	@RequestMapping("signIn")
-	public String signInForm() {
-		return "user/user/signIn";
+	public String signInForm(Model model) {
+		return "user/user/sign";
 	}
 
 	@ResponseBody
@@ -60,13 +60,22 @@ public class UserController {
 	}
 
 	@RequestMapping("signUp")
-	public String signUpForm() {
-		return "user/user/signUp";
+	public ModelAndView signUpForm(ModelAndView mav) {
+		mav.addObject("view", 1);
+		mav.setViewName("user/user/sign");
+		return mav;
 	}
 
 	@RequestMapping(value = "signUp.do", produces = "application/json;charset=utf-8")
-	public String signUp(User u) {
-		return null;
+	public String signUp(User user) {
+		Gson gson = new Gson();
+		user.setPassword(bcryptPasswordEncoder.encode(user.getPassword()));
+		int result = uService.addUser(user);
+		String msg = null;
+		if (result > 0) {
+			msg = "success";
+		}
+		return gson.toJson(msg);
 	}
 
 	@RequestMapping("signOut")
@@ -95,7 +104,7 @@ public class UserController {
 			String userId = payload.getSubject();
 			String name = (String) payload.get("name");
 
-			User accessor = uService.selectUser(new User(email,userId));
+			User accessor = uService.selectUser(new User("google:" + email, userId));
 			if (accessor == null) {
 				accessor = new User(email, userId, name);
 				int result = uService.addUser(accessor);

@@ -1,5 +1,9 @@
 package com.project.bmp.user.controller;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +16,12 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.googleapis.util.Utils;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
 import com.google.gson.Gson;
 import com.project.bmp.user.model.service.UserService;
 import com.project.bmp.user.model.vo.User;
@@ -65,8 +75,41 @@ public class UserController {
 		return "redirect:explorer";
 	}
 
-	@RequestMapping("googleSign")
-	public String googleSign() {
+	@ResponseBody
+	@RequestMapping(value = "googleSign")
+	public String googleSign(String idtoken) throws GeneralSecurityException, IOException {
+		System.out.println(idtoken);
+		HttpTransport transport = Utils.getDefaultTransport();
+		JsonFactory jsonFactory = Utils.getDefaultJsonFactory();
+
+		GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+				.setAudience(Collections.singletonList("777761637670-4aqnu191aitl31nh79q0gv5hpg6cvs0r.apps.googleusercontent.com")).build();
+
+		GoogleIdToken idToken = verifier.verify(idtoken);
+		if (idToken != null) {
+			Payload payload = idToken.getPayload();
+
+			// Print user identifier
+			String userId = payload.getSubject();
+			System.out.println("User ID: " + userId);
+
+			// Get profile information from payload
+			String email = payload.getEmail();
+			boolean emailVerified = Boolean.valueOf(payload.getEmailVerified());
+			String name = (String) payload.get("name");
+			String pictureUrl = (String) payload.get("picture");
+			String locale = (String) payload.get("locale");
+			String familyName = (String) payload.get("family_name");
+			String givenName = (String) payload.get("given_name");
+
+			System.out.println("email "+email +" name "+name+" emailV "+emailVerified);
+			System.out.println(pictureUrl);
+			// Use or store profile information
+			// ...
+
+		} else {
+			System.out.println("Invalid ID token.");
+		}
 		return null;
 	}
 

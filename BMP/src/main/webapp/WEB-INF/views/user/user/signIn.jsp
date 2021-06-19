@@ -7,14 +7,9 @@
 <meta charset="UTF-8">
 <meta name="google-signin-client_id"
 	content="777761637670-4aqnu191aitl31nh79q0gv5hpg6cvs0r.apps.googleusercontent.com">
-<link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Roboto"
-	rel="stylesheet">
 <title>Blog My Pet</title>
 <script type="text/javascript"
 	src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://apis.google.com/js/platform.js?onload=renderButton"
-	async defer></script>
 <style>
 * {
 	margin: 0;
@@ -274,12 +269,16 @@ input {
 
 		<div id="google">
 			<!-- <a >Google 계정으로 로그인</a> -->
-			<div id="my-signin2"></div>
+			<div class="g-signin2" id="my-signin2" data-onsuccess="onSignIn"></div>
 			<h6>
 				아직 회원이 아니신가요?<a href="signUp">지금 가입하기</a>
 			</h6>
 		</div>
 	</div>
+
+	<h1>
+		<a onclick="signOut();">로그아웃..</a>
+	</h1>
 </body>
 <script>
 	$(document).on('click', '#findPw', function() {
@@ -351,22 +350,28 @@ input {
 		});
 	});
 
+	$(function() {
+		renderButton();
+	});
+
 	function onSignIn(googleUser) {
-		// Useful data for your client-side scripts:
+		console.log('googleUser');
+		console.log(googleUser);
 		var profile = googleUser.getBasicProfile();
-		alert(profile.getId());
-		console.log("ID: " + profile.getId()); // Don't send this directly to your server!
-		console.log('Full Name: ' + profile.getName());
-		console.log('Given Name: ' + profile.getGivenName());
-		console.log('Family Name: ' + profile.getFamilyName());
-		console.log("Image URL: " + profile.getImageUrl());
-		console.log("Email: " + profile.getEmail());
-
-		var name = profile.getEmail();
-
-		// The ID token you need to pass to your backend:
-		var id_token = googleUser.getAuthResponse().id_token;
-		console.log("ID Token: " + id_token);
+		var idtoken = googleUser.getAuthResponse().id_token;
+		$.ajax({
+			url : 'googleSign',
+			type : 'POST',
+			data : 'idtoken=' + idtoken,
+			dataType : 'json',
+			beforeSend : function(xhr) {
+				xhr.setRequestHeader("Content-type",
+						"application/x-www-form-urlencoded");
+			},
+			success : function(data) {
+				console.log("???????");
+			}
+		});
 	}
 
 	function renderButton() {
@@ -379,5 +384,21 @@ input {
 			cursor : 'pointer'
 		});
 	}
+
+	function signOut() {
+		var suth2 = gapi.auth2.getAuthInstance();
+		suth2.signOut().then(function() {
+			location.href = 'signOut';
+		});
+	}
+	
+	function init(){
+		gapi.load('auth2',function(){
+			console.log('init시작...');
+			
+		})
+	}
 </script>
+<script src="https://apis.google.com/js/platform.js?onload=init" async
+	defer></script>
 </html>

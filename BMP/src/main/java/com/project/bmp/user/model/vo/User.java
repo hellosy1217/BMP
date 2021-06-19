@@ -30,7 +30,14 @@ public class User {
 		this.email = email;
 		this.password = password;
 	}
-	
+
+	public User(String email, String password, String nickname) {
+		super();
+		this.email = email;
+		this.password = password;
+		this.nickname = nickname;
+	}
+
 	public User(String email, String password, String nickname, char admin) {
 		super();
 		this.email = email;

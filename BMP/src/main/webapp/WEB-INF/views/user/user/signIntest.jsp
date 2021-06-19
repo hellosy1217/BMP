@@ -5,6 +5,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="google-signin-client_id"
+	content="777761637670-4aqnu191aitl31nh79q0gv5hpg6cvs0r.apps.googleusercontent.com">
 <title>Blog My Pet</title>
 <script type="text/javascript"
 	src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -17,13 +19,8 @@
 	border: 0;
 	background: transparent;
 	color: white;
-	font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial,
-		sans-serif;
+	font-family: sans-serif;
 	cursor: default;
-}
-
-input {
-	cursor: text;
 }
 
 body {
@@ -94,10 +91,10 @@ h6 a:hover {
 form {
 	padding-top: 20px;
 	width: 30%;
-	height: calc(320px - 3%);
+	/* height: calc(320px - 3%); */
 }
 
-form div {
+form>div, form>div div {
 	display: flex;
 	flex-direction: column;
 	width: 100%;
@@ -132,40 +129,33 @@ label>a:hover {
 
 input {
 	border-radius: 6px;
-	padding: 8px 10px;
+	padding: 7.5px 10px;
 	color: #444;
 	outline: none;
 	font-size: 18px;
 	background: white;
+	cursor: text;
+}
+
+.btn a {
+	text-align: center;
+	border-radius: 4px;
+	padding: 12.5px 12px 10.5px;
+	cursor: pointer;
+	text-shadow: 1px 1px 1px rgb(0 0 0/ 15%);
 }
 
 .btn {
 	padding-top: 20px;
 }
 
-.btn a {
-	text-align: center;
-	border-radius: 4px;
-	padding: 11px 12px 9px;
-	color: #fff;
-	cursor: pointer;
-	text-shadow: 1px 1px 1px rgb(0 0 0/ 15%);
-}
-
 #signInBtn>a, #findBtn>a, #checkBtn>a {
 	background: #ea4c88;
+	color: #fff;
 }
 
 #signInBtn>a:hover, #findBtn>a:hover, #checkBtn>a:hover {
 	background-color: #df3e7b;
-}
-
-#google>a {
-	background: #4285f4;
-}
-
-#google>a:hover {
-	background: #2a75f3;
 }
 
 #findPwForm {
@@ -179,11 +169,57 @@ input {
 	opacity: 0;
 	transition: opacity 1.4s;
 }
+
+.abcRioButtonBlue, .abcRioButtonIcon {
+	border-radius: 4px !important;
+	border: 0.5px solid #4285f4 !important;
+}
+
+.abcRioButtonBlue {
+	display: flex;
+}
+
+.abcRioButtonIcon {
+	padding: 8px !important;
+}
+
+.abcRioButton:hover {
+	box-shadow: unset !important;
+	background-color: #2a75f3 !important;
+	cursor: pointer !important;
+	border-color: #2a75f3 !important;
+}
+
+#google {
+	width: 30%;
+	padding-top: 15px;
+	transition: opacity 0.7s;
+}
+
+.abcRioButtonContentWrapper {
+	display: flex !important;
+	padding: 1px 1.5px 1px !important;
+}
+
+.abcRioButtonContents {
+	line-height: unset !important;
+	font-family: sans-serif !important;
+	font-size: 16px !important;
+	text-shadow: 1px 1px 1px rgb(0 0 0/ 15%) !important;
+	display: flex !important;
+	align-items: center !important;
+	width: 100% !important;
+	justify-content: center !important;
+}
+
+.abcRioButtonContents>span {
+	margin-top: 1px !important;
+}
 </style>
 </head>
 <body>
 	<div id="signIn">
-		<h1>Blog My Pet</h1>
+		<h1 onclick="location.href='explorer'">Blog My Pet</h1>
 		<h2>Sign In</h2>
 		<form id="signInForm" method="POST" action="signIn">
 			<div>
@@ -202,13 +238,8 @@ input {
 			<div id="signInBtn" class="btn">
 				<a>로그인</a>
 			</div>
-			<div id="google" class="btn">
-				<a>Google 계정으로 로그인</a>
-			</div>
-			<h6>
-				아직 회원이 아니신가요?<a href="signUp">지금 가입하기</a>
-			</h6>
 		</form>
+
 		<form id="findPwForm" method="POST">
 			<div>
 				<h4>
@@ -236,16 +267,28 @@ input {
 			</div>
 		</form>
 
+		<div id="google">
+			<!-- <a >Google 계정으로 로그인</a> -->
+			<div class="g-signin2" id="my-signin2" data-onsuccess="onSignIn"></div>
+			<h6>
+				아직 회원이 아니신가요?<a href="signUp">지금 가입하기</a>
+			</h6>
+		</div>
 	</div>
+
+	<h1>
+		<a onclick="signOut();">로그아웃..</a>
+	</h1>
 </body>
 <script>
-	var gauth;
 	$(document).on('click', '#findPw', function() {
 		$('h2').css('opacity', '0');
 		$('#signInForm').css('opacity', '0');
+		$('#google').css('opacity', '0');
 		setTimeout(function() {
 			$('#findPwForm').css('display', 'flex');
 			$('#signInForm').css('display', 'none');
+			$('#google').css('display', 'none');
 			$('h2').text('Forgot Password?');
 			$('h2').css('transition', 'opacity 1.4s');
 		}, 420);
@@ -262,6 +305,7 @@ input {
 		}, 100);
 		setTimeout(function() {
 			$('#findPwForm').css('display', 'none');
+			$('#google').css('display', 'none');
 			$('#checkForm').css('display', 'flex');
 		}, 420);
 		setTimeout(function() {
@@ -282,62 +326,70 @@ input {
 				if (data == 'error') {
 					$('#msg').text('이메일 또는 비밀번호를 확인해주세요.');
 					$('#signIn-email').focus();
-				} else
-					location.href = data;
+				} else {
+					if ('${accessor.confirm}' == 'Y')
+						location.href = 'explorer';
+					else {
+						$('#signInForm').css('transition', 'opacity 0.7s');
+						$('#google').css('transition', 'opacity 0.7s');
+						setTimeout(function() {
+							$('#signInForm').css('opacity', '0');
+							$('#google').css('opacity', '0');
+						}, 100);
+						setTimeout(function() {
+							$('#signInForm').css('display', 'none');
+							$('#google').css('display', 'none');
+							$('#checkForm').css('display', 'flex');
+						}, 420);
+						setTimeout(function() {
+							$('#checkForm').css('opacity', '100');
+						}, 450);
+					}
+				}
 			}
 		});
 	});
 
-	$('#google a')
-			.on(
-					'click',
-					function() {
-						if ($(this).text() == 'Google 계정으로 로그인')
-							gauth
-									.signIn()
-									.then(
-											function() {
-												var googleUser = gauth.currentUser
-														.get();
-												var profile = googleUser
-														.getBasicProfile();
-												var idtoken = googleUser
-														.getAuthResponse().id_token;
-												$
-														.ajax({
-															url : 'googleSign.do',
-															type : 'POST',
-															data : {
-																idtoken : idtoken
-															},
-															dataType : 'json',
-															beforeSend : function(
-																	xhr) {
-																xhr
-																		.setRequestHeader(
-																				"Content-type",
-																				"application/x-www-form-urlencoded");
-															},
-															success : function(
-																	data) {
-																if (data == 'success')
-																	location.href = "explorer";
-															}
-														});
-											});
-						else
-							gauth.signOut().then(function() {
-								console.log('gauth.signOut()실행됨 ');
-								checkSignInStatus();
-							});
-					});
+	/* $(function() {
+		renderButton();
+	});
 
-	function checkSignInStatus() {
-		if (gauth.isSignedIn.get()) {
-			$('#google a').text('Google 계정에서 로그아웃');
-		} else {
-			$('#google a').text('Google 계정으로 로그인');
-		}
+	function onSignIn(googleUser) {
+		console.log('googleUser');
+		console.log(googleUser);
+		var profile = googleUser.getBasicProfile();
+		var idtoken = googleUser.getAuthResponse().id_token;
+		$.ajax({
+			url : 'googleSign',
+			type : 'POST',
+			data : 'idtoken=' + idtoken,
+			dataType : 'json',
+			beforeSend : function(xhr) {
+				xhr.setRequestHeader("Content-type",
+						"application/x-www-form-urlencoded");
+			},
+			success : function(data) {
+				console.log("???????");
+			}
+		});
+	}
+
+	function renderButton() {
+		gapi.signin2.render('my-signin2', {
+			scope : 'profile email',
+			longtitle : true,
+			width : 'auto',
+			theme : 'dark',
+			height : 'auto',
+			cursor : 'pointer'
+		});
+	}
+	 */
+	function signOut() {
+		var suth2 = gapi.auth2.getAuthInstance();
+		suth2.signOut().then(function() {
+			location.href = 'signOut';
+		});
 	}
 
 	function init() {
@@ -345,11 +397,17 @@ input {
 				.load(
 						'auth2',
 						function() {
-							gauth = gapi.auth2
+							console.log('init시작...');
+							var gauth = gapi.auth2
 									.init({
 										client_id : '777761637670-4aqnu191aitl31nh79q0gv5hpg6cvs0r.apps.googleusercontent.com'
 									})
 							gauth.then(function() {
+								if (gauth.isSignedIn.get()) {
+									console.log('logined');
+								} else {
+									console.log('logOuted');
+								}
 								console.log('googleAuth success');
 							}, function() {
 								console.log('googleAuth fail');

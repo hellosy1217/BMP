@@ -8,6 +8,13 @@
 		from bmp_user
 		where user_email=#{email}
 	</select>
+	
+	<select id="selectGoogleUser" resultType="User"
+		resultMap="userResultMap_signIn">
+		select user_no,user_email,user_password,user_nickname,user_admin
+		from bmp_user
+		where user_email=#{email} and user_password=#{password}
+	</select>
 
 	<select id="getProfile" resultMap="userResultMap_All">
 		select user_no,user_email,user_nickname,birth,reg_date,user_dm,user_private,
@@ -15,6 +22,12 @@
 		from ulist 
 		where user_no=#{no}
 	</select>
+	
+	<insert id="addUser" parameterType="User">
+		insert into bmp_user values
+			(user_seq.nextval,#{email},#{password},#{nickname},null,null,null,sysdate,
+			null,default,default,default,default,default,default)
+	</insert>
 	
 	<resultMap type="User" id="userResultMap_signIn">
 		<id property="no" column="user_no" />

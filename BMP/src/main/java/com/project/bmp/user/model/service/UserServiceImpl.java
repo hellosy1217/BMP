@@ -20,18 +20,18 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public User selectUser(User accessor) {
+		return uDAO.selectUser(sqlSession, accessor);
+	}
+	
+	@Override
 	public User getProfile(int no) {
 		return uDAO.getProfile(sqlSession, no);
 	}
 
 	@Override
-	public User googleSignIn(User user) {
-		return uDAO.googleSignIn(sqlSession, user);
-	}
-
-	@Override
-	public User googleSignUp(User user) {
-		return uDAO.googleSignUp(sqlSession, user);
+	public int addUser(User accessor) {
+		return uDAO.addUser(sqlSession,accessor);
 	}
 
 }

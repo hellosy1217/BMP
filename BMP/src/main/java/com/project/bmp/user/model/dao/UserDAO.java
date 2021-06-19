@@ -12,16 +12,16 @@ public class UserDAO {
 		return sqlSession.selectOne("userMapper.selectUser", email);
 	}
 
+	public User selectUser(SqlSessionTemplate sqlSession, User accessor) {
+		return sqlSession.selectOne("userMapper.selectGoogleUser", accessor);
+	}
+
 	public User getProfile(SqlSessionTemplate sqlSession, int no) {
 		return sqlSession.selectOne("userMapper.getProfile", no);
 	}
 
-	public User googleSignIn(SqlSessionTemplate sqlSession, User user) {
-		return null;
-	}
-
-	public User googleSignUp(SqlSessionTemplate sqlSession, User user) {
-		return null;
+	public int addUser(SqlSessionTemplate sqlSession, User accessor) {
+		return sqlSession.insert("userMapper.addUser", accessor);
 	}
 
 }

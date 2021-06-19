@@ -76,41 +76,40 @@ public class UserController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "googleSign")
-	public String googleSign(String idtoken) throws GeneralSecurityException, IOException {
-		System.out.println(idtoken);
+	@RequestMapping(value = "googleSign.do")
+	public String googleSignUp(String idtoken, HttpSession session) throws GeneralSecurityException, IOException {
 		HttpTransport transport = Utils.getDefaultTransport();
 		JsonFactory jsonFactory = Utils.getDefaultJsonFactory();
 
 		GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
-				.setAudience(Collections.singletonList("777761637670-4aqnu191aitl31nh79q0gv5hpg6cvs0r.apps.googleusercontent.com")).build();
+				.setAudience(Collections
+						.singletonList("777761637670-4aqnu191aitl31nh79q0gv5hpg6cvs0r.apps.googleusercontent.com"))
+				.build();
 
 		GoogleIdToken idToken = verifier.verify(idtoken);
+		String msg = "error";
 		if (idToken != null) {
 			Payload payload = idToken.getPayload();
 
-			// Print user identifier
+			String email = (String) payload.getEmail();
 			String userId = payload.getSubject();
-			System.out.println("User ID: " + userId);
-
-			// Get profile information from payload
-			String email = payload.getEmail();
-			boolean emailVerified = Boolean.valueOf(payload.getEmailVerified());
 			String name = (String) payload.get("name");
-			String pictureUrl = (String) payload.get("picture");
-			String locale = (String) payload.get("locale");
-			String familyName = (String) payload.get("family_name");
-			String givenName = (String) payload.get("given_name");
 
-			System.out.println("email "+email +" name "+name+" emailV "+emailVerified);
-			System.out.println(pictureUrl);
-			// Use or store profile information
-			// ...
+			User accessor = uService.selectUser(new User(email,userId));
+			if (accessor == null) {
+				accessor = new User(email, userId, name);
+				int result = uService.addUser(accessor);
+				if (result > 0) {
+					accessor = uService.selectUser(email);
+					msg = "success";
+				}
+			} else
+				msg = "success";
 
-		} else {
-			System.out.println("Invalid ID token.");
+			if (accessor != null)
+				session.setAttribute("accessor", accessor);
 		}
-		return null;
+		return new Gson().toJson(msg);
 	}
 
 	@RequestMapping("message")
@@ -124,7 +123,4 @@ public class UserController {
 		return mav;
 	}
 
-	public String follow() {
-		return "";
-	}
 }

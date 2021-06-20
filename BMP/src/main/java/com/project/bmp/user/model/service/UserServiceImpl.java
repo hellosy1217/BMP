@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
 	public User selectUser(User accessor) {
 		return uDAO.selectUser(sqlSession, accessor);
 	}
-	
+
 	@Override
 	public User getProfile(int no) {
 		return uDAO.getProfile(sqlSession, no);
@@ -31,7 +31,12 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public int addUser(User accessor) {
-		return uDAO.addUser(sqlSession,accessor);
+		return uDAO.addUser(sqlSession, accessor);
+	}
+
+	@Override
+	public int updateConfirm(String email) {
+		return uDAO.updateConfirm(sqlSession, email);
 	}
 
 }

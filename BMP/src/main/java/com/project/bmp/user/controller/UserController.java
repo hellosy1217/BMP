@@ -3,10 +3,16 @@ package com.project.bmp.user.controller;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
+import java.util.Random;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,6 +42,9 @@ public class UserController {
 	@Autowired
 	private BCryptPasswordEncoder bcryptPasswordEncoder;
 
+	@Autowired
+	private JavaMailSender mailSender;
+
 	@RequestMapping("signIn")
 	public String signInForm(Model model) {
 		return "user/user/sign";
@@ -49,14 +58,14 @@ public class UserController {
 		String msg = "error";
 		if (user != null) {
 			if (bcryptPasswordEncoder.matches(password, user.getPassword())) {
-				if(user.getConfirm()=='Y') {
+				if (user.getConfirm() == 'Y') {
 					model.addAttribute("accessor", user);
 					if (user.getAdmin() == 'Y')
 						msg = "admin";
 					else
 						msg = "explorer";
-				}else
-					msg="checkEmail";
+				} else
+					msg = sendAuthMail(user.getEmail());
 			}
 		}
 		return gson.toJson(msg);
@@ -76,11 +85,12 @@ public class UserController {
 		String encPassword = bcryptPasswordEncoder.encode(user.getPassword());
 		user.setPassword(encPassword);
 		int result = uService.addUser(user);
-		String msg = null;
+		String authKey = null;
 		if (result > 0) {
-			msg = "이메일 인증번호 넘기기........... .. . . . . . .";
+			authKey = sendAuthMail(user.getEmail());
 		}
-		return gson.toJson(msg);
+
+		return gson.toJson(authKey);
 	}
 
 	@RequestMapping("signOut")
@@ -114,7 +124,7 @@ public class UserController {
 				accessor = new User(email, userId, name);
 				int result = uService.addUser(accessor);
 				if (result > 0) {
-					accessor = uService.selectUser(email);
+					accessor = uService.selectUser(accessor.getEmail());
 					msg = "success";
 				}
 			} else
@@ -124,6 +134,16 @@ public class UserController {
 				session.setAttribute("accessor", accessor);
 		}
 		return new Gson().toJson(msg);
+	}
+
+	@RequestMapping("updateConfirm")
+	public String updateConfirm(String email, HttpSession session) {
+		int result = uService.updateConfirm(email);
+		if (result > 0) {
+			User accessor = uService.selectUser(email);
+			session.setAttribute("accessor", accessor);
+		}
+		return "redirect:explorer";
 	}
 
 	@RequestMapping("message")
@@ -137,4 +157,36 @@ public class UserController {
 		return mav;
 	}
 
+	public String getAuthCode() {
+		Random random = new Random();
+		StringBuffer buffer = new StringBuffer();
+		int num = 0;
+
+		// 6자리 난수 생성
+		while (buffer.length() < 6) {
+			num = random.nextInt(10);
+			buffer.append(num);
+		}
+
+		return buffer.toString();
+	}
+
+	public String sendAuthMail(String email) {
+		// 6자리 난수 인증번호 생성
+		String authKey = getAuthCode();
+
+		// 인증메일 보내기
+		MimeMessage mail = mailSender.createMimeMessage();
+		String mailContent = "<h1>[이메일 인증]</h1><br><p>아래의 인증번호를 입력하시면 이메일 인증이 완료됩니다.</p>" + "<p>" + authKey + "</p>";
+		try {
+			mail.setSubject("회원가입 이메일 인증 ", "utf-8");
+			mail.setText(mailContent, "utf-8", "html");
+			mail.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+			mailSender.send(mail);
+			return authKey;
+		} catch (MessagingException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

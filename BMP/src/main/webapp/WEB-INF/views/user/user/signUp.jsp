@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,20 +12,20 @@
 		<div>
 			<h4 id="msg"></h4>
 			<div>
-				<label>Email</label> <input type="email" name="email"
-					id="signUp-email" useable="0">
+				<label>Email</label> <input type="email" id="signUp-email"
+					useable="0">
 			</div>
 			<div>
-				<label>Nickname</label> <input type="text" name="nickname"
-					id="signUp-nickname" useable="0">
+				<label>Nickname</label> <input type="text" id="signUp-nickname"
+					useable="0">
 			</div>
 			<div>
-				<label> Password </label> <input type="password" name="password"
+				<label> Password </label> <input type="password"
 					id="signUp-password" placeholder="6+ characters" useable="0">
 			</div>
 			<div>
 				<label> Confirm Password </label> <input type="password"
-					name="signUp-cPassword" id="signUp-cPassword" useable="0">
+					id="signUp-cPassword" useable="0">
 			</div>
 		</div>
 		<div id="signUpBtn" class="btn">
@@ -87,7 +88,7 @@
 	$('#signUpBtn a').on('click', function() {
 		var input = $('input');
 		var result = 0;
-		for (var i = 0; i < 4; i++)
+		for (var i = 0; i < 5; i++)
 			if (input.eq(i).attr('useable') == '1')
 				result++;
 		if (result == 4) {
@@ -102,26 +103,14 @@
 				},
 				success : function(data) {
 					if (data != null) {
-						checkForm();
+						checkForm('#signUpForm');
+						$('#sign-email').val($('#signUp-email').val());
+						$('#authKey').val(data);
 					}
 				}
 			});
 		}
 	});
-
-	function checkForm() {
-		$('#signUpForm').css('transition', 'opacity 0.7s');
-		setTimeout(function() {
-			$('#signUpForm').css('opacity', '0');
-		}, 100);
-		setTimeout(function() {
-			$('#signUpForm').css('display', 'none');
-			$('#checkForm').css('display', 'flex');
-		}, 420);
-		setTimeout(function() {
-			$('#checkForm').css('opacity', '100');
-		}, 450);
-	}
 
 	function validateEmail(email) {
 		var filter = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;

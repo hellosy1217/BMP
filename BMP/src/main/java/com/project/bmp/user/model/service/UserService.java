@@ -11,4 +11,6 @@ public interface UserService {
 
 	public int addUser(User accessor);
 
+	public int updateConfirm(String email);
+
 }

@@ -29,6 +29,11 @@
 			null,default,default,default,default,default,default)
 	</insert>
 	
+	<update id="updateConfirm">
+		update bmp_user set user_confirm='Y'
+		where user_email=#{email}
+	</update>
+	
 	<resultMap type="User" id="userResultMap_signIn">
 		<id property="no" column="user_no" />
 		<result property="email" column="user_email" />

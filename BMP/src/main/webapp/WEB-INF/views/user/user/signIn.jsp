@@ -6,16 +6,15 @@
 <meta charset="UTF-8">
 </head>
 <body>
-		<h2>Sign In</h2>
+	<h2>Sign In</h2>
 	<form id="signInForm">
 		<h4 id="msg"></h4>
 		<div>
-			<label>Email</label> <input type="email" name="email"
-				id="signIn-email">
+			<label>Email</label> <input type="email" id="signIn-email">
 		</div>
 		<div>
 			<label> Password<a id="findPw">Forgot?</a>
-			</label> <input type="password" name="password" id="signIn-password">
+			</label> <input type="password" id="signIn-password">
 		</div>
 		<div id="signInBtn" class="btn">
 			<a>로그인</a>
@@ -28,18 +27,18 @@
 		</h6>
 	</form>
 	<form id="findPwForm" method="POST">
+		<div>
+			<h4>
+				가입 시 사용한 이메일을 입력해주세요.<br>입력하신 메일로 인증메일을 보내드립니다.
+			</h4>
 			<div>
-				<h4>
-					가입 시 사용한 이메일을 입력해주세요.<br>입력하신 메일로 인증메일을 보내드립니다.
-				</h4>
-				<div>
-					<label>Email</label> <input type="email" name="email">
-				</div>
-				<div id="findBtn" class="btn">
-					<a>이메일 전송</a>
-				</div>
+				<label>Email</label> <input type="email" name="email">
 			</div>
-		</form>
+			<div id="findBtn" class="btn">
+				<a>이메일 전송</a>
+			</div>
+		</div>
+	</form>
 </body>
 <script>
 	$(document).on('click', '#findPw', function() {
@@ -84,8 +83,13 @@
 				if (data == 'error') {
 					$('#msg').text('이메일 또는 비밀번호를 확인해주세요.');
 					$('#signIn-email').focus();
-				} else
-					location.href = data;
+				} else if (data == 'admin' || data == 'explorer')
+					location.href = 'explorer';
+				else {
+					$('#authKey').val(data);
+					$('#sign-email').val($('#signIn-email').val());
+					checkForm('#signInForm');
+				}
 			}
 		});
 	});

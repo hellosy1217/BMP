@@ -24,8 +24,8 @@
 
 body {
 	background: rgba(47, 47, 47, 0.98);
-    text-align: center;
-    display: flex;
+	text-align: center;
+	display: flex;
 }
 
 html, body {
@@ -95,8 +95,8 @@ h6 a:hover {
 
 #sign {
 	display: inline-block;
-    min-width: 300px;
-    margin: auto;
+	min-width: 300px;
+	margin: auto;
 }
 
 form {
@@ -186,6 +186,7 @@ label>a:hover {
 </head>
 <body>
 	<div id="sign">
+		<input type="hidden" id="authKey" value="">
 		<h1 onclick="location.href='explorer'">Blog My Pet</h1>
 		<c:choose>
 			<c:when test="${view ne null }">
@@ -195,13 +196,15 @@ label>a:hover {
 				<c:import url="signIn.jsp" />
 			</c:otherwise>
 		</c:choose>
-		<form id="checkForm" method="POST">
+		<form id="checkForm" method="POST" action="updateConfirm">
+			<input type="hidden" id="sign-email" name="email">
 			<div>
 				<h4>
 					인증 메일이 발송되었습니다.<br>메일함을 확인하여 이메일 인증코드를 입력해주세요.
 				</h4>
 				<div>
-					<label>Authentication Code</label> <input type="text" name="code">
+					<label>Authentication Code</label> <input type="text" name="code"
+						id="inputKey">
 				</div>
 				<div id="checkBtn" class="btn">
 					<a>확인</a>
@@ -213,6 +216,15 @@ label>a:hover {
 </body>
 <script>
 	var gauth;
+
+	$(document).on('click', '#checkBtn a', function() {
+		var authKey = $('#authKey').val();
+		var inputKey = $('#inputKey').val();
+		var email = $('#sign-email').val();
+		if (authKey != '' && authKey == inputKey) {
+			$('#checkForm').submit();
+		}
+	});
 
 	$('#google a')
 			.on(
@@ -254,17 +266,13 @@ label>a:hover {
 						else
 							gauth.signOut().then(function() {
 								console.log('gauth.signOut()실행됨 ');
-								checkSignInStatus();
+								if (gauth.isSignedIn.get()) {
+									$('#google a').text('Google 계정에서 로그아웃');
+								} else {
+									$('#google a').text('Google 계정으로 로그인');
+								}
 							});
 					});
-
-	function checkSignInStatus() {
-		if (gauth.isSignedIn.get()) {
-			$('#google a').text('Google 계정에서 로그아웃');
-		} else {
-			$('#google a').text('Google 계정으로 로그인');
-		}
-	}
 
 	function init() {
 		gapi
@@ -281,6 +289,20 @@ label>a:hover {
 								console.log('googleAuth fail');
 							});
 						});
+	}
+
+	function checkForm(id) {
+		$(id).css('transition', 'opacity 0.7s');
+		setTimeout(function() {
+			$(id).css('opacity', '0');
+		}, 100);
+		setTimeout(function() {
+			$(id).css('display', 'none');
+			$('#checkForm').css('display', 'flex');
+		}, 420);
+		setTimeout(function() {
+			$('#checkForm').css('opacity', '100');
+		}, 450);
 	}
 </script>
 <script src="https://apis.google.com/js/platform.js?onload=init" async

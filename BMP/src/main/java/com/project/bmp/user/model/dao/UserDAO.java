@@ -24,4 +24,8 @@ public class UserDAO {
 		return sqlSession.insert("userMapper.addUser", accessor);
 	}
 
+	public int updateConfirm(SqlSessionTemplate sqlSession, String email) {
+		return sqlSession.update("userMapper.updateConfirm",email);
+	}
+
 }

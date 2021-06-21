@@ -69,6 +69,13 @@ public class PostController {
 		return null;
 	}
 
+	@ResponseBody
+	@RequestMapping(value = "fileUpload.do", produces = "application/json;charset=utf-8")
+	public String fileUpload() {
+		return new Gson().toJson("성공...?");
+	}
+	
+	
 	@RequestMapping("blog")
 	public ModelAndView blog(HttpSession session, @RequestParam(value = "sort", defaultValue = "인기순") String sort,
 			@RequestParam(value = "keyword", defaultValue = "") String keyword,
@@ -116,7 +123,7 @@ public class PostController {
 		mav.setViewName("admin/common/dashboard");
 		return mav;
 	}
-
+	
 	public ListInfo getListInfo(HttpSession session, String sort, String keyword, int currentPage, int boardLimit) {
 		User accessor = (User) session.getAttribute("accessor");
 

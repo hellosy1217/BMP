@@ -10,6 +10,7 @@
 	src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script
 	src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
+<script src="<c:url value="/resources/js/MyUploadAdapter.js"/>"></script>
 </head>
 <style>
 body {
@@ -59,7 +60,6 @@ form#content>div:first-child {
 #writeBtn:hover {
 	background: #df3e7b;
 }
-
 </style>
 <body>
 	<c:import url="../common/header.jsp" />
@@ -78,10 +78,7 @@ form#content>div:first-child {
 <script>
 	var myEditor;
 	 ClassicEditor
-	 .create( document.querySelector( '#editor' ), {
-	 ckfinder: {
-	 uploadUrl: '/ck/fileupload' // 내가 지정한 업로드 url (post로 요청감)
-	 },
+	 .create( document.querySelector('#editor'), {
 	 alignment: {
 	 options: [ 'left', 'center', 'right' ]
 	 }
@@ -94,5 +91,14 @@ form#content>div:first-child {
 	 console.error( error );
 	 } );
 	 
+	 ClassicEditor.create(document.getElementById("editor"), {
+		  extraPlugins: [MyUploadAdapterPlugin]
+		});
+	 
+	 function MyUploadAdapterPlugin(editor) {
+		    editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+		        return new MyUploadAdapter(loader)
+		    }
+		}
 </script>
 </html>

@@ -154,12 +154,11 @@ label>a:hover {
 	text-shadow: 1px 1px 1px rgb(0 0 0/ 15%);
 }
 
-#signInBtn>a, #signUpBtn>a, #findBtn>a, #checkBtn>a {
+.pink a {
 	background: #ea4c88;
 }
 
-#signInBtn>a:hover, #signUpBtn>a:hover, #findBtn>a:hover, #checkBtn>a:hover
-	{
+.pink a:hover {
 	background-color: #df3e7b;
 }
 
@@ -170,34 +169,33 @@ label>a:hover {
 #google>a:hover {
 	background: #2a75f3;
 }
-
-#findPwForm {
-	display: none;
-	opacity: 0;
-	transition: opacity 1.4s;
-}
-
-#checkForm {
+#checkForm, #newPwForm {
 	display: none;
 	opacity: 0;
 	transition: opacity 1.4s;
 }
 </style>
 </head>
+<script>
+	var authKey;
+	var email;
+	var act = 'sign';
+</script>
 <body>
 	<div id="sign">
-		<input type="hidden" id="authKey" value="">
 		<h1 onclick="location.href='explorer'">Blog My Pet</h1>
 		<c:choose>
-			<c:when test="${view ne null }">
+			<c:when test="${view eq 2 }">
 				<c:import url="signUp.jsp" />
+			</c:when>
+			<c:when test="${view eq 1 }">
+				<c:import url="find.jsp" />
 			</c:when>
 			<c:otherwise>
 				<c:import url="signIn.jsp" />
 			</c:otherwise>
 		</c:choose>
-		<form id="checkForm" method="POST" action="updateConfirm">
-			<input type="hidden" id="sign-email" name="email">
+		<form id="checkForm" method="POST">
 			<div>
 				<h4>
 					인증 메일이 발송되었습니다.<br>메일함을 확인하여 이메일 인증코드를 입력해주세요.
@@ -206,23 +204,62 @@ label>a:hover {
 					<label>Authentication Code</label> <input type="text" name="code"
 						id="inputKey">
 				</div>
-				<div id="checkBtn" class="btn">
+				<div id="checkBtn" class="btn pink">
 					<a>확인</a>
 				</div>
 			</div>
 		</form>
-
 	</div>
 </body>
 <script>
 	var gauth;
 
 	$(document).on('click', '#checkBtn a', function() {
-		var authKey = $('#authKey').val();
 		var inputKey = $('#inputKey').val();
-		var email = $('#sign-email').val();
 		if (authKey != '' && authKey == inputKey) {
-			$('#checkForm').submit();
+			$.ajax({
+				url : 'updateConfirm.do',
+				dataType : 'json',
+				data : {
+					email : email
+				},
+				success : function(data) {
+					console.log(data);
+					if (data == 'success') {
+						if (act == 'sign') {
+							location.href = 'explorer'
+						} else {
+							checkForm('#checkForm', '#newPwForm');
+						}
+					}
+				}
+			});
+		} else {
+			$('#inputKey').css('background', '#ffe2ed');
+			$('#inputKey').focus();
+		}
+	});
+
+	$(document).on('keyup paste change', '#form-password', function() {
+		var password = $(this).val().trim();
+		if (password.length > 5) {
+			$(this).css('background', 'white');
+			$(this).attr('useable', '1');
+		} else {
+			$(this).css('background', '#ffe2ed');
+			$(this).attr('useable', '0');
+		}
+	});
+
+	$(document).on('keyup paste change', '#form-cPassword', function() {
+		var password = $('#form-password').val().trim();
+		var cpassword = $(this).val().trim();
+		if (password == cpassword) {
+			$(this).css('background', 'white');
+			$(this).attr('useable', '1');
+		} else {
+			$(this).css('background', '#ffe2ed');
+			$(this).attr('useable', '0');
 		}
 	});
 
@@ -265,7 +302,6 @@ label>a:hover {
 											});
 						else
 							gauth.signOut().then(function() {
-								console.log('gauth.signOut()실행됨 ');
 								if (gauth.isSignedIn.get()) {
 									$('#google a').text('Google 계정에서 로그아웃');
 								} else {
@@ -284,25 +320,31 @@ label>a:hover {
 										client_id : '777761637670-4aqnu191aitl31nh79q0gv5hpg6cvs0r.apps.googleusercontent.com'
 									})
 							gauth.then(function() {
-								console.log('googleAuth success');
 							}, function() {
-								console.log('googleAuth fail');
 							});
 						});
 	}
 
-	function checkForm(id) {
-		$(id).css('transition', 'opacity 0.7s');
+	function checkForm(hide, show) {
+		$(hide).css('transition', 'opacity 0.7s');
 		setTimeout(function() {
-			$(id).css('opacity', '0');
+			$(hide).css('opacity', '0');
 		}, 100);
 		setTimeout(function() {
-			$(id).css('display', 'none');
-			$('#checkForm').css('display', 'flex');
+			$(hide).css('display', 'none');
+			$(show).css('display', 'flex');
 		}, 420);
 		setTimeout(function() {
-			$('#checkForm').css('opacity', '100');
+			$(show).css('opacity', '100');
 		}, 450);
+	}
+
+	function validateEmail(inputEmail) {
+		var filter = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+		if (filter.test(inputEmail))
+			return true;
+		else
+			return false;
 	}
 </script>
 <script src="https://apis.google.com/js/platform.js?onload=init" async

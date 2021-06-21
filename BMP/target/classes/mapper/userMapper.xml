@@ -4,7 +4,7 @@
 
 	<select id="selectUser" resultType="User"
 		resultMap="userResultMap_signIn">
-		select user_no,user_email,user_password,user_nickname,user_admin
+		select user_no,user_email,user_password,user_nickname,user_admin,user_confirm
 		from bmp_user
 		where user_email=#{email}
 	</select>
@@ -34,12 +34,19 @@
 		where user_email=#{email}
 	</update>
 	
+	<update id="updatePw">
+		update bmp_user 
+		set user_password=#{password},user_confirm='Y'
+		where user_email=#{email}
+	</update>
+	
 	<resultMap type="User" id="userResultMap_signIn">
 		<id property="no" column="user_no" />
 		<result property="email" column="user_email" />
 		<result property="password" column="user_password" />
 		<result property="nickname" column="user_nickname" />
 		<result property="admin" column="user_admin" />
+		<result property="confirm" column="user_confirm"/>
 	</resultMap>
 
 	<resultMap type="User" id="userResultMap_All">

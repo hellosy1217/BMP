@@ -9,8 +9,8 @@
 <body>
 	<h2>Sign Up</h2>
 	<form id="signUpForm">
+		<h4 class="msg"></h4>
 		<div>
-			<h4 id="msg"></h4>
 			<div>
 				<label>Email</label> <input type="email" id="signUp-email"
 					useable="0">
@@ -20,15 +20,15 @@
 					useable="0">
 			</div>
 			<div>
-				<label> Password </label> <input type="password"
-					id="signUp-password" placeholder="6+ characters" useable="0">
+				<label> Password </label> <input type="password" id="form-password"
+					placeholder="6+ characters" useable="0">
 			</div>
 			<div>
 				<label> Confirm Password </label> <input type="password"
-					id="signUp-cPassword" useable="0">
+					id="form-cPassword" useable="0">
 			</div>
 		</div>
-		<div id="signUpBtn" class="btn">
+		<div id="signUpBtn" class="btn pink">
 			<a>가입</a>
 		</div>
 		<div id="google" class="btn">
@@ -40,34 +40,26 @@
 	</form>
 </body>
 <script>
+	// 회원가입 이메일 확인
 	$(document).on('keyup paste change', '#signUp-email', function() {
-		var email = $(this).val().trim();
+		email = $(this).val().trim();
 		if (validateEmail(email)) {
-			$(this).css('background', 'white');
-			$(this).attr('useable', '1');
-		} else {
-			$(this).css('background', '#ffe2ed');
-			$(this).attr('useable', '0');
-		}
-	});
-
-	$(document).on('keyup paste change', '#signUp-password', function() {
-		var password = $(this).val().trim();
-		if (password.length > 5) {
-			$(this).css('background', 'white');
-			$(this).attr('useable', '1');
-		} else {
-			$(this).css('background', '#ffe2ed');
-			$(this).attr('useable', '0');
-		}
-	});
-
-	$(document).on('keyup paste change', '#signUp-cPassword', function() {
-		var password = $('#signUp-password').val().trim();
-		var cpassword = $(this).val().trim();
-		if (password == cpassword) {
-			$(this).css('background', 'white');
-			$(this).attr('useable', '1');
+			$.ajax({
+				url : 'checkUser.do',
+				data : {
+					email : email
+				},
+				success : function(data) {
+					console.log(data);
+					if (data < 1) {
+						$('#signUp-email').css('background', 'white');
+						$('#signUp-email').attr('useable', '1');
+					} else {
+						$('#signUp-email').css('background', '#ffe2ed');
+						$('#signUp-email').attr('useable', '0');
+					}
+				}
+			});
 		} else {
 			$(this).css('background', '#ffe2ed');
 			$(this).attr('useable', '0');
@@ -88,6 +80,7 @@
 	$('#signUpBtn a').on('click', function() {
 		var input = $('input');
 		var result = 0;
+		email = $('#signUp-email').val();
 		for (var i = 0; i < 5; i++)
 			if (input.eq(i).attr('useable') == '1')
 				result++;
@@ -97,27 +90,19 @@
 				url : 'signUp.do',
 				dataType : 'json',
 				data : {
-					email : $('#signUp-email').val(),
-					password : $('#signUp-password').val(),
+					email : email,
+					password : $('#form-password').val(),
 					nickname : $('#signUp-nickname').val()
 				},
 				success : function(data) {
 					if (data != null) {
-						checkForm('#signUpForm');
-						$('#sign-email').val($('#signUp-email').val());
-						$('#authKey').val(data);
+						checkForm('#signUpForm','#checkForm');
+						authKey = data;
 					}
 				}
 			});
 		}
 	});
 
-	function validateEmail(email) {
-		var filter = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-		if (filter.test(email))
-			return true;
-		else
-			return false;
-	}
 </script>
 </html>

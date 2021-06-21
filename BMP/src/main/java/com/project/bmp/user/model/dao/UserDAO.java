@@ -25,7 +25,11 @@ public class UserDAO {
 	}
 
 	public int updateConfirm(SqlSessionTemplate sqlSession, String email) {
-		return sqlSession.update("userMapper.updateConfirm",email);
+		return sqlSession.update("userMapper.updateConfirm", email);
+	}
+
+	public int updatePw(SqlSessionTemplate sqlSession, User accessor) {
+		return sqlSession.update("userMapper.updatePw", accessor);
 	}
 
 }

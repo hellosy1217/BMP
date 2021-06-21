@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
@@ -45,6 +46,21 @@ public class UserController {
 	@Autowired
 	private JavaMailSender mailSender;
 
+	// send = 이메일 인증 종류 (0:회원가입, 1:비밀번호 찾기)
+	@ResponseBody
+	@RequestMapping(value = "checkUser.do", produces = "application/json;charset=utf-8")
+	public String checkUser(String email, @RequestParam(value = "send", defaultValue = "0") int send) {
+		Gson gson = new Gson();
+		User user = uService.selectUser(email);
+		String result = "0";
+		if (user != null) {
+			result = user.getNo() + "";
+			if (send > 0)
+				result = sendAuthMail(email, "비밀번호 찾기", null);
+		}
+		return gson.toJson(result);
+	}
+
 	@RequestMapping("signIn")
 	public String signInForm(Model model) {
 		return "user/user/sign";
@@ -55,25 +71,24 @@ public class UserController {
 	public String signIn(String email, String password, Model model) {
 		Gson gson = new Gson();
 		User user = uService.selectUser(email);
+
 		String msg = "error";
 		if (user != null) {
 			if (bcryptPasswordEncoder.matches(password, user.getPassword())) {
 				if (user.getConfirm() == 'Y') {
 					model.addAttribute("accessor", user);
-					if (user.getAdmin() == 'Y')
-						msg = "admin";
-					else
-						msg = "explorer";
+					msg = "explorer";
 				} else
-					msg = sendAuthMail(user.getEmail());
+					msg = sendAuthMail(user.getEmail(), "회원", null);
 			}
 		}
 		return gson.toJson(msg);
 	}
 
+	// view = 페이지 정보 (1:비밀번호찾기, 2:회원가입, null:로그인)
 	@RequestMapping("signUp")
 	public ModelAndView signUpForm(ModelAndView mav) {
-		mav.addObject("view", 1);
+		mav.addObject("view", 2);
 		mav.setViewName("user/user/sign");
 		return mav;
 	}
@@ -87,7 +102,7 @@ public class UserController {
 		int result = uService.addUser(user);
 		String authKey = null;
 		if (result > 0) {
-			authKey = sendAuthMail(user.getEmail());
+			authKey = sendAuthMail(user.getEmail(), "회원가입", null);
 		}
 
 		return gson.toJson(authKey);
@@ -99,6 +114,7 @@ public class UserController {
 		return "redirect:explorer";
 	}
 
+	// 구글 로그인
 	@ResponseBody
 	@RequestMapping(value = "googleSign.do")
 	public String googleSignUp(String idtoken, HttpSession session) throws GeneralSecurityException, IOException {
@@ -116,12 +132,14 @@ public class UserController {
 			Payload payload = idToken.getPayload();
 
 			String email = (String) payload.getEmail();
+			email = "google: " + email;
 			String userId = payload.getSubject();
 			String name = (String) payload.get("name");
 
-			User accessor = uService.selectUser(new User("google:" + email, userId));
+			User accessor = uService.selectUser(new User(email, userId));
 			if (accessor == null) {
 				accessor = new User(email, userId, name);
+				accessor.setConfirm('Y');
 				int result = uService.addUser(accessor);
 				if (result > 0) {
 					accessor = uService.selectUser(accessor.getEmail());
@@ -136,14 +154,39 @@ public class UserController {
 		return new Gson().toJson(msg);
 	}
 
-	@RequestMapping("updateConfirm")
+	@RequestMapping("find")
+	public ModelAndView findForm(User accessor, ModelAndView mav) {
+		mav.addObject("view", 1);
+		mav.setViewName("user/user/sign");
+		return mav;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "updateConfirm.do", produces = "application/json;charset=utf-8")
 	public String updateConfirm(String email, HttpSession session) {
+		Gson gson = new Gson();
 		int result = uService.updateConfirm(email);
 		if (result > 0) {
 			User accessor = uService.selectUser(email);
 			session.setAttribute("accessor", accessor);
+			return gson.toJson("success");
 		}
-		return "redirect:explorer";
+		return gson.toJson("error");
+	}
+
+	@ResponseBody
+	@RequestMapping("updatePw")
+	public String updatePw(User accessor, HttpSession session) {
+		String encPassword = bcryptPasswordEncoder.encode(accessor.getPassword());
+		accessor.setPassword(encPassword);
+		int result = uService.updatePw(accessor);
+		String msg = null;
+		if (result > 0) {
+			accessor = uService.selectUser(accessor);
+			session.setAttribute("accessor", accessor);
+			msg = "explorer";
+		}
+		return new Gson().toJson(msg);
 	}
 
 	@RequestMapping("message")
@@ -157,12 +200,12 @@ public class UserController {
 		return mav;
 	}
 
+	// 인증코드 생성하기
 	public String getAuthCode() {
 		Random random = new Random();
 		StringBuffer buffer = new StringBuffer();
 		int num = 0;
 
-		// 6자리 난수 생성
 		while (buffer.length() < 6) {
 			num = random.nextInt(10);
 			buffer.append(num);
@@ -171,19 +214,28 @@ public class UserController {
 		return buffer.toString();
 	}
 
-	public String sendAuthMail(String email) {
-		// 6자리 난수 인증번호 생성
-		String authKey = getAuthCode();
+	// 메일 전송하기
+	public String sendAuthMail(String email, String type, String report) {
+		String authKey = null;
+		String mailContent = null;
+		if (report == null) {
+			authKey = getAuthCode();
+			mailContent = "<h1>[이메일 인증]</h1><br><p>아래의 인증번호를 입력하시면 이메일 인증이 완료됩니다.</p>" + "<p>" + authKey + "</p>";
+			type += " 이메일 인증 ";
+		} else {
+		}
 
-		// 인증메일 보내기
 		MimeMessage mail = mailSender.createMimeMessage();
-		String mailContent = "<h1>[이메일 인증]</h1><br><p>아래의 인증번호를 입력하시면 이메일 인증이 완료됩니다.</p>" + "<p>" + authKey + "</p>";
 		try {
-			mail.setSubject("회원가입 이메일 인증 ", "utf-8");
+			mail.setSubject(type, "utf-8");
 			mail.setText(mailContent, "utf-8", "html");
 			mail.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+
 			mailSender.send(mail);
-			return authKey;
+			if (report == null)
+				return authKey;
+			else
+				return "success";
 		} catch (MessagingException e) {
 			e.printStackTrace();
 			return null;

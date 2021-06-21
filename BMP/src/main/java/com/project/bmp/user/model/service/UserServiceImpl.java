@@ -39,4 +39,9 @@ public class UserServiceImpl implements UserService {
 		return uDAO.updateConfirm(sqlSession, email);
 	}
 
+	@Override
+	public int updatePw(User accessor) {
+		return uDAO.updatePw(sqlSession, accessor);
+	}
+
 }

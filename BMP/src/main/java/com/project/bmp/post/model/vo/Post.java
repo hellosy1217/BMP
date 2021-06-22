@@ -1,72 +1,53 @@
 package com.project.bmp.post.model.vo;
 
+import java.sql.Date;
+import java.util.ArrayList;
+
 public class Post {
 	private int no;
 	private String title;
 	private String content;
 	private int count;
-	private String regDate;
-	private String editDate;
-	private String delDate;
-	private String hide_date;
+	private Date regDate;
+	private Date editDate;
+	private Date delDate;
+	private Date hideDate;
 	private int userNo;
-	private String tag;
-	private String file;
-	private String path;
+	private String fileName;
+	private int countComment;
+	private ArrayList<Tag> tagList;
 	private int countLike;
 	private int like;
 	private int repost;
 	private String nickname;
 	private String profileFile;
-	private String profilePath;
+	private ArrayList<Comment> commentList;
 
 	public Post() {
 	}
 
-	public Post(int no, String title, String content, int count, String regDate, String editDate, int userNo,
-			String tag, String file, String path, int countLike, int like, int repost, String nickname,
-			String profileFile, String profilePath) {
+	public Post(int no, String title, String content, int count, Date regDate, Date editDate, Date delDate,
+			Date hideDate, int userNo, String fileName, int countComment, ArrayList<Tag> tagList, int countLike,
+			int like, int repost, String nickname, String profileFile, ArrayList<Comment> commentList) {
 		super();
 		this.no = no;
 		this.title = title;
-		this.content = content;
-		this.count = count;
-		this.regDate = regDate;
-		this.editDate = editDate;
-		this.userNo = userNo;
-		this.tag = tag;
-		this.file = file;
-		this.path = path;
-		this.countLike = countLike;
-		this.like = like;
-		this.repost = repost;
-		this.nickname = nickname;
-		this.profileFile = profileFile;
-		this.profilePath = profilePath;
-	}
-
-	public Post(int no, String title, String content, int count, String regDate, String editDate, String delDate,
-			String hide_date, int userNo, String tag, String file, String path, int countLike, int like, int repost,
-			String nickname, String profileFile, String profilePath) {
-		super();
-		this.title = title;
-		this.no = no;
 		this.content = content;
 		this.count = count;
 		this.regDate = regDate;
 		this.editDate = editDate;
 		this.delDate = delDate;
-		this.hide_date = hide_date;
+		this.hideDate = hideDate;
 		this.userNo = userNo;
-		this.tag = tag;
-		this.file = file;
-		this.path = path;
+		this.fileName = fileName;
+		this.countComment = countComment;
+		this.tagList = tagList;
 		this.countLike = countLike;
 		this.like = like;
 		this.repost = repost;
 		this.nickname = nickname;
 		this.profileFile = profileFile;
-		this.profilePath = profilePath;
+		this.commentList = commentList;
 	}
 
 	public int getNo() {
@@ -101,36 +82,36 @@ public class Post {
 		this.count = count;
 	}
 
-	public String getRegDate() {
+	public Date getRegDate() {
 		return regDate;
 	}
 
-	public void setRegDate(String regDate) {
+	public void setRegDate(Date regDate) {
 		this.regDate = regDate;
 	}
 
-	public String getEditDate() {
+	public Date getEditDate() {
 		return editDate;
 	}
 
-	public void setEditDate(String editDate) {
+	public void setEditDate(Date editDate) {
 		this.editDate = editDate;
 	}
 
-	public String getDelDate() {
+	public Date getDelDate() {
 		return delDate;
 	}
 
-	public void setDelDate(String delDate) {
+	public void setDelDate(Date delDate) {
 		this.delDate = delDate;
 	}
 
-	public String getHide_date() {
-		return hide_date;
+	public Date getHideDate() {
+		return hideDate;
 	}
 
-	public void setHide_date(String hide_date) {
-		this.hide_date = hide_date;
+	public void setHideDate(Date hideDate) {
+		this.hideDate = hideDate;
 	}
 
 	public int getUserNo() {
@@ -141,28 +122,28 @@ public class Post {
 		this.userNo = userNo;
 	}
 
-	public String getTag() {
-		return tag;
+	public String getFileName() {
+		return fileName;
 	}
 
-	public void setTag(String tag) {
-		this.tag = tag;
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
-	public String getFile() {
-		return file;
+	public int getCountComment() {
+		return countComment;
 	}
 
-	public void setFile(String file) {
-		this.file = file;
+	public void setCountComment(int countComment) {
+		this.countComment = countComment;
 	}
 
-	public String getPath() {
-		return path;
+	public ArrayList<Tag> getTagList() {
+		return tagList;
 	}
 
-	public void setPath(String path) {
-		this.path = path;
+	public void setTagList(ArrayList<Tag> tagList) {
+		this.tagList = tagList;
 	}
 
 	public int getCountLike() {
@@ -205,21 +186,12 @@ public class Post {
 		this.profileFile = profileFile;
 	}
 
-	public String getProfilePath() {
-		return profilePath;
+	public ArrayList<Comment> getComment() {
+		return commentList;
 	}
 
-	public void setProfilePath(String profilePath) {
-		this.profilePath = profilePath;
-	}
-
-	@Override
-	public String toString() {
-		return "Post [no=" + no + ", title=" + title + ", content=" + content + ", count=" + count + ", regDate="
-				+ regDate + ", editDate=" + editDate + ", delDate=" + delDate + ", hide_date=" + hide_date + ", userNo="
-				+ userNo + ", tag=" + tag + ", file=" + file + ", path=" + path + ", countLike=" + countLike + ", like="
-				+ like + ", repost=" + repost + ", nickname=" + nickname + ", profileFile=" + profileFile
-				+ ", profilePath=" + profilePath + "]";
+	public void setComment(ArrayList<Comment> commentList) {
+		this.commentList = commentList;
 	}
 
 }

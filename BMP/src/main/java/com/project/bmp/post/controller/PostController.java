@@ -25,6 +25,7 @@ import com.project.bmp.common.AwsS3;
 import com.project.bmp.common.Pagination;
 import com.project.bmp.common.Paging;
 import com.project.bmp.post.model.service.PostService;
+import com.project.bmp.post.model.vo.AttachedFile;
 import com.project.bmp.post.model.vo.Like;
 import com.project.bmp.post.model.vo.ListInfo;
 import com.project.bmp.post.model.vo.Post;
@@ -41,13 +42,13 @@ public class PostController {
 	private UserService uService;
 
 	private AwsS3 aws = AwsS3.getInstance();
-	
+
 	@RequestMapping("explorer")
 	public ModelAndView explorer(HttpSession session, @RequestParam(value = "sort", defaultValue = "인기순") String sort,
 			@RequestParam(value = "keyword", defaultValue = "") String keyword, ModelAndView mav) {
 		ListInfo listInfo = getListInfo(session, sort, keyword, 1, 16);
 
-		ArrayList<Post> list = pService.getPost(listInfo);
+		ArrayList<Post> list = pService.getPostList(listInfo);
 
 		mav.addObject("listInfo", listInfo);
 		mav.addObject("list", list);
@@ -65,7 +66,7 @@ public class PostController {
 
 		ListInfo listInfo = getListInfo(session, sort, keyword, page, limit);
 
-		ArrayList<Post> list = pService.getPost(listInfo);
+		ArrayList<Post> list = pService.getPostList(listInfo);
 
 		return gson.toJson(list);
 	}
@@ -77,8 +78,34 @@ public class PostController {
 
 	@ResponseBody
 	@RequestMapping(value = "write.do", produces = "application/json;charset=utf-8")
-	public String write(String title, String content) {
-		return null;
+	public String write(Post post, @RequestParam(value = "fileArr[]", required = false) ArrayList<String> fileArr) {
+		// 사용하지 않은 사진 삭제
+		if (fileArr != null) {
+			for (int i = fileArr.size() - 1; i >= 0; i--) {
+				String str = fileArr.get(i);
+				if (!post.getContent().contains(str)) {
+					str.replace(aws.getURL(), "");
+					aws.delete(str);
+					fileArr.remove(i);
+				}
+			}
+		}
+		pService.addPost(post);
+
+		int result = post.getNo();
+		
+		
+		if (fileArr != null) {
+			AttachedFile file = new AttachedFile(fileArr.get(0), "thumbnail", post.getUserNo(), result, 0);
+			if (result > 0) {
+				int r = pService.addFile(file);
+				if (r < 1)
+					result = 0;
+			}
+		} else {
+			result = post.getNo();
+		}
+		return new Gson().toJson(result);
 	}
 
 	@ResponseBody
@@ -90,28 +117,44 @@ public class PostController {
 		File file = new File(orgFileName);
 		upload.transferTo(file);
 		aws.upload(file, saveFileName);
-		HashMap<String,String> map = new HashMap<>();
-		map.put("url", aws.getURL()+saveFileName);
-		
+		HashMap<String, String> map = new HashMap<>();
+		map.put("url", aws.getURL() + saveFileName);
+
 		return new Gson().toJson(map);
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "fileDelete.do", method = { RequestMethod.POST, RequestMethod.GET })
+	public String fileDelete(@RequestParam(value = "fileArr[]") String[] fileArr) {
+		aws.delete(null);
+
+		return null;
 	}
 
 	@RequestMapping("blog")
 	public ModelAndView blog(HttpSession session, @RequestParam(value = "sort", defaultValue = "인기순") String sort,
 			@RequestParam(value = "keyword", defaultValue = "") String keyword,
-			@RequestParam(value = "page", defaultValue = "1") int page, int blog,
-			@RequestParam(value = "post", defaultValue = "0") int post, ModelAndView mav) {
+			@RequestParam(value = "page", defaultValue = "1") int page, int no, ModelAndView mav) {
 		ListInfo listInfo = getListInfo(session, sort, keyword, page, 16);
-		listInfo.setBlog_no(blog);
+		listInfo.setBlog_no(no);
 
-		ArrayList<Post> list = pService.getPost(listInfo);
-		User profile = uService.getProfile(blog);
+		ArrayList<Post> list = pService.getPostList(listInfo);
+		User profile = uService.getProfile(no);
 
 		mav.addObject("listInfo", listInfo);
 		mav.addObject("list", list);
 		mav.addObject("profile", profile);
-		mav.addObject("postNo", post);
 		mav.setViewName("user/post/blog");
+		return mav;
+	}
+
+	@RequestMapping("post")
+	public ModelAndView post(int no, ModelAndView mav) {
+		Post post = pService.getPost(no);
+		User profile = null;
+		if (post != null)
+			profile = uService.getProfile(post.getUserNo());
+
 		return mav;
 	}
 

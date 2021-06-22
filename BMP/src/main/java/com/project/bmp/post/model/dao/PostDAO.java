@@ -6,6 +6,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.project.bmp.post.model.vo.AttachedFile;
 import com.project.bmp.post.model.vo.Like;
 import com.project.bmp.post.model.vo.ListInfo;
 import com.project.bmp.post.model.vo.Post;
@@ -17,18 +18,31 @@ public class PostDAO {
 		return sqlSession.selectOne("postMapper.listCount");
 	}
 
-	public ArrayList<Post> getPost(SqlSessionTemplate sqlSession, ListInfo listInfo) {
+	public ArrayList<Post> getPostList(SqlSessionTemplate sqlSession, ListInfo listInfo) {
 		int offset = (listInfo.getPaging().getCurrentPage() - 1) * listInfo.getPaging().getBoardLimit();
 		RowBounds rowBounds = new RowBounds(offset, listInfo.getPaging().getBoardLimit());
 		return (ArrayList) sqlSession.selectList("postMapper.getPost", listInfo, rowBounds);
 	}
 
 	public int addLike(SqlSessionTemplate sqlSession, Like like) {
-		return sqlSession.insert("postMapper.addLike",like);
+		return sqlSession.insert("postMapper.addLike", like);
 	}
 
 	public int delLike(SqlSessionTemplate sqlSession, Like like) {
-		return sqlSession.delete("postMapper.delLike",like);
+		return sqlSession.delete("postMapper.delLike", like);
+	}
+
+	public int addPost(SqlSessionTemplate sqlSession, Post post) {
+		return sqlSession.insert("postMapper.addPost", post);
+	}
+
+	public int addFile(SqlSessionTemplate sqlSession, AttachedFile file) {
+		return sqlSession.insert("postMapper.addFile", file);
+	}
+
+	public Post getPost(SqlSessionTemplate sqlSession, int no) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -13,6 +13,17 @@
 <script src="<c:url value="/resources/js/MyUploadAdapter.js"/>"></script>
 </head>
 <style>
+* {
+	margin: 0;
+	padding: 0;
+	text-decoration: none;
+	list-style: none;
+	border: 0;
+	background: transparent;
+	font-family: sans-serif;
+	outline: none;
+}
+
 body {
 	background: #f4f4f4;
 }
@@ -60,6 +71,10 @@ form#content>div:first-child {
 #writeBtn:hover {
 	background: #df3e7b;
 }
+
+#cancelBtn {
+	margin-right: 20px;
+}
 </style>
 <body>
 	<c:import url="../common/header.jsp" />
@@ -70,20 +85,66 @@ form#content>div:first-child {
 			</div>
 			<div id="editor"></div>
 			<div class="btns">
-				<a id="writeBtn">등록</a>
+				<a id="cancelBtn">취소</a> <a id="writeBtn" type="submit">등록</a>
 			</div>
 		</form>
 	</div>
 </body>
 <script>
-	 ClassicEditor.create(document.getElementById("editor"), {
-		  extraPlugins: [MyUploadAdapterPlugin]
+	let editor;
+	var checkUnload = true;
+
+	$(document).on('click', '#writeBtn', function() {
+		checkUnload = false;
+		var title = $('#title').val().trim();
+		var userNo = '${accessor.no}';
+		$.ajax({
+			type : 'post',
+			url : 'write.do',
+			dataType : 'json',
+			data : {
+				title : title,
+				content : editor.getData(),
+				userNo : userNo,
+				fileArr : fileArr
+			},
+			success : function(data) {
+				if (data > 0)
+					location.href = "post?no=" + data;
+			}
 		});
-	 
-	 function MyUploadAdapterPlugin(editor) {
-		    editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-		        return new MyUploadAdapter(loader)
-		    }
+	});
+
+	$(window).on('beforeunload', function() {
+		if (checkUnload)
+			return "??";
+	});
+
+	$(window).on('unload', function() {
+		$.ajax({
+			url : 'fileDelete.do',
+			data : {
+				fileArr : fileArr
+			},
+			success : function(data) {
+				console.log('파일 삭제 ...');
+			}
+		});
+	});
+	
+	ClassicEditor
+	.create(document.getElementById("editor"), {
+		language: 'ko',
+		extraPlugins: [MyUploadAdapterPlugin]
+	})
+	.then(newEditor => {
+		editor = newEditor;
+	});
+
+	function MyUploadAdapterPlugin(editor) {
+		editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+			return new MyUploadAdapter(loader)
 		}
+	}
 </script>
 </html>

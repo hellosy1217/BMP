@@ -3,53 +3,79 @@
 <mapper namespace="postMapper">
 	<select id="listCount" resultType="_int"
 		parameterType="ListInfo">
-		select count(*) pcount
-		from plist
-		left join (select user_no, block_no from bmp_user
-			left join bmp_block on (to_user=user_no) where from_user=#{accessorNo}) using (user_no)
-			left join (select user_no, follow_no from bmp_user
-				left join (select user_no, follow_no from bmp_user
-					left join bmp_follow on (to_user=user_no) where from_user=#{accessorNo} and
-					follow_permission='Y') using (user_no)) using (user_no)
-		where (user_private='N' or (user_private='Y' and follow_no>0)) and block_no is null
+		select count(post_no)
+		from plist p
+    		left join ulist using (user_no)
+    		left join (select like_no, post_no from bmp_like where user_no=#{accessorNo}) using (post_no)
+   		 	left join (select from_user tbn, to_user from bmp_block) on (user_no=to_user)
+    		left join (select to_user fbn, from_user from bmp_block) on (user_no=from_user)
+    		left join (select user_no, from_user, follow_permission from bmp_user
+                       		left join (select * from bmp_follow) on (user_no=to_user)
+               		   where follow_permission='Y' and from_user is not null) f using (user_no)
+		where user_del_date is null and user_confirm = 'Y' and post_del_date is null  
+		and (tbn!=#{accessorNo} or tbn is null) and (fbn!=#{accessorNo} or fbn is null)
+		and (user_private='N' or (f.from_user is not null and user_private='Y'))		
 		<if test="blog_no > 0">
 			and user_no = #{blog_no}
 		</if>
 		<if test="keyword != ''">
-		 	and (tags like '%'||#{keyword} or tags like '%'||#{keyword}||' %')
+		 	and (tag_name like #{keyword}||'%')
 		</if>
 	</select>
-	<select id="getPost" resultMap="postResultMap_explorer" resultType="Post" parameterType="ListInfo">
-		select post_no, post_title, post_content, post_count, reg_date, edit_date, user_no, file_name, file_path, tags, 
-		count_like, profile_file, profile_path, user_nickname, nvl(like_no,0) liked, nvl(repost_no,0) repost from plist
-			left join (select like_no, post_no from bmp_like where user_no=#{accessorNo}) using (post_no)
-			left join (select repost_no, post_no from bmp_repost where user_no=#{accessorNo}) using (post_no)
-			left join (select user_no, block_no from bmp_user 
-				left join bmp_block on (to_user=user_no) where from_user=#{accessorNo}) using (user_no)
-			left join (select user_no, follow_no from bmp_user
-				left join (select user_no, follow_no from bmp_user 
-					left join bmp_follow on (to_user=user_no) where from_user=#{accessorNo} and follow_permission='Y') 
-				using (user_no)) using (user_no)
-		where (user_private='N' or (user_private='Y' and follow_no>0)) and block_no is null 
+	<select id="getPost" resultMap="postResultMap" resultType="Post" parameterType="ListInfo">
+		select post_no, post_title, post_content, post_count, post_reg_date, post_edit_date, 
+      		   user_no, p.file_name, countcomment, tag_no, tag_name, countlike, nvl(like_no,0) liked
+		from plist p
+    		left join ulist using (user_no)
+    		left join (select like_no, post_no from bmp_like where user_no=#{accessorNo}) using (post_no)
+   		 	left join (select from_user tbn, to_user from bmp_block) on (user_no=to_user)
+    		left join (select to_user fbn, from_user from bmp_block) on (user_no=from_user)
+    		left join (select user_no, from_user, follow_permission from bmp_user
+                       		left join (select * from bmp_follow) on (user_no=to_user)
+               		   where follow_permission='Y' and from_user is not null) f using (user_no)
+		where user_del_date is null and user_confirm = 'Y' and post_del_date is null  
+		and (tbn!=#{accessorNo} or tbn is null) and (fbn!=#{accessorNo} or fbn is null)
+		and (user_private='N' or (f.from_user is not null and user_private='Y'))		
 		<if test="keyword != ''">
-			and (tags like '%'||#{keyword} or tags like '%'||#{keyword}||' %') 
+			and tag_name like #{keyword}||'%'
 		</if>
 		<if test="blogNo > 0">
 			and user_no=#{blogNo}
 		</if>
 		<choose>
 			<when test="sort == '인기순'">
-				order by count_like
+				order by countlike
 			</when>
 			<when test="sort == '조회순'">
 				order by post_count
 			</when>
 			<otherwise>
-				order by reg_date
+				order by post_reg_date
 			</otherwise>
 		</choose>
 		desc
 	</select>
+	
+	<insert id="addPost" useGeneratedKeys="false">
+		<selectKey keyProperty="no" resultType="int" order="BEFORE">
+			select post_seq.nextval from dual
+		</selectKey>
+		insert into bmp_post
+		values (#{no},#{title},#{content},0,sysdate,null,null,null,#{userNo})
+	</insert>
+	
+	<insert id="addFile" parameterType="AttachedFile">
+		insert into bmp_file
+		values (file_seq.nextval,#{name},#{fileClass},#{userNo},
+		<choose>
+			<when test="postNo > 0">
+				#{postNo},null)
+			</when>
+			<otherwise>
+				null,#{reportNo})
+			</otherwise>
+		</choose>
+	</insert>
 	<insert id="addLike" parameterType="Like">
 		insert into bmp_like
 		values (like_seq.nextval,sysdate,#{userNo},
@@ -74,22 +100,46 @@
 			</otherwise>
 		</choose>
 	</delete>
-	<resultMap type="Post" id="postResultMap_explorer">
+	
+	<resultMap type="Post" id="postResultMap">
 		<id property="no" column="post_no" />
 		<result property="title" column="post_title" />
 		<result property="content" column="post_content" />
 		<result property="count" column="post_count" />
-		<result property="regDate" column="reg_date" />
-		<result property="editDate" column="edit_date" />
+		<result property="regDate" column="post_reg_date" />
+		<result property="editDate" column="post_edit_date" />
+		<result property="delDate" column="post_del_date" />
+		<result property="hideDate" column="post_hide_date" />
 		<result property="userNo" column="user_no" />
-		<result property="tag" column="tag" />
-		<result property="file" column="file_name" />
-		<result property="path" column="file_path" />
-		<result property="countLike" column="count_like" />
-		<result property="like" column="liked" />
-		<result property="repost" column="repost" />
+		<result property="fileName" column="file_name" />
+		<result property="countComment" column="countcomment" />
+		<result property="countLike" column="countlike" />
 		<result property="nickname" column="user_nickname" />
-		<result property="profileFile" column="profile_file" />
-		<result property="profilePath" column="profile_path" />
+		<result property="like" column="liked" />
+		<collection property="tagList" javaType="arraylist" resultMap="tagResultMap"></collection>
+		<collection property="commentList" javaType="arraylist" resultMap="commentResultMap"></collection>
+	</resultMap>
+	
+	<resultMap type="Tag" id="tagResultMap">
+	<id property="no" column="tag_no"/>
+	<result property="name" column="tag_name"/>
+	<result property="post_no" column="tag_post_no"/>
+	</resultMap>
+	
+	<resultMap type="Comment" id="commentResultMap">
+	<id property="no" column="comment_no"/>
+	<result property="content" column="comment_content"/>
+	<result property="postNo" column="comment_post_no"/>
+	<result property="userNo" column="comment_user_no"/>
+	<result property="nickname" column="comment_user_nickname"/>
+	</resultMap>
+	
+	<resultMap type="AttachedFile" id="fileResultMap">
+	<id property="no" column="file_no"/>
+	<result property="name" column="file_name"/>
+	<result property="fileClass" column="file_class"/>
+	<result property="userNo" column="user_no"/>
+	<result property="postNo" column="post_no"/>
+	<result property="reportNo" column="report_no"/>
 	</resultMap>
 </mapper>

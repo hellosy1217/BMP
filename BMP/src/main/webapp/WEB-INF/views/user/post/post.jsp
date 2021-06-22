@@ -22,32 +22,53 @@ img {
 	object-fit: cover;
 }
 
-.blog {
-	background-color: #f4f4f4;
-	padding: 30px 40px;
+#body {
+	display: flex;
 }
 
-.blog ol {
+.filter {
+	background: #fbfbfb;
+	border-bottom: 1px solid #e5e5e5;
+	position: relative;
+	width: 100%;
+	display: flex;
+	justify-content: center;
+}
+
+.post {
+	background-color: #f4f4f4;
+	min-height: 400px;
+	display: flex;
+}
+
+.post-right {
+	padding: 30px 40px 30px 270px;
+}
+
+.post-right ol {
 	display: grid;
 	grid-gap: 30px;
 	grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+
+.post-left {
+	padding: 30px 0 30px 40px;
 }
 </style>
 </head>
 <body>
 	<c:import url="../common/header.jsp" />
 	<div id="container">
-		<input type="hidden" id="page" value="${listInfo.paging.currentPage }">
-		<div class="blog">
-			<c:import url="list.jsp" />
+		<input type="hidden" id="page" value="${paging.currentPage }">
+		<div class="post">
+			<div class="post-left">
+				<c:import url="../user/profile.jsp" />
+			</div>
+			<div class="post-right">
+				
+			</div>
 		</div>
 	</div>
+	<%-- <c:import url="detail.jsp" /> --%>
 </body>
-<script>
-	$(document).on('click', '.post-content>div>div:first-child', function(e) {
-		var post = $(this).parent().attr('no');
-		var blog = $(this).parent().attr('blog');
-		location.href = "blog?blog=" + blog + '&post=' + post;
-	});
-</script>
 </html>

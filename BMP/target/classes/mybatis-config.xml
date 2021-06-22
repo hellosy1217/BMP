@@ -2,8 +2,8 @@
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
 <configuration>
 	<settings>
-		<setting name="jdbcTypeForNull" value="NULL" /><!-- 비어있는 값이 들어오면 
-			null로 사용할 것 -->
+		<setting name="jdbcTypeForNull" value="NULL" />
+		<!-- 비어있는 값이 들어오면 null로 사용할 것 -->
 	</settings>
 
 	<typeAliases>
@@ -13,8 +13,14 @@
 			alias="Post" />
 		<typeAlias type="com.project.bmp.post.model.vo.ListInfo"
 			alias="ListInfo" />
+		<typeAlias type="com.project.bmp.post.model.vo.Tag"
+			alias="Tag" />
+		<typeAlias type="com.project.bmp.post.model.vo.Comment"
+			alias="Comment" />
 		<typeAlias type="com.project.bmp.post.model.vo.Like"
 			alias="Like" />
+		<typeAlias type="com.project.bmp.post.model.vo.AttachedFile"
+			alias="AttachedFile" />
 	</typeAliases>
 
 	<mappers>

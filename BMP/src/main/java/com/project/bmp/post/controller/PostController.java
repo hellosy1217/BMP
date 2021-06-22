@@ -79,9 +79,6 @@ public class PostController {
 	@RequestMapping(value = "fileUpload.do", method= {RequestMethod.POST,RequestMethod.GET})
 	public String fileUpload(HttpServletRequest request, HttpServletResponse response, @RequestParam MultipartFile upload) {
 		
-		System.out.println(request.toString());
-		System.out.println("업로드가 값이 있는지");
-		System.out.println(upload==null);
 		System.out.println("먀");
 		System.out.println(upload.toString());
 		return "123";

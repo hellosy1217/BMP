@@ -76,21 +76,6 @@ form#content>div:first-child {
 	</div>
 </body>
 <script>
-	var myEditor;
-	 ClassicEditor
-	 .create( document.querySelector('#editor'), {
-	 alignment: {
-	 options: [ 'left', 'center', 'right' ]
-	 }
-	 } )
-	 .then( editor => {
-	 console.log( 'Editor was initialized', editor );
-	 myEditor = editor;
-	 } )
-	 .catch( error => {
-	 console.error( error );
-	 } );
-	 
 	 ClassicEditor.create(document.getElementById("editor"), {
 		  extraPlugins: [MyUploadAdapterPlugin]
 		});

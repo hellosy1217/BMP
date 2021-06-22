@@ -1,14 +1,20 @@
 package com.project.bmp.post.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
@@ -70,12 +76,17 @@ public class PostController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "fileUpload.do", produces = "application/json;charset=utf-8")
-	public String fileUpload() {
-		return new Gson().toJson("성공...?");
+	@RequestMapping(value = "fileUpload.do", method= {RequestMethod.POST,RequestMethod.GET})
+	public String fileUpload(HttpServletRequest request, HttpServletResponse response, @RequestParam MultipartFile upload) {
+		
+		System.out.println(request.toString());
+		System.out.println("업로드가 값이 있는지");
+		System.out.println(upload==null);
+		System.out.println("먀");
+		System.out.println(upload.toString());
+		return "123";
 	}
-	
-	
+
 	@RequestMapping("blog")
 	public ModelAndView blog(HttpSession session, @RequestParam(value = "sort", defaultValue = "인기순") String sort,
 			@RequestParam(value = "keyword", defaultValue = "") String keyword,
@@ -123,7 +134,7 @@ public class PostController {
 		mav.setViewName("admin/common/dashboard");
 		return mav;
 	}
-	
+
 	public ListInfo getListInfo(HttpSession session, String sort, String keyword, int currentPage, int boardLimit) {
 		User accessor = (User) session.getAttribute("accessor");
 

@@ -1,5 +1,9 @@
 package com.project.bmp.post.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -14,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
+import com.project.bmp.common.AwsS3;
 import com.project.bmp.common.Pagination;
 import com.project.bmp.common.Paging;
 import com.project.bmp.post.model.service.PostService;
@@ -36,6 +40,8 @@ public class PostController {
 	@Autowired
 	private UserService uService;
 
+	private AwsS3 aws = AwsS3.getInstance();
+	
 	@RequestMapping("explorer")
 	public ModelAndView explorer(HttpSession session, @RequestParam(value = "sort", defaultValue = "인기순") String sort,
 			@RequestParam(value = "keyword", defaultValue = "") String keyword, ModelAndView mav) {
@@ -76,12 +82,18 @@ public class PostController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "fileUpload.do", method= {RequestMethod.POST,RequestMethod.GET})
-	public String fileUpload(HttpServletRequest request, HttpServletResponse response, @RequestParam MultipartFile upload) {
+	@RequestMapping(value = "fileUpload.do", method = { RequestMethod.POST, RequestMethod.GET })
+	public String fileUpload(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam MultipartFile upload) throws IllegalStateException, IOException {
+		String orgFileName = upload.getOriginalFilename();
+		String saveFileName = getSaveFileName(orgFileName);
+		File file = new File(orgFileName);
+		upload.transferTo(file);
+		aws.upload(file, saveFileName);
+		HashMap<String,String> map = new HashMap<>();
+		map.put("url", aws.getURL()+saveFileName);
 		
-		System.out.println("먀");
-		System.out.println(upload.toString());
-		return "123";
+		return new Gson().toJson(map);
 	}
 
 	@RequestMapping("blog")
@@ -154,5 +166,14 @@ public class PostController {
 		listInfo.setPaging(paging);
 
 		return listInfo;
+	}
+
+	public String getSaveFileName(String orgFileName) {
+		String fileName = "";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+		fileName = sdf.format(new Date(System.currentTimeMillis())) + "."
+				+ orgFileName.substring(orgFileName.lastIndexOf(".") + 1);
+		return fileName;
+
 	}
 }

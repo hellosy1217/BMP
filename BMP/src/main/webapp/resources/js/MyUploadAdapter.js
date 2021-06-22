@@ -12,14 +12,12 @@ class MyUploadAdapter {
     }
 
     _initRequest() {
-	console.log('console 1 실행... ');
         const xhr = this.xhr = new XMLHttpRequest();
         xhr.open('POST', 'fileUpload.do', true);
         xhr.responseType = 'json';
     }
 
     _initListeners(resolve, reject, file) {
-	console.log('console 2 실행... ');
         const xhr = this.xhr;
         const loader = this.loader;
         const genericErrorText = '파일을 업로드 할 수 없습니다.'
@@ -39,7 +37,6 @@ class MyUploadAdapter {
     }
 
     _sendRequest(file) {
-	console.log('console 3 실행... ');
         const data = new FormData()
         data.append('upload',file)
         this.xhr.send(data)

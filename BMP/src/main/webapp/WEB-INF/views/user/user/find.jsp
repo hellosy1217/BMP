@@ -74,7 +74,7 @@
 				dataType : 'json',
 				data : {
 					email : email,
-					password : pw
+					password : pw.val()
 				},
 				success : function(data) {
 					if (data != null)

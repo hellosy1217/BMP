@@ -134,27 +134,17 @@ public class PostController {
 	@RequestMapping("blog")
 	public ModelAndView blog(HttpSession session, @RequestParam(value = "sort", defaultValue = "인기순") String sort,
 			@RequestParam(value = "keyword", defaultValue = "") String keyword,
-			@RequestParam(value = "page", defaultValue = "1") int page, int no, ModelAndView mav) {
+			@RequestParam(value = "page", defaultValue = "1") int page, int blog, ModelAndView mav) {
 		ListInfo listInfo = getListInfo(session, sort, keyword, page, 16);
-		listInfo.setBlog_no(no);
+		listInfo.setBlog_no(blog);
 
 		ArrayList<Post> list = pService.getPostList(listInfo);
-		User profile = uService.getProfile(no);
+		User profile = uService.getProfile(blog);
 
 		mav.addObject("listInfo", listInfo);
 		mav.addObject("list", list);
 		mav.addObject("profile", profile);
 		mav.setViewName("user/post/blog");
-		return mav;
-	}
-
-	@RequestMapping("post")
-	public ModelAndView post(int no, ModelAndView mav) {
-		Post post = pService.getPost(no);
-		User profile = null;
-		if (post != null)
-			profile = uService.getProfile(post.getUserNo());
-
 		return mav;
 	}
 

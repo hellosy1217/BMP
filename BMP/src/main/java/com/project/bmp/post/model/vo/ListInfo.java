@@ -8,26 +8,30 @@ public class ListInfo {
 	private String sort;
 	private String searchFilter;
 	private String keyword;
+	private String tab;
 	private Paging paging;
 
 	public ListInfo() {
 	}
 
-	public ListInfo(int accessorNo, String sort, String searchFilter, String keyword) {
+	public ListInfo(int accessorNo, String sort, String searchFilter, String keyword, String tab) {
 		super();
 		this.accessorNo = accessorNo;
 		this.sort = sort;
 		this.searchFilter = searchFilter;
 		this.keyword = keyword;
+		this.tab = tab;
 	}
 
-	public ListInfo(int accessorNo, int blogNo, String sort, String searchFilter, String keyword, Paging paging) {
+	public ListInfo(int accessorNo, int blogNo, String sort, String searchFilter, String keyword, String tab,
+			Paging paging) {
 		super();
 		this.accessorNo = accessorNo;
 		this.blogNo = blogNo;
 		this.sort = sort;
 		this.searchFilter = searchFilter;
 		this.keyword = keyword;
+		this.tab = tab;
 		this.paging = paging;
 	}
 
@@ -39,11 +43,11 @@ public class ListInfo {
 		this.accessorNo = accessorNo;
 	}
 
-	public int getBlog_no() {
+	public int getBlogNo() {
 		return blogNo;
 	}
 
-	public void setBlog_no(int blogNo) {
+	public void setBlogNo(int blogNo) {
 		this.blogNo = blogNo;
 	}
 
@@ -71,6 +75,14 @@ public class ListInfo {
 		this.keyword = keyword;
 	}
 
+	public String getTab() {
+		return tab;
+	}
+
+	public void setTab(String tab) {
+		this.tab = tab;
+	}
+
 	public Paging getPaging() {
 		return paging;
 	}
@@ -82,7 +94,7 @@ public class ListInfo {
 	@Override
 	public String toString() {
 		return "ListInfo [accessorNo=" + accessorNo + ", blogNo=" + blogNo + ", sort=" + sort + ", searchFilter="
-				+ searchFilter + ", keyword=" + keyword + ", paging=" + paging + "]";
+				+ searchFilter + ", keyword=" + keyword + ", tab=" + tab + ", paging=" + paging + "]";
 	}
 
 }

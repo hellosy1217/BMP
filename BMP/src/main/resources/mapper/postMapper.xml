@@ -2,46 +2,81 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="postMapper">
 	<select id="listCount" resultType="_int"
-		parameterType="ListInfo">
+		parameterType="ListInfo">		
 		select count(post_no)
 		from plist p
     		left join ulist using (user_no)
-    		left join (select like_no, post_no from bmp_like where user_no=#{accessorNo}) using (post_no)
-   		 	left join (select from_user tbn, to_user from bmp_block) on (user_no=to_user)
-    		left join (select to_user fbn, from_user from bmp_block) on (user_no=from_user)
-    		left join (select user_no, from_user, follow_permission from bmp_user
-                       		left join (select * from bmp_follow) on (user_no=to_user)
-               		   where follow_permission='Y' and from_user is not null) f using (user_no)
-		where user_del_date is null and user_confirm = 'Y' and post_del_date is null  
-		and (tbn!=#{accessorNo} or tbn is null) and (fbn!=#{accessorNo} or fbn is null)
-		and (user_private='N' or (f.from_user is not null and user_private='Y'))		
-		<if test="blog_no > 0">
-			and user_no = #{blog_no}
+			left join (select post_no, user_no post_like from bmp_like where user_no = #{accessorNo} ) l using (post_no)
+    		left join (select user_no, 'block' blocked from(
+    						select ulist.*, to_user, fu from ulist
+       							left join (select to_user, from_user from bmp_block where from_user=#{accessorNo}) on (user_no=to_user)
+        						left join (select from_user fu, to_user tu from bmp_block where to_user=#{accessorNo}) on (user_no=fu)
+           					order by from_user) 
+						where to_user is not null or fu is not null) using (user_no)
+		<where>
+		<if test="blogNo ==  0">
+   			user_private='N'
+   		</if>
+		<if test="blogNo > 0">
+			user_no = #{blogNo}
 		</if>
 		<if test="keyword != ''">
-		 	and (tag_name like #{keyword}||'%')
+	 		and (tag_name like #{keyword}||'%')
+	 	</if>
+		<choose>
+			<when test="tab=='hide'">
+				and post_hide_date is not null
+			</when>
+			<otherwise>
+				and post_hide_date is null
+			</otherwise>
+		</choose>
+		<if test="tab == 'like'">
+			and liked is not null
 		</if>
+		<if test="accessorNo > 0">
+			and blocked is null
+		</if>
+		</where>
 	</select>
+	
 	<select id="getPost" resultMap="postResultMap" resultType="Post" parameterType="ListInfo">
-		select post_no, post_title, post_content, post_count, post_reg_date, post_edit_date, 
-      		   user_no, p.file_name, countcomment, tag_no, tag_name, countlike, nvl(like_no,0) liked
+		select post_no, post_title, post_content, post_reg_date, post_del_date, post_hide_date, user_no, 
+			p.file_name, countcomment, tag_no, tag_name, countlike, user_nickname, nvl(post_like,0) liked, blocked
 		from plist p
     		left join ulist using (user_no)
-    		left join (select like_no, post_no from bmp_like where user_no=#{accessorNo}) using (post_no)
-   		 	left join (select from_user tbn, to_user from bmp_block) on (user_no=to_user)
-    		left join (select to_user fbn, from_user from bmp_block) on (user_no=from_user)
-    		left join (select user_no, from_user, follow_permission from bmp_user
-                       		left join (select * from bmp_follow) on (user_no=to_user)
-               		   where follow_permission='Y' and from_user is not null) f using (user_no)
-		where user_del_date is null and user_confirm = 'Y' and post_del_date is null  
-		and (tbn!=#{accessorNo} or tbn is null) and (fbn!=#{accessorNo} or fbn is null)
-		and (user_private='N' or (f.from_user is not null and user_private='Y'))		
-		<if test="keyword != ''">
-			and tag_name like #{keyword}||'%'
-		</if>
+			left join (select post_no, user_no post_like from bmp_like where user_no = #{accessorNo} ) l using (post_no)
+    		left join (select user_no, 'block' blocked from(
+    						select ulist.*, to_user, fu from ulist
+       							left join (select to_user, from_user from bmp_block where from_user=#{accessorNo}) on (user_no=to_user)
+        						left join (select from_user fu, to_user tu from bmp_block where to_user=#{accessorNo}) on (user_no=fu)
+           					order by from_user) 
+						where to_user is not null or fu is not null) using (user_no)
+		<where>
+		<if test="blogNo ==  0">
+   			user_private='N'
+   		</if>
 		<if test="blogNo > 0">
-			and user_no=#{blogNo}
+			user_no = #{blogNo}
 		</if>
+		<if test="keyword != ''">
+	 		and (tag_name like #{keyword}||'%')
+	 	</if>
+		<choose>
+			<when test="tab=='hide'">
+				and post_hide_date is not null
+			</when>
+			<otherwise>
+				and post_hide_date is null
+			</otherwise>
+		</choose>
+		<if test="tab == 'like'">
+			and liked is not null
+		</if>
+		<if test="accessorNo > 0">
+			and blocked is null
+		</if>
+		</where>
 		<choose>
 			<when test="sort == '인기순'">
 				order by countlike
@@ -54,8 +89,7 @@
 			</otherwise>
 		</choose>
 		desc
-	</select>
-	
+		</select>
 	<insert id="addPost" useGeneratedKeys="false">
 		<selectKey keyProperty="no" resultType="int" order="BEFORE">
 			select post_seq.nextval from dual
@@ -123,7 +157,7 @@
 	<resultMap type="Tag" id="tagResultMap">
 	<id property="no" column="tag_no"/>
 	<result property="name" column="tag_name"/>
-	<result property="post_no" column="tag_post_no"/>
+	<result property="postNo" column="tag_post_no"/>
 	</resultMap>
 	
 	<resultMap type="Comment" id="commentResultMap">

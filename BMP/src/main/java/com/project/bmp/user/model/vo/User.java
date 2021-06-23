@@ -1,5 +1,7 @@
 package com.project.bmp.user.model.vo;
 
+import java.sql.Date;
+
 public class User {
 	private int no;
 	private String email;
@@ -7,8 +9,8 @@ public class User {
 	private String nickname;
 	private String birth;
 	private String phone;
-	private String reg_date;
-	private String del_date;
+	private Date regDate;
+	private Date delDate;
 	private char confirm;
 	private char alarm;
 	private char dm;
@@ -16,7 +18,6 @@ public class User {
 	private char UserPrivate;
 	private char admin;
 	private String comment;
-	private String filePath;
 	private String fileName;
 	private int follow;
 	private int follower;
@@ -46,44 +47,29 @@ public class User {
 		this.admin = admin;
 	}
 
-	public User(int no, String nickname, String filePath, String fileName) {
-		super();
-		this.no = no;
-		this.nickname = nickname;
-		this.filePath = filePath;
-		this.fileName = fileName;
-	}
-
-	public User(int no, String email, String nickname, String reg_date, String del_date, char confirm, char sub,
-			int follow, int follower, int post) {
+	public User(int no, String email, String password, String nickname, String birth, String phone, Date regDate,
+			Date delDate, char confirm, char alarm, char dm, char sub, char userPrivate, char admin, String comment,
+			String fileName, int follow, int follower, int post) {
 		super();
 		this.no = no;
 		this.email = email;
+		this.password = password;
 		this.nickname = nickname;
-		this.reg_date = reg_date;
-		this.del_date = del_date;
+		this.birth = birth;
+		this.phone = phone;
+		this.regDate = regDate;
+		this.delDate = delDate;
 		this.confirm = confirm;
+		this.alarm = alarm;
+		this.dm = dm;
 		this.sub = sub;
+		UserPrivate = userPrivate;
+		this.admin = admin;
+		this.comment = comment;
+		this.fileName = fileName;
 		this.follow = follow;
 		this.follower = follower;
 		this.post = post;
-	}
-
-	public User(int no, String email, String nickname, String birth, String reg_date, char dm, char UserPrivate,
-			String comment, String filePath, String fileName, int follow, int follower) {
-		super();
-		this.no = no;
-		this.email = email;
-		this.nickname = nickname;
-		this.birth = birth;
-		this.reg_date = reg_date;
-		this.dm = dm;
-		this.UserPrivate = UserPrivate;
-		this.comment = comment;
-		this.filePath = filePath;
-		this.fileName = fileName;
-		this.follow = follow;
-		this.follower = follower;
 	}
 
 	public int getNo() {
@@ -134,20 +120,20 @@ public class User {
 		this.phone = phone;
 	}
 
-	public String getReg_date() {
-		return reg_date;
+	public Date getRegDate() {
+		return regDate;
 	}
 
-	public void setReg_date(String reg_date) {
-		this.reg_date = reg_date;
+	public void setRegDate(Date regDate) {
+		this.regDate = regDate;
 	}
 
-	public String getDel_date() {
-		return del_date;
+	public Date getDelDate() {
+		return delDate;
 	}
 
-	public void setDel_date(String del_date) {
-		this.del_date = del_date;
+	public void setDelDate(Date delDate) {
+		this.delDate = delDate;
 	}
 
 	public char getConfirm() {
@@ -186,8 +172,8 @@ public class User {
 		return UserPrivate;
 	}
 
-	public void setUserPrivate(char UserPrivate) {
-		this.UserPrivate = UserPrivate;
+	public void setUserPrivate(char userPrivate) {
+		UserPrivate = userPrivate;
 	}
 
 	public char getAdmin() {
@@ -204,14 +190,6 @@ public class User {
 
 	public void setComment(String comment) {
 		this.comment = comment;
-	}
-
-	public String getFilePath() {
-		return filePath;
-	}
-
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
 	}
 
 	public String getFileName() {
@@ -244,15 +222,6 @@ public class User {
 
 	public void setPost(int post) {
 		this.post = post;
-	}
-
-	@Override
-	public String toString() {
-		return "User [no=" + no + ", email=" + email + ", password=" + password + ", nickname=" + nickname + ", birth="
-				+ birth + ", phone=" + phone + ", reg_date=" + reg_date + ", del_date=" + del_date + ", confirm="
-				+ confirm + ", alarm=" + alarm + ", dm=" + dm + ", sub=" + sub + ", UserPrivate=" + UserPrivate
-				+ ", admin=" + admin + ", comment=" + comment + ", filePath=" + filePath + ", fileName=" + fileName
-				+ ", follow=" + follow + ", follower=" + follower + ", post=" + post + "]";
 	}
 
 }

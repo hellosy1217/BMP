@@ -355,7 +355,7 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 	<c:if test="${listInfo.paging ne null}">
 		<div class="filter">
 			<div id="filter-inner">
-				<c:if test="${isBlog ne null and accessor.no eq no}">
+				<c:if test="${listInfo.blogNo == accessor.no}">
 					<ul id="blog-tab">
 						<li>포스트</li>
 						<li>좋아요</li>
@@ -388,7 +388,7 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 	});
 
 	$(document).on('click', '#sort-dropdown li', function() {
-		var blog = '${listInfo.blog_no}';
+		var blog = '${listInfo.blogNo}';
 		var post = '${postNo}';
 		var sort = $(this).text();
 		var keyword = '${listInfo.keyword}';

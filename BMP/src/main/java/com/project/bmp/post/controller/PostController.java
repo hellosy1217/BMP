@@ -46,7 +46,7 @@ public class PostController {
 	@RequestMapping("explorer")
 	public ModelAndView explorer(HttpSession session, @RequestParam(value = "sort", defaultValue = "인기순") String sort,
 			@RequestParam(value = "keyword", defaultValue = "") String keyword, ModelAndView mav) {
-		ListInfo listInfo = getListInfo(session, sort, keyword, 1, 16);
+		ListInfo listInfo = getListInfo(session, sort, keyword, 1, 16, "");
 
 		ArrayList<Post> list = pService.getPostList(listInfo);
 
@@ -61,10 +61,10 @@ public class PostController {
 	@RequestMapping(value = "morePost.do", produces = "application/json;charset=utf-8")
 	public String morePost(HttpSession session, @RequestParam(value = "sort", defaultValue = "인기순") String sort,
 			@RequestParam(value = "keyword", defaultValue = "") String keyword, @RequestParam(value = "page") int page,
-			@RequestParam(value = "limit") int limit) {
+			@RequestParam(value = "limit") int limit, @RequestParam(value = "tab", defaultValue = "") String tab) {
 		Gson gson = new Gson();
 
-		ListInfo listInfo = getListInfo(session, sort, keyword, page, limit);
+		ListInfo listInfo = getListInfo(session, sort, keyword, page, limit, tab);
 
 		ArrayList<Post> list = pService.getPostList(listInfo);
 
@@ -134,9 +134,9 @@ public class PostController {
 	@RequestMapping("blog")
 	public ModelAndView blog(HttpSession session, @RequestParam(value = "sort", defaultValue = "인기순") String sort,
 			@RequestParam(value = "keyword", defaultValue = "") String keyword,
-			@RequestParam(value = "page", defaultValue = "1") int page, int blog, ModelAndView mav) {
-		ListInfo listInfo = getListInfo(session, sort, keyword, page, 16);
-		listInfo.setBlog_no(blog);
+			@RequestParam(value = "page", defaultValue = "1") int page, int blog, @RequestParam(value = "tab", defaultValue = "") String tab, ModelAndView mav) {
+		ListInfo listInfo = getListInfo(session, sort, keyword, page, 16, tab);
+		listInfo.setBlogNo(blog);
 
 		ArrayList<Post> list = pService.getPostList(listInfo);
 		User profile = uService.getProfile(blog);
@@ -177,12 +177,12 @@ public class PostController {
 		return mav;
 	}
 
-	public ListInfo getListInfo(HttpSession session, String sort, String keyword, int currentPage, int boardLimit) {
+	public ListInfo getListInfo(HttpSession session, String sort, String keyword, int currentPage, int boardLimit, String tab) {
 		User accessor = (User) session.getAttribute("accessor");
 
-		int accessor_no = 0;
+		int accessorNo = 0;
 		if (accessor != null)
-			accessor_no = accessor.getNo();
+			accessorNo = accessor.getNo();
 
 		String searchFilter = "닉네임";
 
@@ -190,7 +190,7 @@ public class PostController {
 			searchFilter = "태그";
 			keyword = "#" + keyword;
 		}
-		ListInfo listInfo = new ListInfo(accessor_no, sort, searchFilter, keyword);
+		ListInfo listInfo = new ListInfo(accessorNo, sort, searchFilter, keyword, tab);
 
 		int listCount = pService.getListCount(listInfo);
 

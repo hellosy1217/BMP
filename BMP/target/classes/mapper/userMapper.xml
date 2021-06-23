@@ -3,20 +3,20 @@
 <mapper namespace="userMapper">
 
 	<select id="selectUser" resultType="User"
-		resultMap="userResultMap_signIn">
+		resultMap="userResultMap">
 		select user_no,user_email,user_password,user_nickname,user_admin,user_confirm
 		from bmp_user
 		where user_email=#{email}
 	</select>
 	
 	<select id="selectGoogleUser" resultType="User"
-		resultMap="userResultMap_signIn">
+		resultMap="userResultMap">
 		select user_no,user_email,user_password,user_nickname,user_admin
 		from bmp_user
 		where user_email=#{email} and user_password=#{password}
 	</select>
 
-	<select id="getProfile" resultMap="userResultMap_All">
+	<select id="getProfile" resultMap="userResultMap">
 		select user_no,user_email,user_nickname,birth,reg_date,user_dm,user_private,
 			user_comment,file_path,file_name,follow,follower 
 		from ulist 
@@ -40,24 +40,15 @@
 		where user_email=#{email}
 	</update>
 	
-	<resultMap type="User" id="userResultMap_signIn">
-		<id property="no" column="user_no" />
-		<result property="email" column="user_email" />
-		<result property="password" column="user_password" />
-		<result property="nickname" column="user_nickname" />
-		<result property="admin" column="user_admin" />
-		<result property="confirm" column="user_confirm"/>
-	</resultMap>
-
-	<resultMap type="User" id="userResultMap_All">
+	<resultMap type="User" id="userResultMap">
 		<id property="no" column="user_no" />
 		<result property="email" column="user_email" />
 		<result property="password" column="user_password" />
 		<result property="nickname" column="user_nickname" />
 		<result property="birth" column="birth" />
 		<result property="phone" column="user_phone" />
-		<result property="reg_date" column="reg_date" />
-		<result property="del_date" column="del_date" />
+		<result property="regDate" column="reg_date" />
+		<result property="delDate" column="del_date" />
 		<result property="confirm" column="user_confirm" />
 		<result property="alarm" column="user_alarm" />
 		<result property="dm" column="user_dm" />
@@ -65,8 +56,7 @@
 		<result property="userPrivate" column="user_private" />
 		<result property="admin" column="user_admin" />
 		<result property="comment" column="user_comment" />
-		<result property="filePath" column="file_name"/>
-		<result property="fileName" column="file_path"/>
+		<result property="fileName" column="file_name"/>
 		<result property="follow" column="follow"/>
 		<result property="follower" column="follower"/>
 		<result property="post" column="post"/>

@@ -21,7 +21,7 @@ public class PostDAO {
 	public ArrayList<Post> getPostList(SqlSessionTemplate sqlSession, ListInfo listInfo) {
 		int offset = (listInfo.getPaging().getCurrentPage() - 1) * listInfo.getPaging().getBoardLimit();
 		RowBounds rowBounds = new RowBounds(offset, listInfo.getPaging().getBoardLimit());
-		return (ArrayList) sqlSession.selectList("postMapper.getPost", listInfo, rowBounds);
+		return (ArrayList) sqlSession.selectList("postMapper.getPostList", listInfo, rowBounds);
 	}
 
 	public int addLike(SqlSessionTemplate sqlSession, Like like) {
@@ -41,8 +41,7 @@ public class PostDAO {
 	}
 
 	public Post getPost(SqlSessionTemplate sqlSession, int no) {
-		// TODO Auto-generated method stub
-		return null;
+		return sqlSession.selectOne("postMapper.getPost",no);
 	}
 
 }

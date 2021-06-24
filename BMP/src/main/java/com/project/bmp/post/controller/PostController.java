@@ -61,10 +61,12 @@ public class PostController {
 	@RequestMapping(value = "morePost.do", produces = "application/json;charset=utf-8")
 	public String morePost(HttpSession session, @RequestParam(value = "sort", defaultValue = "인기순") String sort,
 			@RequestParam(value = "keyword", defaultValue = "") String keyword, @RequestParam(value = "page") int page,
-			@RequestParam(value = "limit") int limit, @RequestParam(value = "tab", defaultValue = "") String tab) {
+			@RequestParam(value = "limit") int limit, @RequestParam(value = "tab", defaultValue = "") String tab,
+			@RequestParam(value = "blog", defaultValue = "0") int blog) {
 		Gson gson = new Gson();
 
 		ListInfo listInfo = getListInfo(session, sort, keyword, page, limit, tab);
+		listInfo.setBlogNo(blog);
 
 		ArrayList<Post> list = pService.getPostList(listInfo);
 
@@ -93,8 +95,7 @@ public class PostController {
 		pService.addPost(post);
 
 		int result = post.getNo();
-		
-		
+
 		if (fileArr != null) {
 			AttachedFile file = new AttachedFile(fileArr.get(0), "thumbnail", post.getUserNo(), result, 0);
 			if (result > 0) {
@@ -134,7 +135,8 @@ public class PostController {
 	@RequestMapping("blog")
 	public ModelAndView blog(HttpSession session, @RequestParam(value = "sort", defaultValue = "인기순") String sort,
 			@RequestParam(value = "keyword", defaultValue = "") String keyword,
-			@RequestParam(value = "page", defaultValue = "1") int page, int blog, @RequestParam(value = "tab", defaultValue = "") String tab, ModelAndView mav) {
+			@RequestParam(value = "page", defaultValue = "1") int page, int blog,
+			@RequestParam(value = "tab", defaultValue = "") String tab, ModelAndView mav) {
 		ListInfo listInfo = getListInfo(session, sort, keyword, page, 16, tab);
 		listInfo.setBlogNo(blog);
 
@@ -145,6 +147,24 @@ public class PostController {
 		mav.addObject("list", list);
 		mav.addObject("profile", profile);
 		mav.setViewName("user/post/blog");
+		return mav;
+	}
+
+	@RequestMapping(value = "post", method = RequestMethod.GET)
+	public ModelAndView post(ModelAndView mav, int no) {
+		Post post = pService.getPost(no);
+		User profile = null;
+		
+		if (post != null)
+			profile = uService.getProfile(post.getUserNo());
+
+		if (profile != null) {
+			mav.addObject("post", post);
+			mav.addObject("profile", profile);
+			mav.setViewName("user/post/blog");
+		} else {
+			//에러페이지
+		}
 		return mav;
 	}
 
@@ -177,7 +197,8 @@ public class PostController {
 		return mav;
 	}
 
-	public ListInfo getListInfo(HttpSession session, String sort, String keyword, int currentPage, int boardLimit, String tab) {
+	public ListInfo getListInfo(HttpSession session, String sort, String keyword, int currentPage, int boardLimit,
+			String tab) {
 		User accessor = (User) session.getAttribute("accessor");
 
 		int accessorNo = 0;

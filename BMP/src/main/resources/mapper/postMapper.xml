@@ -40,7 +40,7 @@
 		</where>
 	</select>
 	
-	<select id="getPost" resultMap="postResultMap" resultType="Post" parameterType="ListInfo">
+	<select id="getPostList" resultMap="postResultMap" resultType="Post" parameterType="ListInfo">
 		select post_no, post_title, post_content, post_reg_date, post_del_date, post_hide_date, user_no, 
 			p.file_name, countcomment, tag_no, tag_name, countlike, user_nickname, nvl(like_no,0) liked, blocked
 		from plist p
@@ -89,7 +89,12 @@
 			</otherwise>
 		</choose>
 		desc, post_no desc
-		</select>
+	</select>
+		
+	<select id="getPost" resultMap="postResultMap">
+		select * from plist where post_no=#{no}
+	</select>	
+	
 	<insert id="addPost" useGeneratedKeys="false">
 		<selectKey keyProperty="no" resultType="int" order="BEFORE">
 			select post_seq.nextval from dual

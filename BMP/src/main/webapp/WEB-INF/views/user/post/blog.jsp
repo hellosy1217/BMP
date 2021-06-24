@@ -43,6 +43,7 @@ img {
 
 .blog-right {
 	padding: 30px 40px 30px 270px;
+	width: calc(100% - 350px);
 }
 
 .blog-right ol {
@@ -65,7 +66,14 @@ img {
 				<c:import url="../user/profile.jsp" />
 			</div>
 			<div class="blog-right">
-				<c:import url="list.jsp" />
+				<c:choose>
+					<c:when test="${list != null }">
+						<c:import url="list.jsp" />
+					</c:when>
+					<c:otherwise>
+						<c:import url="post.jsp" />
+					</c:otherwise>
+				</c:choose>
 			</div>
 		</div>
 	</div>

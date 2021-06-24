@@ -162,7 +162,6 @@
 		var no = $(this).attr('like');
 		var postNo = $(this).parent().attr('no');
 
-		console.log('test:' + no);
 		if ('${accessor}' != '') {
 			$.ajax({
 				url : 'like.do',
@@ -190,7 +189,11 @@
 		}
 	});
 	
-
+	$(document).on('click', '.post-content>div>div:first-child', function(e) {
+		var post = $(this).parent().attr('no');
+		location.href = "${pageContext.request.contextPath}/post?no=" + post;
+	});
+	
 	$(window).scroll(function(){
 		if($(document).height() <= $(window).scrollTop() + $(window).height()){
 			var page = Number($('#page').val())+1;
@@ -208,7 +211,6 @@
 						sort:sort
 					},
 					success:function(data){
-						console.log(data);
 						var str = '';
 						for(var i=0; i < data.length; i++){
 							str+='<li class="post"><div><img class="thumbnail" src="';

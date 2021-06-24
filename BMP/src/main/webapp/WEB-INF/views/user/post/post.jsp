@@ -5,8 +5,23 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<style>
+.post {
+	padding: 50px;
+	background: white;
+}
+</style>
 </head>
 <body>
-	<h2>포스트창... </h2>
+	<div class="post">
+	<h2>${post.title }</h2>
+	<div id="post-content"></div>
+	</div>
 </body>
+<script type="text/javascript">
+$(function(){
+	$('#post-content').html('${post.content}');
+	
+});
+</script>
 </html>

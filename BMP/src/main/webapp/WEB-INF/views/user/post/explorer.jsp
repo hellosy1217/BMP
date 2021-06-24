@@ -43,11 +43,4 @@ img {
 		</div>
 	</div>
 </body>
-<script>
-	$(document).on('click', '.post-content>div>div:first-child', function(e) {
-		var post = $(this).parent().attr('no');
-		var blog = $(this).parent().attr('blog');
-		location.href = "blog?blog=" + blog + '&post=' + post;
-	});
-</script>
 </html>

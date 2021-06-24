@@ -15,8 +15,7 @@
 	list-style: none;
 	border: 0;
 	background: transparent;
-	font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial,
-		sans-serif;
+	font-family: sans-serif;
 }
 
 ::selection {
@@ -49,7 +48,7 @@ img {
 #logo a {
 	color: #fff;
 	font-weight: 800;
-	font-size: 19px;
+	font-size: 21px;
 }
 
 #logo a:hover {
@@ -69,7 +68,7 @@ img {
 #nav>li>a {
 	color: #999;
 	display: block;
-	font-size: 15px;
+	font-size: 16px;
 	height: 56px;
 	line-height: 56px;
 	padding: 0 10px;
@@ -81,7 +80,7 @@ img {
 }
 
 #nav li#t-search {
-	padding-top: 15px;
+	padding-top: 13px;
 	padding-left: 10px;
 	position: relative;
 }
@@ -184,9 +183,11 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 }
 
 #filter-inner>ul:first-child li {
-	padding: 5px 70px;
-	font-size: 13px;
-	font-weight: bold;
+	padding: 5px 10px;
+    font-size: 13px;
+    font-weight: bold;
+    margin: 1px 50px;
+    border-radius: 4px;
 }
 
 #filter-inner>ul:first-child li:hover {
@@ -207,10 +208,9 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 	border-radius: 4px;
 	color: #fff;
 	font-weight: bold;
-	line-height: 17px;
 	letter-spacing: .02em;
 	-webkit-appearance: none;
-	padding: 5px 12px;
+	padding: 5.5px 12px 4.5px;
 	font-size: 13px;
 }
 
@@ -379,6 +379,16 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 	</c:if>
 </body>
 <script>
+	$(document).on('click', '#blog-tab li',function(){
+		var text = $(this).text();
+		var url = 'blog?blog=${listInfo.blogNo}';
+		if(text=='보관함')
+			url+='&tab=hide';
+		else if(text=='좋아요')
+			url+='&tab=like';
+		location.href=url;
+	});
+
 	$(document).on('click', '.select', function() {
 		if ($(this).children('ul').css('display') == 'none') {
 			$(this).children('ul').show();

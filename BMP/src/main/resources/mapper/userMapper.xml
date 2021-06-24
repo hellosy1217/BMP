@@ -17,8 +17,8 @@
 	</select>
 
 	<select id="getProfile" resultMap="userResultMap">
-		select user_no,user_email,user_nickname,birth,reg_date,user_dm,user_private,
-			user_comment,file_path,file_name,follow,follower 
+		select user_no,user_email,user_nickname,user_birth,user_reg_date,user_dm,user_private,
+			user_comment,file_name,countfollow,countfollower 
 		from ulist 
 		where user_no=#{no}
 	</select>
@@ -45,10 +45,10 @@
 		<result property="email" column="user_email" />
 		<result property="password" column="user_password" />
 		<result property="nickname" column="user_nickname" />
-		<result property="birth" column="birth" />
+		<result property="birth" column="user_birth" />
 		<result property="phone" column="user_phone" />
-		<result property="regDate" column="reg_date" />
-		<result property="delDate" column="del_date" />
+		<result property="regDate" column="user_reg_date" />
+		<result property="delDate" column="user_del_date" />
 		<result property="confirm" column="user_confirm" />
 		<result property="alarm" column="user_alarm" />
 		<result property="dm" column="user_dm" />
@@ -57,8 +57,8 @@
 		<result property="admin" column="user_admin" />
 		<result property="comment" column="user_comment" />
 		<result property="fileName" column="file_name"/>
-		<result property="follow" column="follow"/>
-		<result property="follower" column="follower"/>
+		<result property="follow" column="countfollow"/>
+		<result property="follower" column="countfollower"/>
 		<result property="post" column="post"/>
 	</resultMap>
 </mapper>

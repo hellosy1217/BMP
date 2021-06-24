@@ -6,7 +6,7 @@
 		select count(post_no)
 		from plist p
     		left join ulist using (user_no)
-			left join (select post_no, user_no post_like from bmp_like where user_no = #{accessorNo} ) l using (post_no)
+			left join (select like_no, post_no from bmp_like where user_no=#{accessorNo}) using (post_no)
     		left join (select user_no, 'block' blocked from(
     						select ulist.*, to_user, fu from ulist
        							left join (select to_user, from_user from bmp_block where from_user=#{accessorNo}) on (user_no=to_user)
@@ -17,7 +17,7 @@
 		<if test="blogNo ==  0">
    			user_private='N'
    		</if>
-		<if test="blogNo > 0">
+		<if test="blogNo > 0 and tab != 'like'">
 			user_no = #{blogNo}
 		</if>
 		<if test="keyword != ''">
@@ -32,7 +32,7 @@
 			</otherwise>
 		</choose>
 		<if test="tab == 'like'">
-			and liked is not null
+			and like_no is not null
 		</if>
 		<if test="accessorNo > 0">
 			and blocked is null
@@ -42,10 +42,10 @@
 	
 	<select id="getPost" resultMap="postResultMap" resultType="Post" parameterType="ListInfo">
 		select post_no, post_title, post_content, post_reg_date, post_del_date, post_hide_date, user_no, 
-			p.file_name, countcomment, tag_no, tag_name, countlike, user_nickname, nvl(post_like,0) liked, blocked
+			p.file_name, countcomment, tag_no, tag_name, countlike, user_nickname, nvl(like_no,0) liked, blocked
 		from plist p
     		left join ulist using (user_no)
-			left join (select post_no, user_no post_like from bmp_like where user_no = #{accessorNo} ) l using (post_no)
+			left join (select like_no, post_no from bmp_like where user_no=#{accessorNo}) using (post_no)
     		left join (select user_no, 'block' blocked from(
     						select ulist.*, to_user, fu from ulist
        							left join (select to_user, from_user from bmp_block where from_user=#{accessorNo}) on (user_no=to_user)
@@ -56,7 +56,7 @@
 		<if test="blogNo ==  0">
    			user_private='N'
    		</if>
-		<if test="blogNo > 0">
+		<if test="blogNo > 0 and tab != 'like'">
 			user_no = #{blogNo}
 		</if>
 		<if test="keyword != ''">
@@ -71,7 +71,7 @@
 			</otherwise>
 		</choose>
 		<if test="tab == 'like'">
-			and liked is not null
+			and like_no is not null
 		</if>
 		<if test="accessorNo > 0">
 			and blocked is null
@@ -88,7 +88,7 @@
 				order by post_reg_date
 			</otherwise>
 		</choose>
-		desc
+		desc, post_no desc
 		</select>
 	<insert id="addPost" useGeneratedKeys="false">
 		<selectKey keyProperty="no" resultType="int" order="BEFORE">

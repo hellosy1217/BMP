@@ -78,7 +78,6 @@
 	background: #fff;
 	border-radius: 4px;
 	font-weight: bold;
-	line-height: 17px;
 	letter-spacing: .02em;
 	-webkit-appearance: none;
 	padding: 5px 12px;

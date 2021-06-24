@@ -30,7 +30,6 @@
 	border-radius: 4px;
 	color: white;
 	font-weight: bold;
-	line-height: 17px;
 	letter-spacing: .02em;
 	-webkit-appearance: none;
 	padding: 5px 12px;
@@ -121,7 +120,7 @@
 
 .follow>div p:nth-child(even) {
 	font-size: 12px;
-	margin-top: 2.7px;
+	margin-top: 2px;
 	padding-left: 3px;
 }
 
@@ -139,7 +138,6 @@
 	border-radius: 4px;
 	color: #fff;
 	font-weight: bold;
-	line-height: 17px;
 	letter-spacing: .02em;
 	-webkit-appearance: none;
 	padding: 5px 12px;

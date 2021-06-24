@@ -39,7 +39,9 @@
 		</if>
 		</where>
 	</select>
-	
+	<update id="addCount">
+		update bmp_post set post_count=post_count+1 where post_no=#{no}
+	</update>
 	<select id="getPostList" resultMap="postResultMap" resultType="Post" parameterType="ListInfo">
 		select post_no, post_title, post_content, post_reg_date, post_del_date, post_hide_date, user_no, 
 			p.file_name, countcomment, tag_no, tag_name, countlike, user_nickname, nvl(like_no,0) liked, blocked
@@ -139,6 +141,10 @@
 			</otherwise>
 		</choose>
 	</delete>
+	
+	<update id="delPost">
+		update bmp_post set post_del_date=sysdate where post_no=#{no}
+	</update>
 	
 	<resultMap type="Post" id="postResultMap">
 		<id property="no" column="post_no" />

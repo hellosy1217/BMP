@@ -419,6 +419,10 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 			location.href='signOut';
 	});
 	
+	$(document).on('click', '#t-profile>img', function() {
+		location.href='blog?blog=${accessor.no}';
+	});
+	
 	$(document).on('mouseover', '#t-profile img', function() {
 		$('#profile-dropdown').show();
 	});

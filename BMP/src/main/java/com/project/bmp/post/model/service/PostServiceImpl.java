@@ -54,4 +54,14 @@ public class PostServiceImpl implements PostService {
 	public Post getPost(int no) {
 		return pDAO.getPost(sqlSession, no);
 	}
+
+	@Override
+	public int delPost(int no) {
+		return pDAO.delPost(sqlSession, no);
+	}
+
+	@Override
+	public int addCount(int no) {
+		return pDAO.addCount(sqlSession, no);
+	}
 }

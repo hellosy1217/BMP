@@ -154,18 +154,31 @@ public class PostController {
 	public ModelAndView post(ModelAndView mav, int no) {
 		Post post = pService.getPost(no);
 		User profile = null;
-		
-		if (post != null)
-			profile = uService.getProfile(post.getUserNo());
 
+		if (post != null) {
+			pService.addCount(post.getUserNo());
+			profile = uService.getProfile(post.getUserNo());
+		}
 		if (profile != null) {
 			mav.addObject("post", post);
 			mav.addObject("profile", profile);
 			mav.setViewName("user/post/blog");
 		} else {
-			//에러페이지
+			// 에러페이지
 		}
 		return mav;
+	}
+
+	@ResponseBody
+	@RequestMapping("delete.do")
+	public String delete(HttpSession session, int no) {
+		System.out.println("들어옴 ");
+		int result = pService.delPost(no);
+		System.out.println("result = " + result);
+		if (result > 0)
+			return null;
+		else
+			return "error";
 	}
 
 	@ResponseBody

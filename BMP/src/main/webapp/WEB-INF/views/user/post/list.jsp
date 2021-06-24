@@ -90,7 +90,7 @@
 
 .post-content a:hover {
 	border: 1px solid rgb(187, 187, 187);
-	color: rbg(68, 68, 68) !important;
+	color: rgb(68, 68, 68) !important;
 }
 
 .post-content span {

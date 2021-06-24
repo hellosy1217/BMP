@@ -80,14 +80,6 @@ img {
 	<%-- <c:import url="detail.jsp" /> --%>
 </body>
 <script>
-	$(document).on('click', '.post-content>div', function(e) {
-		if ($(e.target).attr('class') != 'likeBtn') {
-			var post = $(this).attr('no');
-			var blog = $(this).attr('blog');
-			location.href = "blog?blog=" + blog + '&post=' + post;
-		}
-	});
-
 	$(document).on('mouseover', '.contents', function() {
 		$(this).children('.post_content').css({
 			'opacity' : '100',

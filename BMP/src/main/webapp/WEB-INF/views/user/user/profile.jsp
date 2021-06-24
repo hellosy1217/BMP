@@ -198,10 +198,28 @@
 	});
 
 	$(document).on('click', '#dm-btn', function() {
-		if('${accessor.no}'=='${profile.no}')
-			location.href='message';
+		if ('${accessor.no}' == '${profile.no}')
+			location.href = 'message';
 		else
 			console.log('hi');
+	});
+
+	$(document).on('click', '.follow-btn', function() {
+		var text = $(this).text();
+
+		if (text == 'Follow') {
+			$(this).text('Following');
+			$(this).css({
+				'background' : '#ddd',
+				'color' : '#929292'
+			});
+		} else {
+			$(this).text('Follow');
+			$(this).css({
+				'background' : '',
+				'color' : ''
+			});
+		}
 	});
 </script>
 </html>

@@ -44,4 +44,12 @@ public class PostDAO {
 		return sqlSession.selectOne("postMapper.getPost",no);
 	}
 
+	public int delPost(SqlSessionTemplate sqlSession, int no) {
+		return sqlSession.update("postMapper.delPost", no);
+	}
+
+	public int addCount(SqlSessionTemplate sqlSession, int no) {
+		return sqlSession.update("postMapper.addCount", no);
+	}
+
 }

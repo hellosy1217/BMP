@@ -23,4 +23,8 @@ public interface PostService {
 
 	Post getPost(int no);
 
+	int delPost(int no);
+
+	int addCount(int no);
+
 }

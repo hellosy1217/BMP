@@ -189,16 +189,6 @@ public class UserController {
 		return new Gson().toJson(msg);
 	}
 
-	@RequestMapping("message")
-	public ModelAndView message(HttpSession session, ModelAndView mav) {
-		User accessor = (User) session.getAttribute("accessor");
-		User profile = uService.getProfile(accessor.getNo());
-
-		mav.addObject("profile", profile);
-		mav.setViewName("user/user/message");
-
-		return mav;
-	}
 
 	// 인증코드 생성하기
 	public String getAuthCode() {

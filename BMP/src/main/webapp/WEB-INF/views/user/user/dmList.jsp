@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -162,7 +163,6 @@ table {
 	background: #33769c;
 	cursor: pointer;
 }
-
 </style>
 </head>
 <body>
@@ -177,33 +177,39 @@ table {
 			<div id="msg-right">
 				<div id="title">Messages</div>
 				<div id="pageInfo">
-					<span>1 - 10 of 21</span> <span>Messages</span>
+					<span>1 - ${fn:length(list) } of ${paging.listCount }</span> <span>Messages</span>
 				</div>
 				<div id="list">
 					<table>
-						<tr class="msg-new" no="1">
-							<td><img
-								src="https://i.pinimg.com/564x/fa/41/ac/fa41ace1ab4cde11018a9b224e488806.jpg">
-							</td>
-							<td class="nickname">username</td>
-							<td class="content"><p>
-									<span></span>
-								</p>
-								<p>내용...ASDASFSAFSADIAOSPDIASOID</p></td>
-							<td class="time">7분 전</td>
-						</tr>
-						<c:forEach begin="1" end="9">
-							<tr class="msg-old" no="1">
-								<td><img
-									src="https://i.pinimg.com/564x/fa/41/ac/fa41ace1ab4cde11018a9b224e488806.jpg">
-								</td>
-								<td class="nickname">username</td>
-								<td class="content"><p>
-										<span></span>
-									</p>
-									<p>내용...ASDASFSAFSADIAOSPDIASOID</p></td>
-								<td class="time">7분 전</td>
-							</tr>
+						<c:forEach items="${list }" var="dm">
+							<c:choose>
+								<c:when test="${dm.readDate eq null}">
+									<tr class="msg-new" no="1">
+										<td><img
+											src="https://i.pinimg.com/564x/fa/41/ac/fa41ace1ab4cde11018a9b224e488806.jpg">
+										</td>
+										<td class="nickname">${dm.nickname }</td>
+										<td class="content"><p>
+												<span></span>
+											</p>
+											<p>${dm.content }</p></td>
+										<td class="time">7분 전</td>
+									</tr>
+								</c:when>
+								<c:otherwise>
+									<tr class="msg-old" no="1">
+										<td><img
+											src="https://i.pinimg.com/564x/fa/41/ac/fa41ace1ab4cde11018a9b224e488806.jpg">
+										</td>
+										<td class="nickname">username</td>
+										<td class="content"><p>
+												<span></span>
+											</p>
+											<p>내용...ASDASFSAFSADIAOSPDIASOID</p></td>
+										<td class="time">7분 전</td>
+									</tr>
+								</c:otherwise>
+							</c:choose>
 						</c:forEach>
 					</table>
 				</div>

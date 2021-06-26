@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="dmMapper">
+	<select id="listCount" resultType="_int">
+		select count(*)
+		from bmp_room
+		where (u1_no=#{no} and u1_out_date is null)
+			or (u2_no=#{no} and u2_out_date is null)
+	</select>
+	<select id="getList" resultMap="dmResultMap2">
+		select r.room_no, dm_no, dm_content, dm_reg_date, dm_read_date, d.user_no, user_nickname, file_name
+		from 
+			(select room_no, user_no, max(dm_no) KEEP (DENSE_RANK LAST ORDER BY dm_read_date) dm_no 
+			 from (select room_no, u2_no user_no, dm_no, dm_content, dm_reg_date, dm_read_date, user_no send_user_no from bmp_room
+        		left join bmp_dm using (room_no) where u1_no=90 and u1_out_date is null
+       		 union
+        	 select room_no, u1_no user_no, dm_no, dm_content, dm_reg_date, dm_read_date, user_no send_user_no from bmp_room
+        		left join bmp_dm using (room_no) where u2_no=90 and u2_out_date is null)
+			 group by room_no, user_no) r
+    		left join bmp_dm d using (dm_no)
+    		left join ulist on (d.user_no=ulist.user_no)
+		order by dm_reg_date desc
+	</select>
+	
+	<select id="getDM" resultMap="roomResultMap">
+		select room_no, user_no, dm_no, dm_content, dm_reg_date, dm_read_date, send_user_no, file_name
+		from (select room_no, u2_no user_no, dm_no, dm_content, dm_reg_date, dm_read_date, user_no send_user_no 
+				from bmp_room
+					left join bmp_dm using (room_no) 
+				where u1_no=#{no} and u1_out_date is null
+			  union
+				select room_no, u1_no user_no, dm_no, dm_content, dm_reg_date, 
+					dm_read_date, user_no send_user_no 
+				from bmp_room
+					left join bmp_dm using (room_no) where u2_no=#{no} and u2_out_date is null)
+			left join ulist using (user_no)
+		order by dm_reg_date desc
+	</select>
+
+	<resultMap type="Room" id="roomResultMap">
+		<id property="no" column="room_no"/>
+		<result property="userNo" column="user_no"/>
+		<result property="fileName" column="file_name"/>
+		<collection property="dmList" javaType="arraylist" resultMap="dmResultMap"/>
+	</resultMap>
+	
+	<resultMap type="DM" id="dmResultMap">
+		<id property="no" column="dm_no"/>
+		<result property="content" column="dm_content"/>
+		<result property="regDate" column="dm_reg_date"/>
+		<result property="readDate" column="dm_read_date"/>
+		<result property="userNo" column="send_user_no"/>
+	</resultMap>
+	
+	<resultMap type="DM" id="dmResultMap2">
+		<id property="no" column="dm_no"/>
+		<result property="content" column="dm_content"/>
+		<result property="regDate" column="dm_reg_date"/>
+		<result property="readDate" column="dm_read_date"/>
+		<result property="roomNo" column="room_no"/>
+		<result property="userNo" column="user_no"/>
+		<result property="nickname" column="user_nickname"/>
+		<result property="fileName" column="file_name"/>
+	</resultMap>
+</mapper>

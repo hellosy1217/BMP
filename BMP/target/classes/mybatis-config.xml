@@ -21,11 +21,16 @@
 			alias="Like" />
 		<typeAlias type="com.project.bmp.post.model.vo.AttachedFile"
 			alias="AttachedFile" />
+		<typeAlias type="com.project.bmp.dm.model.vo.DM"
+			alias="DM" />
+		<typeAlias type="com.project.bmp.dm.model.vo.Room"
+			alias="Room" />
 	</typeAliases>
 
 	<mappers>
 		<mapper resource="mapper/userMapper.xml" />
 		<mapper resource="mapper/postMapper.xml" />
+		<mapper resource="mapper/dmMapper.xml" />
 	</mappers>
 
 </configuration>

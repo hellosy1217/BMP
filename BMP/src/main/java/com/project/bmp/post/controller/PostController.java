@@ -26,6 +26,7 @@ import com.project.bmp.common.Pagination;
 import com.project.bmp.common.Paging;
 import com.project.bmp.post.model.service.PostService;
 import com.project.bmp.post.model.vo.AttachedFile;
+import com.project.bmp.post.model.vo.Comment;
 import com.project.bmp.post.model.vo.Like;
 import com.project.bmp.post.model.vo.ListInfo;
 import com.project.bmp.post.model.vo.Post;
@@ -160,8 +161,11 @@ public class PostController {
 			profile = uService.getProfile(post.getUserNo());
 		}
 		if (profile != null) {
+
+			Paging paging = new Pagination().getPaging(1, 20, post.getCountComment());
 			mav.addObject("post", post);
 			mav.addObject("profile", profile);
+			mav.addObject("paging",paging);
 			mav.setViewName("user/post/blog");
 		} else {
 			// 에러페이지
@@ -202,6 +206,18 @@ public class PostController {
 				result = 1;
 		}
 		return result + "";
+	}
+
+	@ResponseBody
+	@RequestMapping("comment.do")
+	public String getComment(int no, int countComment, @RequestParam(value = "page", defaultValue = "1") int page) {
+		Gson gson = new Gson();
+
+		Paging paging = new Pagination().getPaging(page, 20, countComment);
+
+		ArrayList<Comment> cList = pService.getComment(no, paging);
+
+		return gson.toJson(cList);
 	}
 
 	@RequestMapping("admin")

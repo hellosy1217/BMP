@@ -94,7 +94,18 @@
 	</select>
 		
 	<select id="getPost" resultMap="postResultMap">
-		select * from plist where post_no=#{no}
+		select post_no, post_title, post_content, post_reg_date, post_del_date, post_hide_date, user_no, 
+			p.file_name, countcomment, tag_no, tag_name, countlike, nvl(like_no,0) liked, blocked
+		from plist p
+    		left join ulist using (user_no)
+			left join (select like_no, post_no from bmp_like where user_no=#{accessorNo}) using (post_no)
+    		left join (select user_no, 'block' blocked from(
+    						select ulist.*, to_user, fu from ulist
+       							left join (select to_user, from_user from bmp_block where from_user=#{accessorNo}) on (user_no=to_user)
+        						left join (select from_user fu, to_user tu from bmp_block where to_user=#{accessorNo}) on (user_no=fu)
+           					order by from_user) 
+						where to_user is not null or fu is not null) using (user_no)
+		where post_no=#{no}
 	</select>	
 	
 	<insert id="addPost" useGeneratedKeys="false">
@@ -146,6 +157,10 @@
 		update bmp_post set post_del_date=sysdate where post_no=#{no}
 	</update>
 	
+	<select id="getComment" resultMap="commentResultMap">
+		select * from clist where post_no=#{no}
+	</select>
+	
 	<resultMap type="Post" id="postResultMap">
 		<id property="no" column="post_no" />
 		<result property="title" column="post_title" />
@@ -162,7 +177,6 @@
 		<result property="nickname" column="user_nickname" />
 		<result property="like" column="liked" />
 		<collection property="tagList" javaType="arraylist" resultMap="tagResultMap"></collection>
-		<collection property="commentList" javaType="arraylist" resultMap="commentResultMap"></collection>
 	</resultMap>
 	
 	<resultMap type="Tag" id="tagResultMap">
@@ -174,9 +188,11 @@
 	<resultMap type="Comment" id="commentResultMap">
 	<id property="no" column="comment_no"/>
 	<result property="content" column="comment_content"/>
-	<result property="postNo" column="comment_post_no"/>
-	<result property="userNo" column="comment_user_no"/>
-	<result property="nickname" column="comment_user_nickname"/>
+	<result property="postNo" column="post_no"/>
+	<result property="userNo" column="user_no"/>
+	<result property="nickname" column="user_nickname"/>
+	<result property="fileName" column="file_name"/>
+	<result property="countLike" column="countlike"/>
 	</resultMap>
 	
 	<resultMap type="AttachedFile" id="fileResultMap">

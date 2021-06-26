@@ -6,7 +6,9 @@ import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.project.bmp.common.Paging;
 import com.project.bmp.post.model.vo.AttachedFile;
+import com.project.bmp.post.model.vo.Comment;
 import com.project.bmp.post.model.vo.Like;
 import com.project.bmp.post.model.vo.ListInfo;
 import com.project.bmp.post.model.vo.Post;
@@ -50,6 +52,12 @@ public class PostDAO {
 
 	public int addCount(SqlSessionTemplate sqlSession, int no) {
 		return sqlSession.update("postMapper.addCount", no);
+	}
+
+	public ArrayList<Comment> getComment(SqlSessionTemplate sqlSession, int no, Paging paging) {
+		int offset = (paging.getCurrentPage() - 1) * paging.getBoardLimit();
+		RowBounds rowBounds = new RowBounds(offset, paging.getBoardLimit());
+		return (ArrayList) sqlSession.selectList("postMapper.getComment", no, rowBounds);
 	}
 
 }

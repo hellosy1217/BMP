@@ -186,12 +186,4 @@ public class Post {
 		this.profileFile = profileFile;
 	}
 
-	public ArrayList<Comment> getComment() {
-		return commentList;
-	}
-
-	public void setComment(ArrayList<Comment> commentList) {
-		this.commentList = commentList;
-	}
-
 }

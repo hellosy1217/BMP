@@ -2,7 +2,9 @@ package com.project.bmp.post.model.service;
 
 import java.util.ArrayList;
 
+import com.project.bmp.common.Paging;
 import com.project.bmp.post.model.vo.AttachedFile;
+import com.project.bmp.post.model.vo.Comment;
 import com.project.bmp.post.model.vo.Like;
 import com.project.bmp.post.model.vo.ListInfo;
 import com.project.bmp.post.model.vo.Post;
@@ -26,5 +28,7 @@ public interface PostService {
 	int delPost(int no);
 
 	int addCount(int no);
+
+	ArrayList<Comment> getComment(int no, Paging paging);
 
 }

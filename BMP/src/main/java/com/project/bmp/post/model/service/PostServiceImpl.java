@@ -6,8 +6,10 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.bmp.common.Paging;
 import com.project.bmp.post.model.dao.PostDAO;
 import com.project.bmp.post.model.vo.AttachedFile;
+import com.project.bmp.post.model.vo.Comment;
 import com.project.bmp.post.model.vo.Like;
 import com.project.bmp.post.model.vo.ListInfo;
 import com.project.bmp.post.model.vo.Post;
@@ -63,5 +65,10 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public int addCount(int no) {
 		return pDAO.addCount(sqlSession, no);
+	}
+
+	@Override
+	public ArrayList<Comment> getComment(int no, Paging paging) {
+		return pDAO.getComment(sqlSession, no, paging);
 	}
 }

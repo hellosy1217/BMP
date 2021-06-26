@@ -6,17 +6,21 @@ public class Comment {
 	private int postNo;
 	private int userNo;
 	private String nickname;
+	private String fileName;
+	private int countLike;
 
 	public Comment() {
 	}
 
-	public Comment(int no, String content, int postNo, int userNo, String nickname) {
+	public Comment(int no, String content, int postNo, int userNo, String nickname, String fileName, int countLike) {
 		super();
 		this.no = no;
 		this.content = content;
 		this.postNo = postNo;
 		this.userNo = userNo;
 		this.nickname = nickname;
+		this.fileName = fileName;
+		this.countLike = countLike;
 	}
 
 	public int getNo() {
@@ -57,6 +61,28 @@ public class Comment {
 
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public int getCountLike() {
+		return countLike;
+	}
+
+	public void setCountLike(int countLike) {
+		this.countLike = countLike;
+	}
+
+	@Override
+	public String toString() {
+		return "Comment [no=" + no + ", content=" + content + ", postNo=" + postNo + ", userNo=" + userNo
+				+ ", nickname=" + nickname + ", fileName=" + fileName + ", countLike=" + countLike + "]";
 	}
 
 }

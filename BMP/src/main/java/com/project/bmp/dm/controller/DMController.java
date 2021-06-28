@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.project.bmp.common.Pagination;
 import com.project.bmp.common.Paging;
 import com.project.bmp.dm.model.service.DMService;
+import com.project.bmp.dm.model.vo.DM;
 import com.project.bmp.dm.model.vo.Room;
 import com.project.bmp.user.model.service.UserService;
 import com.project.bmp.user.model.vo.User;
@@ -26,8 +27,8 @@ public class DMController {
 	@Autowired
 	private DMService dService;
 
-	@RequestMapping("message")
-	public ModelAndView message(HttpSession session, ModelAndView mav,
+	@RequestMapping("dmList")
+	public ModelAndView dmList(HttpSession session, ModelAndView mav,
 			@RequestParam(value = "page", defaultValue = "1") int page) {
 		User accessor = (User) session.getAttribute("accessor");
 		User profile = uService.getProfile(accessor.getNo());
@@ -41,6 +42,19 @@ public class DMController {
 		mav.addObject("list", list);
 		mav.setViewName("user/user/dmList");
 
+		return mav;
+	}
+
+	@RequestMapping("dm")
+	public ModelAndView dm(HttpSession session, ModelAndView mav, int no) {
+		User accessor = (User) session.getAttribute("accessor");
+		User profile = uService.getProfile(accessor.getNo());
+
+		DM dm = new DM(no, accessor.getNo());
+		Room room = dService.getMessage(dm);
+		mav.addObject("profile", profile);
+		mav.addObject("room", room);
+		mav.setViewName("user/user/dm");
 		return mav;
 	}
 }

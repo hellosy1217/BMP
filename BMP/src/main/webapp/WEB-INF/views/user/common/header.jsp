@@ -184,10 +184,10 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 
 #filter-inner>ul:first-child li {
 	padding: 5px 10px;
-    font-size: 13px;
-    font-weight: bold;
-    margin: 1px 50px;
-    border-radius: 4px;
+	font-size: 13px; font-weight : bold; margin : 1px 50px;
+	border-radius: 4px;
+	font-weight: bold;
+	margin: 1px 50px;
 }
 
 #filter-inner>ul:first-child li:hover {
@@ -313,8 +313,8 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 }
 
 .tab-selected {
-	background: rgba(58, 139, 187, 0.15);
-	color: #3a8bbb;
+	background: rgba(58, 139, 187, 0.15) !important;
+	color: #3a8bbb !important;
 }
 </style>
 </head>
@@ -342,17 +342,16 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 					</c:otherwise>
 				</c:choose>
 				<li id="t-search" role="search">
-					<div id="search">
+					<form id="search" action="explorer" method="get">
 						<input class="search-text" type="search" placeholder="Search "
-							value="">
-					</div>
+							value="" name="keyword">
+					</form>
 					<ul id="search-result">
 					</ul>
 				</li>
 			</ul>
 		</div>
 	</div>
-	<c:if test="${listInfo.paging ne null}">
 		<div class="filter">
 			<div id="filter-inner">
 				<c:if test="${listInfo.blogNo == accessor.no}">
@@ -376,17 +375,16 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 				</div>
 			</div>
 		</div>
-	</c:if>
 </body>
 <script>
-	$(document).on('click', '#blog-tab li',function(){
+	$(document).on('click', '#blog-tab li', function() {
 		var text = $(this).text();
 		var url = 'blog?blog=${listInfo.blogNo}';
-		if(text=='보관함')
-			url+='&tab=hide';
-		else if(text=='좋아요')
-			url+='&tab=like';
-		location.href=url;
+		if (text == '보관함')
+			url += '&tab=hide';
+		else if (text == '좋아요')
+			url += '&tab=like';
+		location.href = url;
 	});
 
 	$(document).on('click', '.select', function() {
@@ -403,26 +401,26 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 		var sort = $(this).text();
 		var keyword = '${listInfo.keyword}';
 		var url = '${loc}?sort=' + sort;
-		if(blog!=null&&blog!=''&&blog>0)
-			url+='&blog='+blog;
-		if(post!=null&post!='')
-			url+='&post='+post;
+		if (blog != null && blog != '' && blog > 0)
+			url += '&blog=' + blog;
+		if (post != null & post != '')
+			url += '&post=' + post;
 		if (keyword != '')
 			url += '&keyword=' + keyword;
 		location.href = url;
 	});
 
 	$(document).on('click', '#profile-dropdown li', function() {
-		if($(this).text()=='내 블로그')
-			location.href='blog?blog=${accessor.no}';
+		if ($(this).text() == '내 블로그')
+			location.href = 'blog?blog=${accessor.no}';
 		else
-			location.href='signOut';
+			location.href = 'signOut';
 	});
-	
+
 	$(document).on('click', '#t-profile>img', function() {
-		location.href='blog?blog=${accessor.no}';
+		location.href = 'blog?blog=${accessor.no}';
 	});
-	
+
 	$(document).on('mouseover', '#t-profile img', function() {
 		$('#profile-dropdown').show();
 	});
@@ -466,12 +464,15 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 		else
 			$('#New').attr('class', 'selected');
 		$('#form_sort').val(sort);
-		var menu = $('#blog-tab li').eq(1).text();
+
+		var tab = '${listInfo.tab}';
+		var menu = $('#blog-tab li').eq(0);
+		if (tab == 'like')
+			menu = $('#blog-tab li').eq(1);
+		else if (tab == 'hide')
+			menu = $('#blog-tab li').eq(2);
 		
-		if('${blog-tab}'!=null){
-			var menu = $('#blog-tab li').eq(${blog-tab});
-			menu.attr('class','tab-selected');
-		}
+		menu.attr('class', 'tab-selected');
 	}
 </script>
 </html>

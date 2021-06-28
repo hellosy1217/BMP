@@ -7,6 +7,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.project.bmp.common.Paging;
+import com.project.bmp.dm.model.vo.DM;
 import com.project.bmp.dm.model.vo.Room;
 
 @Repository("dDAO")
@@ -20,6 +21,10 @@ public class DMDAO {
 		int offset = (paging.getCurrentPage() - 1) * paging.getBoardLimit();
 		RowBounds rowBounds = new RowBounds(offset, paging.getBoardLimit());
 		return (ArrayList) sqlSession.selectList("dmMapper.getList", no, rowBounds);
+	}
+
+	public Room getMessage(SqlSessionTemplate sqlSession, DM dm) {
+		return (Room) sqlSession.selectOne("dmMapper.getMessage", dm);
 	}
 
 }

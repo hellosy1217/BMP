@@ -12,28 +12,29 @@
 		from 
 			(select room_no, user_no, max(dm_no) KEEP (DENSE_RANK LAST ORDER BY dm_read_date) dm_no 
 			 from (select room_no, u2_no user_no, dm_no, dm_content, dm_reg_date, dm_read_date, user_no send_user_no from bmp_room
-        		left join bmp_dm using (room_no) where u1_no=90 and u1_out_date is null
+        		left join bmp_dm using (room_no) where u1_no=#{no} and u1_out_date is null
        		 union
         	 select room_no, u1_no user_no, dm_no, dm_content, dm_reg_date, dm_read_date, user_no send_user_no from bmp_room
-        		left join bmp_dm using (room_no) where u2_no=90 and u2_out_date is null)
+        		left join bmp_dm using (room_no) where u2_no=#{no} and u2_out_date is null)
 			 group by room_no, user_no) r
     		left join bmp_dm d using (dm_no)
     		left join ulist on (d.user_no=ulist.user_no)
 		order by dm_reg_date desc
 	</select>
 	
-	<select id="getDM" resultMap="roomResultMap">
+	<select id="getMessage" resultMap="roomResultMap">
 		select room_no, user_no, dm_no, dm_content, dm_reg_date, dm_read_date, send_user_no, file_name
 		from (select room_no, u2_no user_no, dm_no, dm_content, dm_reg_date, dm_read_date, user_no send_user_no 
 				from bmp_room
 					left join bmp_dm using (room_no) 
-				where u1_no=#{no} and u1_out_date is null
+				where u1_no=#{userNo} and u1_out_date is null
 			  union
 				select room_no, u1_no user_no, dm_no, dm_content, dm_reg_date, 
 					dm_read_date, user_no send_user_no 
 				from bmp_room
-					left join bmp_dm using (room_no) where u2_no=#{no} and u2_out_date is null)
+					left join bmp_dm using (room_no) where u2_no=#{userNo} and u2_out_date is null)
 			left join ulist using (user_no)
+		where room_no=#{roomNo}
 		order by dm_reg_date desc
 	</select>
 

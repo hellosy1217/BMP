@@ -26,6 +26,12 @@ public class Post {
 	public Post() {
 	}
 
+	public Post(int no, int userNo) {
+		super();
+		this.no = no;
+		this.userNo = userNo;
+	}
+
 	public Post(int no, String title, String content, int count, Date regDate, Date editDate, Date delDate,
 			Date hideDate, int userNo, String fileName, int countComment, ArrayList<Tag> tagList, int countLike,
 			int like, int repost, String nickname, String profileFile, ArrayList<Comment> commentList) {
@@ -184,6 +190,15 @@ public class Post {
 
 	public void setProfileFile(String profileFile) {
 		this.profileFile = profileFile;
+	}
+
+	@Override
+	public String toString() {
+		return "Post [no=" + no + ", title=" + title + ", content=" + content + ", count=" + count + ", regDate="
+				+ regDate + ", editDate=" + editDate + ", delDate=" + delDate + ", hideDate=" + hideDate + ", userNo="
+				+ userNo + ", fileName=" + fileName + ", countComment=" + countComment + ", tagList=" + tagList
+				+ ", countLike=" + countLike + ", like=" + like + ", repost=" + repost + ", nickname=" + nickname
+				+ ", profileFile=" + profileFile + ", commentList=" + commentList + "]";
 	}
 
 }

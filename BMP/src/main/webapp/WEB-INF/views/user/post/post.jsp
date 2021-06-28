@@ -106,18 +106,6 @@
 	min-height: 255px;
 }
 
-#ht {
-	padding: 3.5px 6px;
-	border: 1px solid #e0e0e0;
-	border-radius: 50%;
-	margin-left: 5px;
-	margin-top: 1.5px;
-	font-family: 'Noto Sans KR', sans-serif;
-	font-size: 12px;
-	color: #e0e0e0;
-	cursor: pointer;
-}
-
 .post-bottom a {
 	border-radius: 4px;
 	padding: 7px 10px 4px;
@@ -125,6 +113,10 @@
 	background: white;
 	border: 1px solid #e0e0e0;
 	margin-left: 10px;
+}
+
+.post-bottom>div {
+	display: flex;
 }
 
 #post-comment>ul {
@@ -162,6 +154,23 @@
 	padding-bottom: 15px;
 	padding-right: 15px;
 }
+
+.ht {
+	padding: 2.5px 7px;
+	border: 1px solid #e0e0e0;
+	border-radius: 50%;
+	margin-left: 5px;
+	line-height: 20px;
+	font-family: 'Noto Sans KR', sans-serif;
+	font-size: 12px;
+	color: #e0e0e0;
+	cursor: pointer;
+}
+
+.liked {
+	color: #ea4c89;
+	border-color: #ea4c89;
+}
 </style>
 </head>
 <body>
@@ -180,10 +189,27 @@
 					<p>댓글 ${post.countComment }</p>
 					<p>⌵</p>
 				</div>
-				<span id="ht">♥︎</span>
+				<c:choose>
+					<c:when test="${post.like > 0 }">
+						<span class="ht liked" no="${post.like }">♥︎</span>
+					</c:when>
+					<c:otherwise>
+						<span class="ht" no="${post.like }">♥︎</span>
+					</c:otherwise>
+				</c:choose>
 			</div>
 			<div>
-				<a>수정</a><a id="delBtn">삭제</a>
+				<c:choose>
+					<c:when
+						test="${accessor.no ne null and post.userNo eq accessor.no }">
+						<a id="hideBtn">숨김</a>
+						<a>수정</a>
+						<a id="delBtn">삭제</a>
+					</c:when>
+					<c:otherwise>
+						<a id="reportBtn">신고</a>
+					</c:otherwise>
+				</c:choose>
 			</div>
 		</div>
 		<div id="post-comment">
@@ -208,15 +234,37 @@
 
 			}
 		});
-	})
+	});
+	
+	$(document).on('click','.ht',function(){
+		if('${accessor}!=null'){
+			$.ajax({
+				url:'like.do',
+				dataType:'json',
+				data:{
+					no:$(this).attr('no'),
+					postNo:'${post.no}'
+				},
+				success:function(data){
+					console.log(data);
+					if(data > 0)
+						$('.ht').attr('class','ht liked');
+					else
+						$('.ht').attr('class','ht');
+					$('.ht').attr('no', data);
+				}
+			});
+		} else{
+			location.href="signIn";
+		}
+	});
 
 	$(document)
 			.on(
 					'click',
 					'#commentBtn',
 					function() {
-						var cArea = $('#commetList');
-						if (cArea.text().trim() == '') {
+						if ($('#commetList').text().trim() == '') {
 							getComment(${paging.currentPage});
 						}
 						if ($('#post-comment').css('display') == 'none')
@@ -261,7 +309,7 @@
 							+ '</p></div></li>';
 					}
 					console.log(str);
-					cArea.html(str);
+					$('#commetList').html(str);
 				}
 			});
 	 }

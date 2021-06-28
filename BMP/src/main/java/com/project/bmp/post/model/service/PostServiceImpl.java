@@ -53,8 +53,8 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public Post getPost(int no) {
-		return pDAO.getPost(sqlSession, no);
+	public Post getPost(Post post) {
+		return pDAO.getPost(sqlSession, post);
 	}
 
 	@Override

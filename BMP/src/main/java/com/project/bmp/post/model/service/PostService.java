@@ -23,7 +23,7 @@ public interface PostService {
 
 	int addFile(AttachedFile file);
 
-	Post getPost(int no);
+	Post getPost(Post post);
 
 	int delPost(int no);
 

@@ -42,8 +42,8 @@ public class PostDAO {
 		return sqlSession.insert("postMapper.addFile", file);
 	}
 
-	public Post getPost(SqlSessionTemplate sqlSession, int no) {
-		return sqlSession.selectOne("postMapper.getPost",no);
+	public Post getPost(SqlSessionTemplate sqlSession, Post post) {
+		return sqlSession.selectOne("postMapper.getPost", post);
 	}
 
 	public int delPost(SqlSessionTemplate sqlSession, int no) {

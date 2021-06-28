@@ -15,6 +15,12 @@ public class DM {
 	public DM() {
 	}
 
+	public DM(int roomNo, int userNo) {
+		super();
+		this.roomNo = roomNo;
+		this.userNo = userNo;
+	}
+
 	public DM(int no, String content, Date regDate, Date readDate, int roomNo, int userNo, String nickname,
 			String fileName) {
 		super();

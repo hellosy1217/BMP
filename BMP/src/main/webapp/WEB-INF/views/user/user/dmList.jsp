@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,8 +17,7 @@
 	list-style: none;
 	border: 0;
 	background: transparent;
-	font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial,
-		sans-serif;
+	font-family: sans-serif;
 }
 
 table {
@@ -184,32 +183,20 @@ table {
 						<c:forEach items="${list }" var="dm">
 							<c:choose>
 								<c:when test="${dm.readDate eq null}">
-									<tr class="msg-new" no="1">
-										<td><img
-											src="https://i.pinimg.com/564x/fa/41/ac/fa41ace1ab4cde11018a9b224e488806.jpg">
-										</td>
-										<td class="nickname">${dm.nickname }</td>
-										<td class="content"><p>
-												<span></span>
-											</p>
-											<p>${dm.content }</p></td>
-										<td class="time">7분 전</td>
-									</tr>
+									<tr class="msg-new" no="${dm.roomNo }">
 								</c:when>
 								<c:otherwise>
-									<tr class="msg-old" no="1">
-										<td><img
-											src="https://i.pinimg.com/564x/fa/41/ac/fa41ace1ab4cde11018a9b224e488806.jpg">
-										</td>
-										<td class="nickname">username</td>
-										<td class="content"><p>
-												<span></span>
-											</p>
-											<p>내용...ASDASFSAFSADIAOSPDIASOID</p></td>
-										<td class="time">7분 전</td>
-									</tr>
+									<tr class="msg-old" no="${dm.roomNo }">
 								</c:otherwise>
 							</c:choose>
+							<td><img src="${dm.fileName }"></td>
+							<td class="nickname">${dm.nickname }</td>
+							<td class="content"><p>
+									<span></span>
+								</p>
+								<p>${dm.content }</p></td>
+							<td class="time">7분 전</td>
+							</tr>
 						</c:forEach>
 					</table>
 				</div>
@@ -238,6 +225,7 @@ table {
 
 	$(document).on('click', '#list tr', function() {
 		var no = $(this).attr('no');
+		location.href='dm?no='+no;
 	});
 </script>
 </html>

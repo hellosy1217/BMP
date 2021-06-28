@@ -51,4 +51,9 @@ public class Room {
 		this.fileName = fileName;
 	}
 
+	@Override
+	public String toString() {
+		return "Room [no=" + no + ", userNo=" + userNo + ", dmList=" + dmList + ", fileName=" + fileName + "]";
+	}
+
 }

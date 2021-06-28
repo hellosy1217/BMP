@@ -199,9 +199,9 @@
 
 	$(document).on('click', '#dm-btn', function() {
 		if ('${accessor.no}' == '${profile.no}')
-			location.href = 'message';
-		else
-			console.log('hi');
+			location.href = 'dmList';
+		else{}
+			//메시지 작성 
 	});
 
 	$(document).on('click', '.follow-btn', function() {

@@ -21,7 +21,8 @@
 			user_no = #{blogNo}
 		</if>
 		<if test="keyword != ''">
-	 		and (tag_name like #{keyword}||'%')
+	 		and ((tag_name like '#'||#{keyword}||'%') or (post_title like '%'||#{keyword}||'%') or 
+	 			(post_content like '%'||#{keyword}||'%') or (user_nickname like #{keyword}||'%'))
 	 	</if>
 		<choose>
 			<when test="tab=='hide'">
@@ -44,7 +45,7 @@
 	</update>
 	<select id="getPostList" resultMap="postResultMap" resultType="Post" parameterType="ListInfo">
 		select post_no, post_title, post_content, post_reg_date, post_del_date, post_hide_date, user_no, 
-			p.file_name, countcomment, tag_no, tag_name, countlike, user_nickname, nvl(like_no,0) liked, blocked
+			p.file_name, countcomment, tag_no, tag_name, countlike, user_nickname, like_no, blocked
 		from plist p
     		left join ulist using (user_no)
 			left join (select like_no, post_no from bmp_like where user_no=#{accessorNo}) using (post_no)
@@ -62,7 +63,8 @@
 			user_no = #{blogNo}
 		</if>
 		<if test="keyword != ''">
-	 		and (tag_name like #{keyword}||'%')
+	 		and ((tag_name like '#'||#{keyword}||'%') or (post_title like '%'||#{keyword}||'%') or 
+	 			(post_content like '%'||#{keyword}||'%') or (user_nickname like #{keyword}||'%'))
 	 	</if>
 		<choose>
 			<when test="tab=='hide'">
@@ -95,14 +97,14 @@
 		
 	<select id="getPost" resultMap="postResultMap">
 		select post_no, post_title, post_content, post_reg_date, post_del_date, post_hide_date, user_no, 
-			p.file_name, countcomment, tag_no, tag_name, countlike, nvl(like_no,0) liked, blocked
+			p.file_name, countcomment, tag_no, tag_name, countlike, like_no, blocked
 		from plist p
     		left join ulist using (user_no)
-			left join (select like_no, post_no from bmp_like where user_no=#{accessorNo}) using (post_no)
+			left join (select like_no, post_no from bmp_like where user_no=#{userNo}) using (post_no)
     		left join (select user_no, 'block' blocked from(
     						select ulist.*, to_user, fu from ulist
-       							left join (select to_user, from_user from bmp_block where from_user=#{accessorNo}) on (user_no=to_user)
-        						left join (select from_user fu, to_user tu from bmp_block where to_user=#{accessorNo}) on (user_no=fu)
+       							left join (select to_user, from_user from bmp_block where from_user=#{userNo}) on (user_no=to_user)
+        						left join (select from_user fu, to_user tu from bmp_block where to_user=#{userNo}) on (user_no=fu)
            					order by from_user) 
 						where to_user is not null or fu is not null) using (user_no)
 		where post_no=#{no}
@@ -128,9 +130,12 @@
 			</otherwise>
 		</choose>
 	</insert>
-	<insert id="addLike" parameterType="Like">
-		insert into bmp_like
-		values (like_seq.nextval,sysdate,#{userNo},
+	<insert id="addLike" parameterType="Like" useGeneratedKeys="false">
+		<selectKey keyProperty="no" resultType="int" order="BEFORE">
+			select like_seq.nextval from dual
+		</selectKey>
+			insert into bmp_like
+			values (#{no},sysdate,#{userNo},
 		<choose>
 			<when test="commentNo==0">
 				null,#{postNo})
@@ -175,7 +180,7 @@
 		<result property="countComment" column="countcomment" />
 		<result property="countLike" column="countlike" />
 		<result property="nickname" column="user_nickname" />
-		<result property="like" column="liked" />
+		<result property="like" column="like_no" />
 		<collection property="tagList" javaType="arraylist" resultMap="tagResultMap"></collection>
 	</resultMap>
 	

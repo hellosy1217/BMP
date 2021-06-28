@@ -120,7 +120,7 @@
 }
 
 .liked {
-	color: #ea4c89;
+	color: #ea4c89 !important;
 }
 </style>
 </head>
@@ -170,18 +170,11 @@
 					postNo : postNo
 				},
 				success : function(data) {
-					console.log("data: "+data);
-					if (data == 2) {
-						div.attr({
-							'class' : 'likeBtn liked',
-							'like' : '1'
-						});
-					} else if (data == 1) {
-						div.attr({
-							'class' : 'likeBtn',
-							'like' : '0'
-						});
-					}
+					if (data > 0)
+						div.attr('class','likeBtn liked');
+					else if (data == 0)
+						div.attr('class','likeBtn');
+					div.attr('like',data);
 				}
 			});
 		} else {
@@ -194,60 +187,5 @@
 		location.href = "${pageContext.request.contextPath}/post?no=" + post;
 	});
 	
-	$(window).scroll(function(){
-		if($(document).height() <= $(window).scrollTop() + $(window).height()){
-			var page = Number($('#page').val())+1;
-			var keyword = '${keyword}';
-			var sort = $('#sort').text();
-			if($('#page').val()<${listInfo.paging.maxPage}){
-				$.ajax({
-					url:'morePost.do',
-					dataType : 'json',
-					data:{
-						no:0,
-						page:page,
-						limit:${listInfo.paging.boardLimit},
-						keyword:keyword,
-						sort:sort
-					},
-					success:function(data){
-						var str = '';
-						for(var i=0; i < data.length; i++){
-							str+='<li class="post"><div><img class="thumbnail" src="';
-							str+='https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/dog-puppy-on-garden-royalty-free-image-1586966191.jpg';
-							str+='"></div><div class="post-content"><div><p><span><img src="';
-							str+='https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/dog-puppy-on-garden-royalty-free-image-1586966191.jpg';
-							str+='"></span><span class="nickname">';
-							str+=data[i].nickname;
-							str+='</span></p><p>';
-							str+=data[i].content;
-							str+='</p><p class="tags">';
-							str+=data[i].tag;
-							str+='</p></div><p class="date">';
-							str+=data[i].regDate;		
-							str+='</p></div></li>';
-						}
-						$('.blog ol').append(str);
-						$('#page').val(page);
-					}
-				});
-			} else {
-				$('#dialog').css({
-					'display':'flex',
-					'opacity':'100'
-				});
-				setTimeout(function(){
-					$('#dialog').css({
-						'opacity':'0'
-					});
-				}, 2000);
-				setTimeout(function(){
-					$('#dialog').css({
-						'display':'none'
-					});
-				}, 4000);
-			}
-		}
-	});
 </script>
 </html>

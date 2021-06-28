@@ -47,10 +47,12 @@ public class PostController {
 	@RequestMapping("explorer")
 	public ModelAndView explorer(HttpSession session, @RequestParam(value = "sort", defaultValue = "인기순") String sort,
 			@RequestParam(value = "keyword", defaultValue = "") String keyword, ModelAndView mav) {
+
 		ListInfo listInfo = getListInfo(session, sort, keyword, 1, 16, "");
 
 		ArrayList<Post> list = pService.getPostList(listInfo);
 
+		System.out.println(list.toString());
 		mav.addObject("listInfo", listInfo);
 		mav.addObject("list", list);
 		mav.setViewName("user/post/explorer");
@@ -152,8 +154,10 @@ public class PostController {
 	}
 
 	@RequestMapping(value = "post", method = RequestMethod.GET)
-	public ModelAndView post(ModelAndView mav, int no) {
-		Post post = pService.getPost(no);
+	public ModelAndView post(HttpSession session, ModelAndView mav, int no) {
+		User accessor = (User) session.getAttribute("accessor");
+		Post post = new Post(no, accessor.getNo());
+		post = pService.getPost(post);
 		User profile = null;
 
 		if (post != null) {
@@ -161,11 +165,10 @@ public class PostController {
 			profile = uService.getProfile(post.getUserNo());
 		}
 		if (profile != null) {
-
 			Paging paging = new Pagination().getPaging(1, 20, post.getCountComment());
 			mav.addObject("post", post);
 			mav.addObject("profile", profile);
-			mav.addObject("paging",paging);
+			mav.addObject("paging", paging);
 			mav.setViewName("user/post/blog");
 		} else {
 			// 에러페이지
@@ -195,15 +198,13 @@ public class PostController {
 		}
 		like.setUserNo(accessor.getNo());
 
-		System.out.println(like.toString());
 		if (like.getNo() == 0) {
 			result = pService.addLike(like);
 			if (result > 0)
-				result = 2;
+				result = like.getNo();
 		} else {
 			result = pService.delLike(like);
-			if (result > 0)
-				result = 1;
+			result = 0;
 		}
 		return result + "";
 	}
@@ -234,13 +235,7 @@ public class PostController {
 		if (accessor != null)
 			accessorNo = accessor.getNo();
 
-		String searchFilter = "닉네임";
-
-		if (keyword != null && !keyword.equals("")) {
-			searchFilter = "태그";
-			keyword = "#" + keyword;
-		}
-		ListInfo listInfo = new ListInfo(accessorNo, sort, searchFilter, keyword, tab);
+		ListInfo listInfo = new ListInfo(accessorNo, sort, keyword, tab);
 
 		int listCount = pService.getListCount(listInfo);
 

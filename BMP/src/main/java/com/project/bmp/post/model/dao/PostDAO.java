@@ -60,4 +60,8 @@ public class PostDAO {
 		return (ArrayList) sqlSession.selectList("postMapper.getComment", no, rowBounds);
 	}
 
+	public ArrayList<String> getFileNames(SqlSessionTemplate sqlSession, int no) {
+		return (ArrayList) sqlSession.selectList("postMapper.getFile", no);
+	}
+
 }

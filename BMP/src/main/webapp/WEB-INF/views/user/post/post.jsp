@@ -156,7 +156,7 @@
 }
 
 .ht {
-	padding: 2.5px 7px;
+	padding: 3.5px 7px 1.5px;
 	border: 1px solid #e0e0e0;
 	border-radius: 50%;
 	margin-left: 5px;
@@ -170,6 +170,10 @@
 .liked {
 	color: #ea4c89;
 	border-color: #ea4c89;
+}
+
+.post-bottom a {
+	cursor: pointer;
 }
 </style>
 </head>
@@ -220,20 +224,22 @@
 	</div>
 </body>
 <script type="text/javascript">
-	$('#delBtn').on('click', function() {
-		$.ajax({
-			type : 'post',
-			url : 'delete.do',
-			dataType : 'json',
-			data : {
-				no : '${post.no}'
-			},
-			success : function(data) {
-				if (data == null)
-					location.href = "blog?blog=${accessor.no}"
-
-			}
-		});
+	$(document).on('click','#delBtn', function() {
+		if('${accessor.no}'=='${post.userNo}'){
+			$.ajax({
+				type : 'post',
+				url : 'delPost.do',
+				dataType : 'json',
+				data : {
+					no : '${post.no}'
+				},
+				success : function(data) {
+					console.log('들어옴... '+data);
+					if (data == "success")
+						location.href = "blog?blog=${accessor.no}";
+				}
+			});
+		}
 	});
 	
 	$(document).on('click','.ht',function(){

@@ -52,7 +52,6 @@ public class PostController {
 
 		ArrayList<Post> list = pService.getPostList(listInfo);
 
-		System.out.println(list.toString());
 		mav.addObject("listInfo", listInfo);
 		mav.addObject("list", list);
 		mav.setViewName("user/post/explorer");
@@ -95,19 +94,16 @@ public class PostController {
 				}
 			}
 		}
-		pService.addPost(post);
 
+		pService.addPost(post);
 		int result = post.getNo();
 
-		if (fileArr != null) {
-			AttachedFile file = new AttachedFile(fileArr.get(0), "thumbnail", post.getUserNo(), result, 0);
-			if (result > 0) {
-				int r = pService.addFile(file);
-				if (r < 1)
-					result = 0;
-			}
-		} else {
-			result = post.getNo();
+		// 파일 이름 저장
+		if (fileArr != null && result > 0) {
+			AttachedFile file = new AttachedFile(result, fileArr);
+			int r = pService.addFile(file);
+			if (r == 0)
+				result = 0;
 		}
 		return new Gson().toJson(result);
 	}
@@ -156,7 +152,10 @@ public class PostController {
 	@RequestMapping(value = "post", method = RequestMethod.GET)
 	public ModelAndView post(HttpSession session, ModelAndView mav, int no) {
 		User accessor = (User) session.getAttribute("accessor");
-		Post post = new Post(no, accessor.getNo());
+		int userNo = 0;
+		if (accessor != null)
+			userNo = accessor.getNo();
+		Post post = new Post(no, userNo);
 		post = pService.getPost(post);
 		User profile = null;
 
@@ -177,15 +176,16 @@ public class PostController {
 	}
 
 	@ResponseBody
-	@RequestMapping("delete.do")
-	public String delete(HttpSession session, int no) {
-		System.out.println("들어옴 ");
+	@RequestMapping(value = "delPost.do", produces = "application/json;charset=utf-8")
+	public String delete(int no) {
+		ArrayList<String> files = pService.getFileNames(no);
 		int result = pService.delPost(no);
-		System.out.println("result = " + result);
-		if (result > 0)
-			return null;
-		else
-			return "error";
+		if (result > 0 && files != null) {
+			for (String s : files)
+				aws.delete(s);
+		} else if (result == 0) {
+		} // 에러페이지
+		return new Gson().toJson("success");
 	}
 
 	@ResponseBody
@@ -210,7 +210,7 @@ public class PostController {
 	}
 
 	@ResponseBody
-	@RequestMapping("comment.do")
+	@RequestMapping(value = "comment.do", produces = "application/json;charset=utf-8")
 	public String getComment(int no, int countComment, @RequestParam(value = "page", defaultValue = "1") int page) {
 		Gson gson = new Gson();
 

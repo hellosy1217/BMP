@@ -14,11 +14,12 @@
            					order by from_user) 
 						where to_user is not null or fu is not null) using (user_no)
 		<where>
+			post_del_date is null
 		<if test="blogNo ==  0">
-   			user_private='N'
+   			and user_private='N'
    		</if>
 		<if test="blogNo > 0 and tab != 'like'">
-			user_no = #{blogNo}
+			and user_no = #{blogNo}
 		</if>
 		<if test="keyword != ''">
 	 		and ((tag_name like '#'||#{keyword}||'%') or (post_title like '%'||#{keyword}||'%') or 
@@ -56,11 +57,13 @@
            					order by from_user) 
 						where to_user is not null or fu is not null) using (user_no)
 		<where>
+			post_del_date is null and
+			file_class='thumbnail'
 		<if test="blogNo ==  0">
-   			user_private='N'
+   			and user_private='N'
    		</if>
 		<if test="blogNo > 0 and tab != 'like'">
-			user_no = #{blogNo}
+			and user_no = #{blogNo}
 		</if>
 		<if test="keyword != ''">
 	 		and ((tag_name like '#'||#{keyword}||'%') or (post_title like '%'||#{keyword}||'%') or 
@@ -97,7 +100,7 @@
 		
 	<select id="getPost" resultMap="postResultMap">
 		select post_no, post_title, post_content, post_reg_date, post_del_date, post_hide_date, user_no, 
-			p.file_name, countcomment, tag_no, tag_name, countlike, like_no, blocked
+			p.file_name, file_class, countcomment, tag_no, tag_name, countlike, like_no, blocked
 		from plist p
     		left join ulist using (user_no)
 			left join (select like_no, post_no from bmp_like where user_no=#{userNo}) using (post_no)
@@ -107,7 +110,7 @@
         						left join (select from_user fu, to_user tu from bmp_block where to_user=#{userNo}) on (user_no=fu)
            					order by from_user) 
 						where to_user is not null or fu is not null) using (user_no)
-		where post_no=#{no}
+		where post_no=#{no} and post_del_date is null
 	</select>	
 	
 	<insert id="addPost" useGeneratedKeys="false">
@@ -119,8 +122,17 @@
 	</insert>
 	
 	<insert id="addFile" parameterType="AttachedFile">
-		insert into bmp_file
-		values (file_seq.nextval,#{name},#{fileClass},#{userNo},
+		insert all
+		<foreach collection="fileNames" item="fname" index="index">
+		into bmp_file values (get_file_seq,#{fname},
+		<choose>
+			<when test="index == 0">
+				'thumbnail',
+			</when>
+			<otherwise>
+				null,null,
+			</otherwise>
+		</choose>
 		<choose>
 			<when test="postNo > 0">
 				#{postNo},null)
@@ -129,7 +141,10 @@
 				null,#{reportNo})
 			</otherwise>
 		</choose>
+		</foreach>
+		SELECT * FROM DUAL
 	</insert>
+	
 	<insert id="addLike" parameterType="Like" useGeneratedKeys="false">
 		<selectKey keyProperty="no" resultType="int" order="BEFORE">
 			select like_seq.nextval from dual
@@ -166,6 +181,10 @@
 		select * from clist where post_no=#{no}
 	</select>
 	
+	<select id="getFile" resultType="string">
+		select file_name from bmp_file where post_no=#{no}
+	</select>
+	
 	<resultMap type="Post" id="postResultMap">
 		<id property="no" column="post_no" />
 		<result property="title" column="post_title" />
@@ -185,27 +204,19 @@
 	</resultMap>
 	
 	<resultMap type="Tag" id="tagResultMap">
-	<id property="no" column="tag_no"/>
-	<result property="name" column="tag_name"/>
-	<result property="postNo" column="tag_post_no"/>
+		<id property="no" column="tag_no"/>
+		<result property="name" column="tag_name"/>
+		<result property="postNo" column="tag_post_no"/>
 	</resultMap>
 	
 	<resultMap type="Comment" id="commentResultMap">
-	<id property="no" column="comment_no"/>
-	<result property="content" column="comment_content"/>
-	<result property="postNo" column="post_no"/>
-	<result property="userNo" column="user_no"/>
-	<result property="nickname" column="user_nickname"/>
-	<result property="fileName" column="file_name"/>
-	<result property="countLike" column="countlike"/>
+		<id property="no" column="comment_no"/>
+		<result property="content" column="comment_content"/>
+		<result property="postNo" column="post_no"/>
+		<result property="userNo" column="user_no"/>
+		<result property="nickname" column="user_nickname"/>
+		<result property="fileName" column="file_name"/>
+		<result property="countLike" column="countlike"/>	
 	</resultMap>
 	
-	<resultMap type="AttachedFile" id="fileResultMap">
-	<id property="no" column="file_no"/>
-	<result property="name" column="file_name"/>
-	<result property="fileClass" column="file_class"/>
-	<result property="userNo" column="user_no"/>
-	<result property="postNo" column="post_no"/>
-	<result property="reportNo" column="report_no"/>
-	</resultMap>
 </mapper>

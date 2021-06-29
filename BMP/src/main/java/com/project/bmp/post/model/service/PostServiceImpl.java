@@ -71,4 +71,9 @@ public class PostServiceImpl implements PostService {
 	public ArrayList<Comment> getComment(int no, Paging paging) {
 		return pDAO.getComment(sqlSession, no, paging);
 	}
+
+	@Override
+	public ArrayList<String> getFileNames(int no) {
+		return pDAO.getFileNames(sqlSession, no);
+	}
 }

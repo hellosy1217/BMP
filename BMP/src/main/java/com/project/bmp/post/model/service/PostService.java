@@ -31,4 +31,6 @@ public interface PostService {
 
 	ArrayList<Comment> getComment(int no, Paging paging);
 
+	ArrayList<String> getFileNames(int no);
+
 }

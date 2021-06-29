@@ -1,5 +1,7 @@
 package com.project.bmp.post.model.vo;
 
+import java.util.ArrayList;
+
 public class AttachedFile {
 	private int no;
 	private String name;
@@ -7,8 +9,15 @@ public class AttachedFile {
 	private int userNo;
 	private int postNo;
 	private int reportNo;
+	private ArrayList<String> fileNames;
 
 	public AttachedFile() {
+	}
+
+	public AttachedFile(int postNo, ArrayList<String> fileNames) {
+		super();
+		this.postNo = postNo;
+		this.fileNames = fileNames;
 	}
 
 	public AttachedFile(String name, String fileClass, int userNo, int postNo, int reportNo) {
@@ -28,6 +37,18 @@ public class AttachedFile {
 		this.userNo = userNo;
 		this.postNo = postNo;
 		this.reportNo = reportNo;
+	}
+
+	public AttachedFile(int no, String name, String fileClass, int userNo, int postNo, int reportNo,
+			ArrayList<String> fileNames) {
+		super();
+		this.no = no;
+		this.name = name;
+		this.fileClass = fileClass;
+		this.userNo = userNo;
+		this.postNo = postNo;
+		this.reportNo = reportNo;
+		this.fileNames = fileNames;
 	}
 
 	public int getNo() {
@@ -76,6 +97,14 @@ public class AttachedFile {
 
 	public void setReportNo(int reportNo) {
 		this.reportNo = reportNo;
+	}
+
+	public ArrayList<String> getFileNames() {
+		return fileNames;
+	}
+
+	public void setFileNames(ArrayList<String> fileNames) {
+		this.fileNames = fileNames;
 	}
 
 }

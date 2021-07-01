@@ -31,6 +31,7 @@ import com.project.bmp.post.model.vo.Like;
 import com.project.bmp.post.model.vo.ListInfo;
 import com.project.bmp.post.model.vo.Post;
 import com.project.bmp.user.model.service.UserService;
+import com.project.bmp.user.model.vo.Follow;
 import com.project.bmp.user.model.vo.User;
 
 @Controller
@@ -100,8 +101,13 @@ public class PostController {
 
 		// 파일 이름 저장
 		if (fileArr != null && result > 0) {
-			AttachedFile file = new AttachedFile(result, fileArr);
-			int r = pService.addFile(file);
+			ArrayList<AttachedFile> fList = new ArrayList<>();
+			for (String s : fileArr) {
+				fList.add(new AttachedFile(s, 0, result, 0));
+			}
+			post.setFileList(fList);
+
+			int r = pService.addFile(post);
 			if (r == 0)
 				result = 0;
 		}
@@ -123,14 +129,6 @@ public class PostController {
 		return new Gson().toJson(map);
 	}
 
-	@ResponseBody
-	@RequestMapping(value = "fileDelete.do", method = { RequestMethod.POST, RequestMethod.GET })
-	public String fileDelete(@RequestParam(value = "fileArr[]") String[] fileArr) {
-		aws.delete(null);
-
-		return null;
-	}
-
 	@RequestMapping("blog")
 	public ModelAndView blog(HttpSession session, @RequestParam(value = "sort", defaultValue = "인기순") String sort,
 			@RequestParam(value = "keyword", defaultValue = "") String keyword,
@@ -140,7 +138,7 @@ public class PostController {
 		listInfo.setBlogNo(blog);
 
 		ArrayList<Post> list = pService.getPostList(listInfo);
-		User profile = uService.getProfile(blog);
+		User profile = uService.getProfile(new Follow(blog, listInfo.getAccessor_no()));
 
 		mav.addObject("listInfo", listInfo);
 		mav.addObject("list", list);
@@ -161,7 +159,7 @@ public class PostController {
 
 		if (post != null) {
 			pService.addCount(post.getUserNo());
-			profile = uService.getProfile(post.getUserNo());
+			profile = uService.getProfile(new Follow(post.getUserNo(), userNo));
 		}
 		if (profile != null) {
 			Paging paging = new Pagination().getPaging(1, 20, post.getCountComment());
@@ -186,6 +184,51 @@ public class PostController {
 		} else if (result == 0) {
 		} // 에러페이지
 		return new Gson().toJson("success");
+	}
+
+	@RequestMapping("edit")
+	public ModelAndView edit(HttpSession session, int no, ModelAndView mav) {
+		User accessor = (User) session.getAttribute("accessor");
+		Post post = pService.getPost(new Post(no, accessor.getNo()));
+		ArrayList<String> fileNames = new ArrayList<>();
+		for (AttachedFile file : post.getFileList())
+			fileNames.add(file.getName());
+		mav.addObject("post", post);
+		mav.addObject("fileNames", fileNames);
+		mav.setViewName("user/post/write");
+		return mav;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "edit.do", produces = "application/json;charset=utf-8")
+	public String edit(Post post, @RequestParam(value = "fileArr[]", required = false) ArrayList<String> fileArr) {
+		// 사용하지 않은 사진 삭제
+		if (fileArr != null) {
+			for (int i = fileArr.size() - 1; i >= 0; i--) {
+				String str = fileArr.get(i);
+				if (!post.getContent().contains(str)) {
+					str.replace(aws.getURL(), "");
+					aws.delete(str);
+					fileArr.remove(i);
+				}
+			}
+		}
+
+		pService.editPost(post);
+
+		int result = 0;
+		// 파일 이름 저장
+		if (fileArr != null) {
+			pService.delFile(post.getNo());
+			ArrayList<AttachedFile> fList = new ArrayList<>();
+			for (String s : fileArr) {
+				fList.add(new AttachedFile(s, 0, post.getNo(), 0));
+			}
+			post.setFileList(fList);
+
+			result = pService.addFile(post);
+		}
+		return new Gson().toJson(result);
 	}
 
 	@ResponseBody
@@ -219,6 +262,14 @@ public class PostController {
 		ArrayList<Comment> cList = pService.getComment(no, paging);
 
 		return gson.toJson(cList);
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "hide.do", produces = "application/json;charset=utf-8")
+	public String hide(int no, String hide) {
+		int result = pService.editHideDate(new Post(no, hide));
+
+		return new Gson().toJson(result + "");
 	}
 
 	@RequestMapping("admin")

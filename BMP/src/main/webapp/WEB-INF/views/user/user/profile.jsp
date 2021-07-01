@@ -150,6 +150,11 @@
 	background: #33769c;
 	cursor: pointer;
 }
+
+.followed {
+	background: #ddd !important;
+	color: #929292 !important;
+}
 </style>
 </head>
 <body>
@@ -165,7 +170,14 @@
 			</c:if>
 			<div id="profile-btns">
 				<p>
-					<a class="follow-btn">Follow</a>
+					<c:choose>
+						<c:when test="${profile.followInfo != null and profile.followInfo.no != 0}">
+							<a class="follow-btn followed">Following</a>
+						</c:when>
+						<c:otherwise>
+							<a class="follow-btn">Follow</a>
+						</c:otherwise>
+					</c:choose>
 				</p>
 				<p>
 					<a id="more-btn">⌵</a>
@@ -187,6 +199,9 @@
 	</div>
 </body>
 <script>
+	var followed = '${profile.followInfo.no}';
+	if (followed == '')
+		followed = 0;
 	$(document).on('click', '#more-btn', function() {
 		if ($(this).attr('class') != 'font-rotate') {
 			$('#dm-p').css('display', 'flex');
@@ -200,25 +215,36 @@
 	$(document).on('click', '#dm-btn', function() {
 		if ('${accessor.no}' == '${profile.no}')
 			location.href = 'dmList';
-		else{}
-			//메시지 작성 
+		else {
+		}
+		//메시지 작성 
 	});
 
 	$(document).on('click', '.follow-btn', function() {
-		var text = $(this).text();
-
-		if (text == 'Follow') {
-			$(this).text('Following');
-			$(this).css({
-				'background' : '#ddd',
-				'color' : '#929292'
+		console.log(followed);
+		if ('${accessor}' != null) {
+			var text = $(this).text();
+			var pms = 'Y';
+			if ('${profile.userPrivate}' == 'Y')
+				pms = 'N';
+			$.ajax({
+				type : 'post',
+				url : 'follow.do',
+				dataType : 'json',
+				data : {
+					no : followed,
+					permission : pms,
+					toUser : '${profile.no}',
+					fromUser : '${accessor.no}'
+				},
+				success : function(data) {
+					console.log(followed);
+					followed = data;
+					location.reload(true);
+				}
 			});
 		} else {
-			$(this).text('Follow');
-			$(this).css({
-				'background' : '',
-				'color' : ''
-			});
+			location.href = 'signIn';
 		}
 	});
 </script>

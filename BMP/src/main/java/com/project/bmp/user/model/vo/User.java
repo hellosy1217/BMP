@@ -22,6 +22,7 @@ public class User {
 	private int follow;
 	private int follower;
 	private int post;
+	private Follow followInfo;
 
 	public User() {
 	}
@@ -49,7 +50,7 @@ public class User {
 
 	public User(int no, String email, String password, String nickname, String birth, String phone, Date regDate,
 			Date delDate, char confirm, char alarm, char dm, char sub, char userPrivate, char admin, String comment,
-			String fileName, int follow, int follower, int post) {
+			String fileName, int follow, int follower, int post, Follow followInfo) {
 		super();
 		this.no = no;
 		this.email = email;
@@ -63,13 +64,14 @@ public class User {
 		this.alarm = alarm;
 		this.dm = dm;
 		this.sub = sub;
-		UserPrivate = userPrivate;
+		this.UserPrivate = userPrivate;
 		this.admin = admin;
 		this.comment = comment;
 		this.fileName = fileName;
 		this.follow = follow;
 		this.follower = follower;
 		this.post = post;
+		this.followInfo = followInfo;
 	}
 
 	public int getNo() {
@@ -222,6 +224,14 @@ public class User {
 
 	public void setPost(int post) {
 		this.post = post;
+	}
+
+	public Follow getFollowInfo() {
+		return followInfo;
+	}
+
+	public void setFollowInfo(Follow followInfo) {
+		this.followInfo = followInfo;
 	}
 
 }

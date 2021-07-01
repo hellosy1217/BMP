@@ -2,6 +2,7 @@ package com.project.bmp.post.model.dao;
 
 import java.util.ArrayList;
 
+import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
@@ -38,8 +39,8 @@ public class PostDAO {
 		return sqlSession.insert("postMapper.addPost", post);
 	}
 
-	public int addFile(SqlSessionTemplate sqlSession, AttachedFile file) {
-		return sqlSession.insert("postMapper.addFile", file);
+	public int addFile(SqlSessionTemplate sqlSession, Post post) {
+		return sqlSession.insert("postMapper.addFile", post);
 	}
 
 	public Post getPost(SqlSessionTemplate sqlSession, Post post) {
@@ -62,6 +63,18 @@ public class PostDAO {
 
 	public ArrayList<String> getFileNames(SqlSessionTemplate sqlSession, int no) {
 		return (ArrayList) sqlSession.selectList("postMapper.getFile", no);
+	}
+
+	public int editHideDate(SqlSessionTemplate sqlSession, Post post) {
+		return sqlSession.update("postMapper.editHideDate", post);
+	}
+
+	public int delFile(SqlSessionTemplate sqlSession, int no) {
+		return sqlSession.delete("postMapper.delFile", no);
+	}
+
+	public int editPost(SqlSessionTemplate sqlSession, Post post) {
+		return sqlSession.update("postMapper.editPost", post);
 	}
 
 }

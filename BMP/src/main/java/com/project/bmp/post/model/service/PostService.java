@@ -21,7 +21,7 @@ public interface PostService {
 
 	int addPost(Post post);
 
-	int addFile(AttachedFile file);
+	int addFile(Post post);
 
 	Post getPost(Post post);
 
@@ -32,5 +32,11 @@ public interface PostService {
 	ArrayList<Comment> getComment(int no, Paging paging);
 
 	ArrayList<String> getFileNames(int no);
+
+	int editHideDate(Post post);
+
+	int delFile(int no);
+
+	int editPost(Post post);
 
 }

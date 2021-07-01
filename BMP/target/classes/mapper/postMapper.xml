@@ -121,30 +121,33 @@
 		values (#{no},#{title},#{content},0,sysdate,null,null,null,#{userNo})
 	</insert>
 	
-	<insert id="addFile" parameterType="AttachedFile">
+	<insert id="addFile" parameterType="Post">
 		insert all
-		<foreach collection="fileNames" item="fname" index="index">
-		into bmp_file values (get_file_seq,#{fname},
+		<foreach collection="fileList" item="fList" index="index">
+		into bmp_file values (get_file_seq,#{fList.name},
 		<choose>
 			<when test="index == 0">
 				'thumbnail',
 			</when>
 			<otherwise>
-				null,null,
+				null,
 			</otherwise>
 		</choose>
+		null,
 		<choose>
-			<when test="postNo > 0">
-				#{postNo},null)
+			<when test="fList.postNo > 0">
+				#{fList.postNo},null)
 			</when>
 			<otherwise>
-				null,#{reportNo})
+				null,#{fList.reportNo})
 			</otherwise>
 		</choose>
 		</foreach>
 		SELECT * FROM DUAL
 	</insert>
-	
+	<delete id="delFile">
+		delete from bmp_file where post_no=#{no}
+	</delete>
 	<insert id="addLike" parameterType="Like" useGeneratedKeys="false">
 		<selectKey keyProperty="no" resultType="int" order="BEFORE">
 			select like_seq.nextval from dual
@@ -185,6 +188,25 @@
 		select file_name from bmp_file where post_no=#{no}
 	</select>
 	
+	<update id="editPost" parameterType="Post">
+		update bmp_post 
+		set post_title=#{title},post_content=#{content},post_edit_date=sysdate 
+		where post_no=#{no}
+	</update>
+	
+	<update id="editHideDate">
+		update bmp_post set 
+		<choose>
+			<when test="content == ''">
+				post_hide_date=sysdate
+			</when>
+			<otherwise>
+				post_hide_date=null
+			</otherwise>
+		</choose>
+		where post_no=#{no}
+	</update>
+	
 	<resultMap type="Post" id="postResultMap">
 		<id property="no" column="post_no" />
 		<result property="title" column="post_title" />
@@ -200,7 +222,8 @@
 		<result property="countLike" column="countlike" />
 		<result property="nickname" column="user_nickname" />
 		<result property="like" column="like_no" />
-		<collection property="tagList" javaType="arraylist" resultMap="tagResultMap"></collection>
+		<collection property="tagList" javaType="arraylist" resultMap="tagResultMap"/>
+		<collection property="fileList" javaType="arrayList" resultMap="fileResultMap"/>
 	</resultMap>
 	
 	<resultMap type="Tag" id="tagResultMap">
@@ -217,6 +240,15 @@
 		<result property="nickname" column="user_nickname"/>
 		<result property="fileName" column="file_name"/>
 		<result property="countLike" column="countlike"/>	
+	</resultMap>
+	
+	<resultMap type="AttachedFile" id="fileResultMap">
+		<id property="no" column="file_no"/>
+		<result property="name" column="file_name"/>
+		<result property="fileClass" column="file_class"/>
+		<result property="userNo" column="user_no"/>
+		<result property="postNo" column="post_no"/>
+		<result property="reportNo" column="report_no"/>
 	</resultMap>
 	
 </mapper>

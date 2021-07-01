@@ -206,8 +206,8 @@
 				<c:choose>
 					<c:when
 						test="${accessor.no ne null and post.userNo eq accessor.no }">
-						<a id="hideBtn">숨김</a>
-						<a>수정</a>
+						<a id="hideBtn">숨김<c:if test="${post.hideDate != null }"> 해제</c:if></a>
+						<a id="editBtn">수정</a>
 						<a id="delBtn">삭제</a>
 					</c:when>
 					<c:otherwise>
@@ -224,6 +224,7 @@
 	</div>
 </body>
 <script type="text/javascript">
+	var hideDate = '${post.hideDate}';
 	$(document).on('click','#delBtn', function() {
 		if('${accessor.no}'=='${post.userNo}'){
 			$.ajax({
@@ -278,6 +279,35 @@
 						else
 							$('#post-comment').hide();
 					});
+	
+	$(document).on('click','#hideBtn',function(){
+		$.ajax({
+			url:'hide.do',
+			dataType:'json',
+			data:{
+				no:'${post.no}',
+				hide:hideDate
+			},
+			success:function(data){
+				if(hideDate==''){
+					hideDate='1';
+					$('#hideBtn').text('숨김 해제');
+				}
+				else {
+					hideDate='';
+					$('#hideBtn').text('숨김');
+				}
+			}
+		});
+	});
+	
+	$(document).on('click','#reportBtn',function(){
+		
+	});
+	
+	$(document).on('click','#editBtn',function(){
+		location.href='edit?no=${post.no}';
+	});
 	
 	$(document).on('click','#numBtn',function(){
 		var no = $(this).attr('no');

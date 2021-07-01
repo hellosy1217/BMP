@@ -31,6 +31,7 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.gson.Gson;
 import com.project.bmp.user.model.service.UserService;
+import com.project.bmp.user.model.vo.Follow;
 import com.project.bmp.user.model.vo.User;
 
 @SessionAttributes("accessor")
@@ -175,7 +176,7 @@ public class UserController {
 	}
 
 	@ResponseBody
-	@RequestMapping("updatePw")
+	@RequestMapping("updatePw.do")
 	public String updatePw(User accessor, HttpSession session) {
 		String encPassword = bcryptPasswordEncoder.encode(accessor.getPassword());
 		accessor.setPassword(encPassword);
@@ -189,6 +190,28 @@ public class UserController {
 		return new Gson().toJson(msg);
 	}
 
+	@ResponseBody
+	@RequestMapping("follow.do")
+	public String follow(Follow follow) {
+		int result = 0;
+		System.out.println(follow.getNo());
+		if (follow.getNo() == 0) {
+			result = uService.addFollow(follow);
+			if (result > 0) {
+				result = follow.getNo();
+			} else {
+				// 오류페이지
+			}
+		} else {
+			result = uService.delFollow(follow);
+			if (result > 0) {
+				result = 0;
+			} else {
+				// 오류페이지
+			}
+		}
+		return new Gson().toJson(result + "");
+	}
 
 	// 인증코드 생성하기
 	public String getAuthCode() {

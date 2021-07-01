@@ -3,6 +3,7 @@ package com.project.bmp.user.model.dao;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.project.bmp.user.model.vo.Follow;
 import com.project.bmp.user.model.vo.User;
 
 @Repository("uDAO")
@@ -16,8 +17,8 @@ public class UserDAO {
 		return sqlSession.selectOne("userMapper.selectGoogleUser", accessor);
 	}
 
-	public User getProfile(SqlSessionTemplate sqlSession, int no) {
-		return sqlSession.selectOne("userMapper.getProfile", no);
+	public User getProfile(SqlSessionTemplate sqlSession, Follow follow) {
+		return sqlSession.selectOne("userMapper.getProfile", follow);
 	}
 
 	public int addUser(SqlSessionTemplate sqlSession, User accessor) {
@@ -30,6 +31,14 @@ public class UserDAO {
 
 	public int updatePw(SqlSessionTemplate sqlSession, User accessor) {
 		return sqlSession.update("userMapper.updatePw", accessor);
+	}
+
+	public int addFollow(SqlSessionTemplate sqlSession, Follow follow) {
+		return sqlSession.delete("userMapper.addFollow", follow);
+	}
+	
+	public int delFollow(SqlSessionTemplate sqlSession, Follow follow) {
+		return sqlSession.delete("userMapper.delFollow", follow);
 	}
 
 }

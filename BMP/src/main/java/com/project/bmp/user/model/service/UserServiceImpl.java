@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.project.bmp.user.model.dao.UserDAO;
+import com.project.bmp.user.model.vo.Follow;
 import com.project.bmp.user.model.vo.User;
 
 @Service("uService")
@@ -25,8 +26,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User getProfile(int no) {
-		return uDAO.getProfile(sqlSession, no);
+	public User getProfile(Follow follow) {
+		return uDAO.getProfile(sqlSession, follow);
 	}
 
 	@Override
@@ -42,6 +43,16 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public int updatePw(User accessor) {
 		return uDAO.updatePw(sqlSession, accessor);
+	}
+
+	@Override
+	public int addFollow(Follow follow) {
+		return uDAO.addFollow(sqlSession, follow);
+	}
+
+	@Override
+	public int delFollow(Follow follow) {
+		return uDAO.delFollow(sqlSession, follow);
 	}
 
 }

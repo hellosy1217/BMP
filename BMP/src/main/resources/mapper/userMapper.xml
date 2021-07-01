@@ -16,11 +16,12 @@
 		where user_email=#{email} and user_password=#{password}
 	</select>
 
-	<select id="getProfile" resultMap="userResultMap">
+	<select id="getProfile" resultMap="userResultMap" parameterType="Follow">
 		select user_no,user_email,user_nickname,user_birth,user_reg_date,user_dm,user_private,
-			user_comment,file_name,countfollow,countfollower 
-		from ulist 
-		where user_no=#{no}
+			user_comment,file_name,countfollow,countfollower,follow_no,follow_permission
+		from ulist
+			left join (select * from bmp_follow where from_user=#{fromUser}) on (user_no=to_user)
+		where user_no=#{toUser}
 	</select>
 	
 	<insert id="addUser" parameterType="User">
@@ -39,6 +40,19 @@
 		set user_password=#{password},user_confirm='Y'
 		where user_email=#{email}
 	</update>
+	
+	<insert id="addFollow" useGeneratedKeys="false">
+		<selectKey keyProperty="no" resultType="int" order="BEFORE">
+			select follow_seq.nextval from dual
+		</selectKey>
+		insert into bmp_follow 
+		values (#{no},#{permission},#{toUser},#{fromUser})
+	</insert>
+	
+	<delete id="delFollow">
+		delete from bmp_follow
+		where follow_no=#{no}
+	</delete>
 	
 	<resultMap type="User" id="userResultMap">
 		<id property="no" column="user_no" />
@@ -60,5 +74,14 @@
 		<result property="follow" column="countfollow"/>
 		<result property="follower" column="countfollower"/>
 		<result property="post" column="post"/>
+		<collection property="followInfo" resultMap="followResultMap"/>
 	</resultMap>
+	
+	<resultMap type="Follow" id="followResultMap">
+		<id property="no" column="follow_no"/>
+		<result property="permission" column="follow_permission"/>
+		<result property="toUser" column="to_user"/>
+		<result property="fromUser" column="from_user"/>
+	</resultMap>
+	
 </mapper>

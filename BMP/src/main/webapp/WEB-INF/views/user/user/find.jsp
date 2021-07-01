@@ -70,7 +70,7 @@
 		var npw = $('#form-cPassword');
 		if (pw.attr('useable') == '1' && npw.attr('useable') == '1') {
 			$.ajax({
-				url : 'updatePw',
+				url : 'updatePw.do',
 				dataType : 'json',
 				data : {
 					email : email,

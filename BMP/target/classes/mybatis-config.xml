@@ -9,6 +9,8 @@
 	<typeAliases>
 		<typeAlias type="com.project.bmp.user.model.vo.User"
 			alias="User" />
+		<typeAlias type="com.project.bmp.user.model.vo.Follow"
+			alias="Follow" />
 		<typeAlias type="com.project.bmp.post.model.vo.Post"
 			alias="Post" />
 		<typeAlias type="com.project.bmp.post.model.vo.ListInfo"

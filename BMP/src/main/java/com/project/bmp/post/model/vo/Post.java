@@ -22,6 +22,7 @@ public class Post {
 	private String nickname;
 	private String profileFile;
 	private ArrayList<Comment> commentList;
+	private ArrayList<AttachedFile> fileList;
 
 	public Post() {
 	}
@@ -32,9 +33,22 @@ public class Post {
 		this.userNo = userNo;
 	}
 
+	public Post(int no, String content) {
+		super();
+		this.no = no;
+		this.content = content;
+	}
+
+	public Post(int no, ArrayList<AttachedFile> fileList) {
+		super();
+		this.no = no;
+		this.fileList = fileList;
+	}
+
 	public Post(int no, String title, String content, int count, Date regDate, Date editDate, Date delDate,
 			Date hideDate, int userNo, String fileName, int countComment, ArrayList<Tag> tagList, int countLike,
-			int like, int repost, String nickname, String profileFile, ArrayList<Comment> commentList) {
+			int like, int repost, String nickname, String profileFile, ArrayList<Comment> commentList,
+			ArrayList<AttachedFile> fileList) {
 		super();
 		this.no = no;
 		this.title = title;
@@ -54,6 +68,7 @@ public class Post {
 		this.nickname = nickname;
 		this.profileFile = profileFile;
 		this.commentList = commentList;
+		this.fileList = fileList;
 	}
 
 	public int getNo() {
@@ -192,13 +207,20 @@ public class Post {
 		this.profileFile = profileFile;
 	}
 
-	@Override
-	public String toString() {
-		return "Post [no=" + no + ", title=" + title + ", content=" + content + ", count=" + count + ", regDate="
-				+ regDate + ", editDate=" + editDate + ", delDate=" + delDate + ", hideDate=" + hideDate + ", userNo="
-				+ userNo + ", fileName=" + fileName + ", countComment=" + countComment + ", tagList=" + tagList
-				+ ", countLike=" + countLike + ", like=" + like + ", repost=" + repost + ", nickname=" + nickname
-				+ ", profileFile=" + profileFile + ", commentList=" + commentList + "]";
+	public ArrayList<Comment> getCommentList() {
+		return commentList;
+	}
+
+	public void setCommentList(ArrayList<Comment> commentList) {
+		this.commentList = commentList;
+	}
+
+	public ArrayList<AttachedFile> getFileList() {
+		return fileList;
+	}
+
+	public void setFileList(ArrayList<AttachedFile> fileList) {
+		this.fileList = fileList;
 	}
 
 }

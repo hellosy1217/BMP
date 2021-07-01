@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -79,21 +80,32 @@ form#content>div:first-child {
 <body>
 	<c:import url="../common/header.jsp" />
 	<div>
-		<form id="content" action="write.do">
+		<form id="content">
 			<div>
-				<input type="text" id="title">
+				<input type="text" id="title" value="${post.title }">
 			</div>
-			<div id="editor"></div>
+			<div id="editor">${post.content }</div>
 			<div class="btns">
-				<a id="cancelBtn">취소</a> <a id="writeBtn" type="submit">등록</a>
+				<a id="cancelBtn">취소</a>
+				<c:choose>
+					<c:when test="${post eq null}">
+						<a id="writeBtn" type="submit">등록</a>
+					</c:when>
+					<c:otherwise>
+						<a id="editBtn" type="submit">수정</a>
+					</c:otherwise>
+				</c:choose>
 			</div>
 		</form>
 	</div>
 </body>
+<c:forEach items="${fileNames }" var="f">
+		<script>fileArr.push('${f}');</script>
+</c:forEach>
 <script>
 	let editor;
 	var checkUnload = true;
-
+	
 	$(document).on('click', '#writeBtn', function() {
 		checkUnload = false;
 		var title = $('#title').val().trim();
@@ -114,22 +126,34 @@ form#content>div:first-child {
 			}
 		});
 	});
-
-	$(window).on('beforeunload', function() {
-		if (checkUnload)
-			return "??";
-	});
-
-	$(window).on('unload', function() {
+	
+	$(document).on('click','#editBtn',function(){
+		var title = $('#title').val().trim();
+		var userNo = '${accessor.no}';
 		$.ajax({
-			url : 'fileDelete.do',
+			type : 'post',
+			url : 'edit.do',
+			dataType : 'json',
 			data : {
+				no: '${post.no}',
+				title : title,
+				content : editor.getData(),
+				userNo : userNo,
 				fileArr : fileArr
 			},
 			success : function(data) {
-				console.log('파일 삭제 ...');
+				if (data > 0)
+					location.href = "post?no=" + data;
 			}
 		});
+	});
+	
+	$(function(){
+		if('${post}'!=''){
+			$('#title').val('${post.title}');
+			$('#editor').text('${post.content}');
+			console.log(fileArr);
+		}
 	});
 	
 	ClassicEditor

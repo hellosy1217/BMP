@@ -34,12 +34,12 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public int addLike(Like like) {
-		return pDAO.addLike(sqlSession,like);
+		return pDAO.addLike(sqlSession, like);
 	}
 
 	@Override
 	public int delLike(Like like) {
-		return pDAO.delLike(sqlSession,like);
+		return pDAO.delLike(sqlSession, like);
 	}
 
 	@Override
@@ -48,8 +48,8 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public int addFile(AttachedFile file) {
-		return pDAO.addFile(sqlSession, file);
+	public int addFile(Post post) {
+		return pDAO.addFile(sqlSession, post);
 	}
 
 	@Override
@@ -75,5 +75,20 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public ArrayList<String> getFileNames(int no) {
 		return pDAO.getFileNames(sqlSession, no);
+	}
+
+	@Override
+	public int editHideDate(Post post) {
+		return pDAO.editHideDate(sqlSession, post);
+	}
+
+	@Override
+	public int delFile(int no) {
+		return pDAO.delFile(sqlSession, no);
+	}
+
+	@Override
+	public int editPost(Post post) {
+		return pDAO.editPost(sqlSession, post);
 	}
 }

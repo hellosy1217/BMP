@@ -184,7 +184,9 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 
 #filter-inner>ul:first-child li {
 	padding: 5px 10px;
-	font-size: 13px; font-weight : bold; margin : 1px 50px;
+	font-size: 13px;
+	font-weight: bold;
+	margin: 1px 50px;
 	border-radius: 4px;
 	font-weight: bold;
 	margin: 1px 50px;
@@ -352,17 +354,18 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 			</ul>
 		</div>
 	</div>
-		<div class="filter">
-			<div id="filter-inner">
-				<c:if test="${listInfo.blogNo == accessor.no}">
-					<ul id="blog-tab">
-						<li>포스트</li>
-						<li>좋아요</li>
-						<li>보관함</li>
-					</ul>
-				</c:if>
-				<div class="filter-right">
-					<a id="post-btn" href="write">✎&nbsp;Post&nbsp;</a>
+	<div class="filter">
+		<div id="filter-inner">
+			<c:if test="${accessor != null and listInfo.blogNo == accessor.no}">
+				<ul id="blog-tab">
+					<li>포스트</li>
+					<li>좋아요</li>
+					<li>보관함</li>
+				</ul>
+			</c:if>
+			<div class="filter-right">
+				<a id="post-btn" href="write">✎&nbsp;Post&nbsp;</a>
+				<c:if test="${listInfo ne null }">
 					<div class="select">
 						<p id="sort">${listInfo.sort }</p>
 						<p id="sort-menu">⌵</p>
@@ -372,9 +375,10 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 							<li id="New">최신순</li>
 						</ul>
 					</div>
-				</div>
+				</c:if>
 			</div>
 		</div>
+	</div>
 </body>
 <script>
 	$(document).on('click', '#blog-tab li', function() {
@@ -471,7 +475,7 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 			menu = $('#blog-tab li').eq(1);
 		else if (tab == 'hide')
 			menu = $('#blog-tab li').eq(2);
-		
+
 		menu.attr('class', 'tab-selected');
 	}
 </script>

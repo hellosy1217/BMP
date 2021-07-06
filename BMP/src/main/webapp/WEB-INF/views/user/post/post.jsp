@@ -120,7 +120,7 @@
 }
 
 #post-comment>ul {
-	padding: 13px 15px 0;
+	padding: 0 15px;
 }
 
 #post-comment>ul>li {
@@ -155,11 +155,11 @@
 	padding-right: 15px;
 }
 
-.ht {
+.htBtn {
 	padding: 3.5px 7px 1.5px;
 	border: 1px solid #e0e0e0;
 	border-radius: 50%;
-	margin-left: 5px;
+	margin-left: 10px;
 	line-height: 20px;
 	font-family: 'Noto Sans KR', sans-serif;
 	font-size: 12px;
@@ -173,6 +173,45 @@
 }
 
 .post-bottom a {
+	cursor: pointer;
+}
+
+#commentArea {
+	display: flex;
+	padding: 10px 15px 5px;
+	justify-content: space-between;
+}
+
+#commentArea textarea {
+	background: white;
+	padding: 5px;
+	resize: none;
+	outline: none;
+	width: calc(95% - 45px);
+}
+
+#commentArea a {
+	background: #ea4c89;
+	border-radius: 4px;
+	color: #fff;
+	font-weight: bold;
+	letter-spacing: .02em;
+	-webkit-appearance: none;
+	padding: 5.5px 12px 4.5px;
+	font-size: 13px;
+	width: 5%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+}
+
+#commentList a {
+	font-weight: 400;
+	font-size: 11px;
+	height: fit-content;
+	margin-top: 2px;
+	padding-left: 5px;
 	cursor: pointer;
 }
 </style>
@@ -189,16 +228,16 @@
 		</div>
 		<div class="post-bottom">
 			<div>
-				<div class="select" id="commentBtn">
-					<p>댓글 ${post.countComment }</p>
-					<p>⌵</p>
+				<div class="select commentBtn">
+					<p class="commentBtn">댓글 ${post.countComment }</p>
+					<p class="commentBtn">⌵</p>
 				</div>
 				<c:choose>
 					<c:when test="${post.like > 0 }">
-						<span class="ht liked" no="${post.like }">♥︎</span>
+						<span class="htBtn liked" no="${post.like }">♥︎</span>
 					</c:when>
 					<c:otherwise>
-						<span class="ht" no="${post.like }">♥︎</span>
+						<span class="htBtn" no="${post.like }">♥︎</span>
 					</c:otherwise>
 				</c:choose>
 			</div>
@@ -217,16 +256,92 @@
 			</div>
 		</div>
 		<div id="post-comment">
-			<ul id="commetList">
+			<div id="commentArea">
+				<textarea placeholder="Add Comment..." id="comment-content"></textarea>
+				<a id="addCommentBtn" no="">등록</a>
+			</div>
+			<ul id="commentList">
+				<c:forEach items="${cList }" var="list">
+					<li><div>
+							<p>
+								<span><img src="${list.fileName }"></span>${list.nickname}
+								<c:if test="${accessor!=null and accessor.no==list.userNo }">
+									<a id="editCommentBtn" no="${list.no }">수정</a>
+									<a id="delCommentBtn" no="${list.no }">삭제</a>
+								</c:if>
+							</p>
+							<p id="content${list.no }">${list.content}</p>
+						</div></li>
+				</c:forEach>
 			</ul>
-			<c:import url="../../common/paging.jsp"></c:import>
+			<c:import url="../../common/paging.jsp" />
+			<form id="cPageForm" method="post">
+				<input name="scroll" type="hidden" value="${scroll }">
+			</form>
 		</div>
 	</div>
 </body>
 <script type="text/javascript">
 	var hideDate = '${post.hideDate}';
-	$(document).on('click','#delBtn', function() {
-		if('${accessor.no}'=='${post.userNo}'){
+	$(document).on(
+			'click',
+			function(e) {
+				var clicked = $(e.target).attr('id');
+				if (typeof clicked == 'undefined' || clicked == '')
+					clicked = $(e.target).attr('class');
+				if (clicked == 'select commentBtn')
+					clicked = 'commentBtn';
+
+				if ('${accessor!=null}' || clicked == 'commentBtn'
+						|| clicked == 'numBtn') {
+					var no = $(e.target).attr('no');
+
+					switch (clicked) {
+					case 'commentBtn':
+						showComment();
+						break;
+					case 'delBtn':
+						deletePost();
+						break;
+					case 'hideBtn':
+						hidePost();
+						break;
+					case 'editBtn':
+						location.href = 'edit?no=${post.no}';
+						break;
+					case 'htBtn':
+						ht();
+						break;
+					case 'numBtn':
+						paging(no);
+						break;
+					case 'addCommentBtn':
+						addComment();
+						break;
+					case 'editCommentBtn':
+						edit(no);
+						break;
+					case 'delCommentBtn':
+						delComment(no);
+						break;
+					default:
+						break;
+					}
+				} else {
+					if (clicked.indexOf('Btn') != -1)
+						location.href = 'signIn';
+				}
+			});
+
+	$(window).on('load', function() {
+		if ('${scroll}' != '') {
+			showComment();
+			$(document).scrollTop('${scroll}');
+		}
+	});
+
+	function deletePost() {
+		if ('${accessor.no}' == '${post.userNo}') {
 			$.ajax({
 				type : 'post',
 				url : 'delPost.do',
@@ -235,86 +350,128 @@
 					no : '${post.no}'
 				},
 				success : function(data) {
-					console.log('들어옴... '+data);
 					if (data == "success")
 						location.href = "blog?blog=${accessor.no}";
 				}
 			});
 		}
-	});
-	
-	$(document).on('click','.ht',function(){
-		if('${accessor}!=null'){
-			$.ajax({
-				url:'like.do',
-				dataType:'json',
-				data:{
-					no:$(this).attr('no'),
-					postNo:'${post.no}'
-				},
-				success:function(data){
-					console.log(data);
-					if(data > 0)
-						$('.ht').attr('class','ht liked');
-					else
-						$('.ht').attr('class','ht');
-					$('.ht').attr('no', data);
-				}
-			});
-		} else{
-			location.href="signIn";
-		}
-	});
+	}
 
-	$(document)
-			.on(
-					'click',
-					'#commentBtn',
-					function() {
-						if ($('#commetList').text().trim() == '') {
-							getComment(${paging.currentPage});
-						}
-						if ($('#post-comment').css('display') == 'none')
-							$('#post-comment').show();
-						else
-							$('#post-comment').hide();
-					});
-	
-	$(document).on('click','#hideBtn',function(){
+	function showComment() {
+		if ($('#post-comment').css('display') == 'none')
+			$('#post-comment').show();
+		else
+			$('#post-comment').hide();
+	}
+
+	function hidePost() {
 		$.ajax({
-			url:'hide.do',
-			dataType:'json',
-			data:{
-				no:'${post.no}',
-				hide:hideDate
+			url : 'hide.do',
+			dataType : 'json',
+			data : {
+				no : '${post.no}',
+				hide : hideDate
 			},
-			success:function(data){
-				if(hideDate==''){
-					hideDate='1';
+			success : function(data) {
+				if (hideDate == '') {
+					hideDate = '1';
 					$('#hideBtn').text('숨김 해제');
-				}
-				else {
-					hideDate='';
+				} else {
+					hideDate = '';
 					$('#hideBtn').text('숨김');
 				}
 			}
 		});
-	});
-	
-	$(document).on('click','#reportBtn',function(){
-		
-	});
-	
-	$(document).on('click','#editBtn',function(){
-		location.href='edit?no=${post.no}';
-	});
-	
-	$(document).on('click','#numBtn',function(){
-		var no = $(this).attr('no');
-		getComment(no);
-	});
-	
-	 ClassicEditor
+	}
+
+	function addComment() {
+		var content = $('#comment-content').val().trim();
+		$.ajax({
+			url : 'addComment.do',
+			type : 'post',
+			dataType : 'json',
+			data : {
+				userNo : '${accessor.no}',
+				postNo : '${post.no}',
+				content : content
+			},
+			success : function(data) {
+				scrolled('#post-comment');
+			}
+		});
+	}
+
+	function edit(no) {
+		var id = "#content" + no;
+		var content = $(id).text();
+		$('#comment-content').val(content);
+		$('#addCommentBtn').attr({
+			'no' : no,
+			'class' : 'editCommentBtn'
+		});
+		$('#addCommentBtn').text('수정');
+		$(document).scrollTop($('#comment-content').offset().top);
+	}
+
+	function editComment(no) {
+		$.ajax({
+			url : 'delComment.do',
+			type : 'post',
+			dataType : 'json',
+			data : {
+				no : no
+			},
+			success : function(data) {
+				scrolled('#comment-content');
+			}
+		});
+	}
+
+	function delComment(no) {
+		$.ajax({
+			url : 'delComment.do',
+			type : 'post',
+			dataType : 'json',
+			data : {
+				no : no
+			},
+			success : function(data) {
+				scrolled('#post-comment');
+			}
+		});
+	}
+
+	function ht() {
+		$.ajax({
+			url : 'like.do',
+			dataType : 'json',
+			data : {
+				no : $(this).attr('no'),
+				postNo : '${post.no}'
+			},
+			success : function(data) {
+				if (data > 0)
+					$('.htBtn').attr('class', 'ht liked');
+				else
+					$('.htBtn').attr('class', 'ht');
+				$('.htBtn').attr('no', data);
+			}
+		});
+	}
+
+	function paging(no) {
+		$('[name="scroll"]').val($('#post-comment').offset().top);
+		$('#cPageForm').attr('action', 'post?no=${post.no }&page=' + no);
+		$('#cPageForm').submit();
+	}
+
+	function scrolled(id) {
+		location.reload();
+		showComment();
+		$(document).scrollTop($(id).offset().top);
+	}
+
+	ClassicEditor
 	 .create(document.getElementById("editor"), {
 	 language: 'ko',
 	 })
@@ -322,32 +479,5 @@
 	 editor = newEditor;
 	 editor.isReadOnly = true;
 	 });
-	 
-	 function getComment(page){
-		 $
-			.ajax({
-				url : 'comment.do',
-				dataType : 'json',
-				data : {
-					no : '${post.no}',
-					page : page,
-					countComment : '${post.countComment}'
-				},
-				success : function(data) {
-					var str='';
-					for (var i=0;i<data.length;i++) {
-						str += '<li><div><p><span><img src="'
-							+ data[i].fileName
-							+'"></span>'
-							+ data[i].nickname
-							+ '</p><p>'
-							+ data[i].content
-							+ '</p></div></li>';
-					}
-					console.log(str);
-					$('#commetList').html(str);
-				}
-			});
-	 }
 </script>
 </html>

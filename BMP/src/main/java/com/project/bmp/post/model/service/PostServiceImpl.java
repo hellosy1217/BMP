@@ -91,4 +91,14 @@ public class PostServiceImpl implements PostService {
 	public int editPost(Post post) {
 		return pDAO.editPost(sqlSession, post);
 	}
+
+	@Override
+	public int addComment(Comment comment) {
+		return pDAO.addComment(sqlSession, comment);
+	}
+
+	@Override
+	public int delComment(int no) {
+		return pDAO.delComment(sqlSession, no);
+	}
 }

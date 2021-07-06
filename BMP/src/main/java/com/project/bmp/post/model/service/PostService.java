@@ -39,4 +39,8 @@ public interface PostService {
 
 	int editPost(Post post);
 
+	int addComment(Comment comment);
+
+	int delComment(int no);
+
 }

@@ -77,4 +77,12 @@ public class PostDAO {
 		return sqlSession.update("postMapper.editPost", post);
 	}
 
+	public int addComment(SqlSessionTemplate sqlSession, Comment comment) {
+		return sqlSession.insert("postMapper.addComment", comment);
+	}
+
+	public int delComment(SqlSessionTemplate sqlSession, int no) {
+		return sqlSession.delete("postMapper.delComment", no);
+	}
+
 }

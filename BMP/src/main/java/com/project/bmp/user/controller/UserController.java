@@ -194,7 +194,6 @@ public class UserController {
 	@RequestMapping("follow.do")
 	public String follow(Follow follow) {
 		int result = 0;
-		System.out.println(follow.getNo());
 		if (follow.getNo() == 0) {
 			result = uService.addFollow(follow);
 			if (result > 0) {

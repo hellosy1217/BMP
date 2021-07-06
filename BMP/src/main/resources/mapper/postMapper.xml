@@ -181,8 +181,14 @@
 	</update>
 	
 	<select id="getComment" resultMap="commentResultMap">
-		select * from clist where post_no=#{no}
+		select * from clist 
+		where post_no=#{no}
+		order by comment_no desc
 	</select>
+	
+	<delete id="delComment">
+		delete from bmp_comment where comment_no=#{no}
+	</delete>
 	
 	<select id="getFile" resultType="string">
 		select file_name from bmp_file where post_no=#{no}
@@ -206,6 +212,11 @@
 		</choose>
 		where post_no=#{no}
 	</update>
+	
+	<insert id="addComment" parameterType="Comment">
+		insert into bmp_comment
+		values (comment_seq.nextval,#{content},#{postNo},#{userNo})
+	</insert>
 	
 	<resultMap type="Post" id="postResultMap">
 		<id property="no" column="post_no" />

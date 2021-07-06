@@ -147,8 +147,10 @@ public class PostController {
 		return mav;
 	}
 
-	@RequestMapping(value = "post", method = RequestMethod.GET)
-	public ModelAndView post(HttpSession session, ModelAndView mav, int no) {
+	@RequestMapping(value = "post")
+	public ModelAndView post(HttpSession session, ModelAndView mav, int no,
+			@RequestParam(value = "page", defaultValue = "1") int page,
+			@RequestParam(value = "scroll", defaultValue = "") String scroll) {
 		User accessor = (User) session.getAttribute("accessor");
 		int userNo = 0;
 		if (accessor != null)
@@ -162,10 +164,14 @@ public class PostController {
 			profile = uService.getProfile(new Follow(post.getUserNo(), userNo));
 		}
 		if (profile != null) {
-			Paging paging = new Pagination().getPaging(1, 20, post.getCountComment());
+			Paging paging = new Pagination().getPaging(page, 20, post.getCountComment());
+			ArrayList<Comment> cList = pService.getComment(no, paging);
+
 			mav.addObject("post", post);
 			mav.addObject("profile", profile);
 			mav.addObject("paging", paging);
+			mav.addObject("cList", cList);
+			mav.addObject("scroll", scroll);
 			mav.setViewName("user/post/blog");
 		} else {
 			// 에러페이지
@@ -253,18 +259,6 @@ public class PostController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "comment.do", produces = "application/json;charset=utf-8")
-	public String getComment(int no, int countComment, @RequestParam(value = "page", defaultValue = "1") int page) {
-		Gson gson = new Gson();
-
-		Paging paging = new Pagination().getPaging(page, 20, countComment);
-
-		ArrayList<Comment> cList = pService.getComment(no, paging);
-
-		return gson.toJson(cList);
-	}
-
-	@ResponseBody
 	@RequestMapping(value = "hide.do", produces = "application/json;charset=utf-8")
 	public String hide(int no, String hide) {
 		int result = pService.editHideDate(new Post(no, hide));
@@ -272,6 +266,22 @@ public class PostController {
 		return new Gson().toJson(result + "");
 	}
 
+	@ResponseBody
+	@RequestMapping(value = "addComment.do", produces = "application/json;charset=utf-8")
+	public String addComment(Comment comment) {
+		int result = pService.addComment(comment);
+
+		return new Gson().toJson(result + "");
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "delComment.do", produces = "application/json;charset=utf-8")
+	public String delComment(int no) {
+		int result = pService.delComment(no);
+
+		return new Gson().toJson(result + "");
+	}
+	
 	@RequestMapping("admin")
 	public ModelAndView admin(ModelAndView mav) {
 		mav.setViewName("admin/common/dashboard");

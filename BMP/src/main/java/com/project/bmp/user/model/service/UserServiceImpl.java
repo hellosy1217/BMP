@@ -55,4 +55,24 @@ public class UserServiceImpl implements UserService {
 		return uDAO.delFollow(sqlSession, follow);
 	}
 
+	@Override
+	public int editUser(User user) {
+		return uDAO.editUser(sqlSession, user);
+	}
+
+	@Override
+	public int addFile(User user) {
+		return uDAO.addFile(sqlSession, user);
+	}
+
+	@Override
+	public int editFile(User user) {
+		return uDAO.editFile(sqlSession, user);
+	}
+
+	@Override
+	public int delFile(User user) {
+		return uDAO.delFile(sqlSession, user);
+	}
+
 }

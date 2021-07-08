@@ -2,6 +2,8 @@ package com.project.bmp.common;
 
 import java.io.File;
 import java.io.InputStream;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
@@ -107,6 +109,15 @@ public class AwsS3 {
 	public String getURL() {
 		String url = "https://"+bucket+".s3.ap-northeast-2.amazonaws.com/";
 		return url;
+	}
+	
+	public String getSaveFileName(String orgFileName) {
+		String fileName = "";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+		fileName = sdf.format(new Date(System.currentTimeMillis())) + "."
+				+ orgFileName.substring(orgFileName.lastIndexOf(".") + 1);
+		return fileName;
+
 	}
 
 }

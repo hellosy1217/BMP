@@ -91,7 +91,7 @@ input.search-text {
 	border-radius: 4px;
 	color: #444;
 	font-size: 13px;
-	padding: 5px 15px;
+	padding: 5.5px 15px 4.5px;
 	width: 190px;
 	outline: none;
 }
@@ -338,6 +338,7 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 							<div id="profile-dropdown">
 								<ol>
 									<li>내 블로그</li>
+									<li>설정</li>
 									<li>로그아웃</li>
 								</ol>
 							</div></li>
@@ -417,6 +418,8 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 	$(document).on('click', '#profile-dropdown li', function() {
 		if ($(this).text() == '내 블로그')
 			location.href = 'blog?blog=${accessor.no}';
+		else if ($(this).text() == '설정')
+			location.href = 'setting';
 		else
 			location.href = 'signOut';
 	});

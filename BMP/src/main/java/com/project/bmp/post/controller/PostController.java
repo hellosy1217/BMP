@@ -119,7 +119,7 @@ public class PostController {
 	public String fileUpload(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam MultipartFile upload) throws IllegalStateException, IOException {
 		String orgFileName = upload.getOriginalFilename();
-		String saveFileName = getSaveFileName(orgFileName);
+		String saveFileName = aws.getSaveFileName(orgFileName);
 		File file = new File(orgFileName);
 		upload.transferTo(file);
 		aws.upload(file, saveFileName);
@@ -307,12 +307,4 @@ public class PostController {
 		return listInfo;
 	}
 
-	public String getSaveFileName(String orgFileName) {
-		String fileName = "";
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-		fileName = sdf.format(new Date(System.currentTimeMillis())) + "."
-				+ orgFileName.substring(orgFileName.lastIndexOf(".") + 1);
-		return fileName;
-
-	}
 }

@@ -20,4 +20,12 @@ public interface UserService {
 	
 	public int delFollow(Follow follow);
 
+	public int editUser(User user);
+
+	public int addFile(User user);
+
+	public int editFile(User user);
+
+	public int delFile(User user);
+
 }

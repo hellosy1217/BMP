@@ -200,8 +200,10 @@
 </body>
 <script>
 	var followed = '${profile.followInfo.no}';
+	
 	if (followed == '')
 		followed = 0;
+	
 	$(document).on('click', '#more-btn', function() {
 		if ($(this).attr('class') != 'font-rotate') {
 			$('#dm-p').css('display', 'flex');
@@ -216,13 +218,13 @@
 		if ('${accessor.no}' == '${profile.no}')
 			location.href = 'dmList';
 		else {
+			//메시지 작성 
 		}
-		//메시지 작성 
 	});
 
 	$(document).on('click', '.follow-btn', function() {
-		console.log(followed);
-		if ('${accessor}' != null) {
+		console.log('${accessor}');
+		if ('${accessor}' != null && '${accessor}' != '') {
 			var text = $(this).text();
 			var pms = 'Y';
 			if ('${profile.userPrivate}' == 'Y')

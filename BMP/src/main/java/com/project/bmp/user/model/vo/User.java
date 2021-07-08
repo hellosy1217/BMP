@@ -234,4 +234,13 @@ public class User {
 		this.followInfo = followInfo;
 	}
 
+	@Override
+	public String toString() {
+		return "User [no=" + no + ", email=" + email + ", password=" + password + ", nickname=" + nickname + ", birth="
+				+ birth + ", phone=" + phone + ", regDate=" + regDate + ", delDate=" + delDate + ", confirm=" + confirm
+				+ ", alarm=" + alarm + ", dm=" + dm + ", sub=" + sub + ", UserPrivate=" + UserPrivate + ", admin="
+				+ admin + ", comment=" + comment + ", fileName=" + fileName + ", follow=" + follow + ", follower="
+				+ follower + ", post=" + post + ", followInfo=" + followInfo + "]";
+	}
+
 }

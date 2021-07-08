@@ -36,9 +36,25 @@ public class UserDAO {
 	public int addFollow(SqlSessionTemplate sqlSession, Follow follow) {
 		return sqlSession.delete("userMapper.addFollow", follow);
 	}
-	
+
 	public int delFollow(SqlSessionTemplate sqlSession, Follow follow) {
 		return sqlSession.delete("userMapper.delFollow", follow);
+	}
+
+	public int editUser(SqlSessionTemplate sqlSession, User user) {
+		return sqlSession.update("userMapper.editUser", user);
+	}
+
+	public int addFile(SqlSessionTemplate sqlSession, User user) {
+		return sqlSession.insert("userMapper.addFile", user);
+	}
+
+	public int editFile(SqlSessionTemplate sqlSession, User user) {
+		return sqlSession.update("userMapper.editFile", user);
+	}
+
+	public int delFile(SqlSessionTemplate sqlSession, User user) {
+		return sqlSession.delete("userMapper.delFile", user);
 	}
 
 }

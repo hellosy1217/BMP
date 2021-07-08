@@ -4,14 +4,14 @@
 
 	<select id="selectUser" resultType="User"
 		resultMap="userResultMap">
-		select user_no,user_email,user_password,user_nickname,user_admin,user_confirm
+		select user_no,user_email,user_password,user_nickname,user_admin,user_confirm,user_comment
 		from bmp_user
 		where user_email=#{email}
 	</select>
 	
 	<select id="selectGoogleUser" resultType="User"
 		resultMap="userResultMap">
-		select user_no,user_email,user_password,user_nickname,user_admin
+		select user_no,user_email,user_password,user_nickname,user_admin,user_comment
 		from bmp_user
 		where user_email=#{email} and user_password=#{password}
 	</select>
@@ -52,6 +52,28 @@
 	<delete id="delFollow">
 		delete from bmp_follow
 		where follow_no=#{no}
+	</delete>
+	
+	<update id="editUser">
+		update bmp_user set
+		user_nickname=#{nickname}, user_comment=#{comment}
+		where user_no=#{no}
+	</update>
+	
+	<insert id="addFile">
+		insert into bmp_file
+		values (file_seq.nextval,#{fileName},'profile',#{no},null,null)
+	</insert>
+	
+	<update id="editFile">
+		update bmp_file set
+		file_name=#{fileName}
+		where user_no=#{no} and file_class='profile'
+	</update>
+	
+	<delete id="delFile">
+		delete from bmp_file
+		where user_no=#{no} and file_class='profile'
 	</delete>
 	
 	<resultMap type="User" id="userResultMap">

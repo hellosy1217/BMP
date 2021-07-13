@@ -33,6 +33,13 @@ public class User {
 		this.password = password;
 	}
 
+	public User(int no, int follow, int follower) {
+		super();
+		this.no = no;
+		this.follow = follow;
+		this.follower = follower;
+	}
+
 	public User(String email, String password, String nickname) {
 		super();
 		this.email = email;

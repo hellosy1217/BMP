@@ -14,13 +14,15 @@
 	justify-content: center;
 }
 
-.setting input, .setting textarea {
+.setting input[type="text"], .setting input[type="email"], .setting textarea
+	{
 	outline: none;
 	border-radius: 6px;
 	padding: 8.5px 10px 7.5px;
 	outline: none;
 	font-size: 15px;
-	background: pink;
+	background: #fff;
+	border: 1px solid #e0e0e0;
 	cursor: text;
 	width: 500px;
 	transition: background 0.3s;
@@ -90,8 +92,39 @@
 }
 
 #editProfile>div:last-child {
-	padding-top: 10px;
 	display: flex;
+}
+
+#checkBox {
+	padding-top: 5px;
+}
+
+#checkBox>div {
+	display: flex;
+	align-items: center;
+	padding-bottom: 10px;
+}
+
+#checkBox input {
+	display: none;
+}
+
+#checkBox label {
+	padding: 10px;
+	background: #fff;
+	border-radius: 4px;
+	cursor: pointer;
+	border: 1px solid #e0e0e0;
+}
+
+#checkBox p {
+	margin-left: 7px;
+	font-size: 15px;
+	margin-top: 3px;
+}
+
+#checkBox input[type="checkbox"]:checked+label {
+	background: #ea4c89 !important;
 }
 </style>
 </head>
@@ -99,22 +132,20 @@
 	<c:import url="../common/header.jsp" />
 	<div class="setting">
 		<ol>
-			<li>Edit Profile</li>
-			<li>Account Setting</li>
-			<li>Password</li>
-			<li>Notifications</li>
+			<li>Setting</li>
+			<li id="editPw">Password</li>
 		</ol>
 		<form id="editProfile">
 			<div>
-				<img id="profileImg"
-					src="${accessor.fileName }">
-				<label id="uploadBtn" class="btns" for="uploadImg">Upload</label>
+				<img id="profileImg" src="${accessor.fileName }"> <label
+					id="uploadBtn" class="btns" for="uploadImg">Upload</label>
 				<c:if test="${accessor.fileName != '' }">
 					<a id="delBtn" class="btns">Delete</a>
 				</c:if>
 				<input type="file" id="uploadImg" name="upload"
-					style="display: none" value="${accessor.fileName }" />
-			<input type="hidden" name="fileName" id="fileName" value="${accessor.fileName }">
+					style="display: none" value="${accessor.fileName }" /> <input
+					type="hidden" name="fileName" id="fileName"
+					value="${accessor.fileName }">
 			</div>
 			<div>
 				<p>
@@ -128,7 +159,8 @@
 								readonly="readonly">
 						</c:when>
 						<c:otherwise>
-							<input type="email" value="${accessor.email }">
+							<input type="email" value="${accessor.email }"
+								readonly="readonly">
 						</c:otherwise>
 					</c:choose>
 				</p>
@@ -149,6 +181,23 @@
 					<textarea name="comment">${accessor.comment }</textarea>
 				</p>
 			</div>
+			<div id="checkBox">
+				<div>
+					<input type="checkbox" id="sub" name="checkBox" value="sub">
+					<label for="sub"></label>
+					<p>구독</p>
+				</div>
+				<div>
+					<input type="checkbox" id="alarm" name="checkBox" value="alarm">
+					<label for="alarm"></label>
+					<p>알림</p>
+				</div>
+				<div>
+					<input type="checkbox" id="userPrivate" name="checkBox"
+						value="userPrivate"> <label for="userPrivate"></label>
+					<p>비공개</p>
+				</div>
+			</div>
 			<div>
 				<a class="btns" id="saveBtn">Save</a>
 			</div>
@@ -160,8 +209,8 @@
 		var clicked = $(e.target).attr('id');
 
 		switch (clicked) {
-		case 'changeEmail':
-			checkEmail();
+		case 'editPw':
+			location.href = 'setting/password';
 			break;
 		case 'saveBtn':
 			save();
@@ -186,6 +235,15 @@
 		}
 	});
 
+	$(function() {
+		if ('${accessor.sub}' == 'Y')
+			$('#sub').attr('checked', 'checked');
+		if ('${accessor.alarm}' == 'Y')
+			$('#alarm').attr('checked', 'checked');
+		if ('${accessor.userPrivate}' == 'Y')
+			$('#userPrivate').attr('checked', 'checked');
+	});
+
 	function delImg() {
 		$('#fileName').val('');
 		$('#uploadImg').val('');
@@ -196,7 +254,7 @@
 		var form = $('#editProfile')[0];
 		var formData = new FormData(form);
 		$.ajax({
-			url : 'setting.do',
+			url : 'editProfile.do',
 			type : 'post',
 			dataType : 'json',
 			processData : false,

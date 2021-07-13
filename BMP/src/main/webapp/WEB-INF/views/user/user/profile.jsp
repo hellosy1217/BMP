@@ -155,6 +155,10 @@
 	background: #ddd !important;
 	color: #929292 !important;
 }
+
+.follow a {
+	color: unset;
+}
 </style>
 </head>
 <body>
@@ -171,11 +175,12 @@
 			<div id="profile-btns">
 				<p>
 					<c:choose>
-						<c:when test="${profile.followInfo != null and profile.followInfo.no != 0}">
-							<a class="follow-btn followed">Following</a>
+						<c:when
+							test="${profile.followInfo != null and profile.followInfo.no != 0}">
+							<a class="follow-btn followed" id="follow-btn">Following</a>
 						</c:when>
 						<c:otherwise>
-							<a class="follow-btn">Follow</a>
+							<a class="follow-btn" id="follow-btn">Follow</a>
 						</c:otherwise>
 					</c:choose>
 				</p>
@@ -189,9 +194,13 @@
 		</div>
 		<div class="follow">
 			<div>
-				<p>${profile.follow }</p>
+				<p>
+					<a href="follow?no=${profile.no }">${profile.follow }</a>
+				</p>
 				<p>팔로잉</p>
-				<p>${profile.follower }</p>
+				<p>
+					<a href="follower?no=${profile.no }">${profile.follower }</a>
+				</p>
 				<p>팔로워</p>
 			</div>
 
@@ -200,10 +209,10 @@
 </body>
 <script>
 	var followed = '${profile.followInfo.no}';
-	
+
 	if (followed == '')
 		followed = 0;
-	
+
 	$(document).on('click', '#more-btn', function() {
 		if ($(this).attr('class') != 'font-rotate') {
 			$('#dm-p').css('display', 'flex');
@@ -222,8 +231,7 @@
 		}
 	});
 
-	$(document).on('click', '.follow-btn', function() {
-		console.log('${accessor}');
+	$(document).on('click', '#follow-btn', function() {
 		if ('${accessor}' != null && '${accessor}' != '') {
 			var text = $(this).text();
 			var pms = 'Y';
@@ -240,7 +248,6 @@
 					fromUser : '${accessor.no}'
 				},
 				success : function(data) {
-					console.log(followed);
 					followed = data;
 					location.reload(true);
 				}

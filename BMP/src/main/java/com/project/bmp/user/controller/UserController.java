@@ -3,6 +3,7 @@ package com.project.bmp.user.controller;
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
@@ -36,7 +37,6 @@ import com.project.bmp.common.AwsS3;
 import com.project.bmp.user.model.service.UserService;
 import com.project.bmp.user.model.vo.Follow;
 import com.project.bmp.user.model.vo.User;
-import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 
 @SessionAttributes("accessor")
 @Controller
@@ -89,6 +89,8 @@ public class UserController {
 					msg = sendAuthMail(user.getEmail(), "회원", null);
 			}
 		}
+
+		System.out.println(user.toString());
 		return gson.toJson(msg);
 	}
 
@@ -219,17 +221,34 @@ public class UserController {
 	}
 
 	@RequestMapping("setting")
-	public String setting() {
-		return "user/user/setting";
+	public String editProfile() {
+		return "user/user/editProfile";
+	}
+
+	@RequestMapping("setting/password")
+	public String editPassword() {
+		return "user/user/editPw";
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "setting.do")
-	public String setting(User user, @RequestParam MultipartFile upload, HttpSession session) {
+	@RequestMapping(value = "editProfile.do")
+	public String setting(User user, @RequestParam MultipartFile upload, String[] checkBox, HttpSession session) {
 		Gson gson = new Gson();
 		User accessor = (User) session.getAttribute("accessor");
 		user.setNo(accessor.getNo());
 		int result = 0;
+
+		user.setSub('N');
+		user.setAlarm('N');
+		user.setUserPrivate('N');
+		for (String s : checkBox) {
+			if (s.equals("sub"))
+				user.setSub('Y');
+			else if (s.equals("alarm"))
+				user.setAlarm('Y');
+			else if (s.equals("userPrivate"))
+				user.setUserPrivate('Y');
+		}
 
 		String orgFileName = upload.getOriginalFilename();
 
@@ -245,7 +264,6 @@ public class UserController {
 			if (user.getFileName() != null && !user.getFileName().equals("")) {
 				result = uService.addFile(user);
 				accessor.setFileName(user.getFileName());
-				System.out.println("add");
 			}
 		} else {
 			if (!accessor.getFileName().equals(user.getFileName())) {
@@ -256,11 +274,9 @@ public class UserController {
 				if (user.getFileName() != null && !user.getFileName().equals("")) {
 					result = uService.editFile(user);
 					accessor.setFileName(user.getFileName());
-					System.out.println("edit");
 				} else {
 					result = uService.delFile(user);
 					accessor.setFileName(null);
-					System.out.println("del");
 				}
 			}
 		}
@@ -268,9 +284,59 @@ public class UserController {
 		if (result > 0) {
 			accessor.setNickname(user.getNickname());
 			accessor.setComment(user.getComment());
+			accessor.setSub(user.getSub());
+			accessor.setAlarm(user.getAlarm());
+			accessor.setUserPrivate(user.getUserPrivate());
 			session.setAttribute("accessor", accessor);
 		}
 		return gson.toJson("");
+	}
+
+	@ResponseBody
+	@RequestMapping("editPw.do")
+	public String editPassword(HttpSession session, String pw, String newPw) {
+		String msg = "error";
+		User accessor = (User) session.getAttribute("accessor");
+		String oldPw = accessor.getPassword();
+		String encPassword = bcryptPasswordEncoder.encode(pw);
+		if (oldPw.equals(pw)) {
+			encPassword = bcryptPasswordEncoder.encode(newPw);
+			accessor.setPassword(encPassword);
+
+			int result = uService.updatePw(accessor);
+			if (result > 0)
+				msg = "success";
+			else
+				accessor.setPassword(oldPw);
+
+		} else {
+			msg = "checkPw";
+		}
+
+		return new Gson().toJson(msg);
+	}
+
+	@RequestMapping("follower")
+	public ModelAndView follower(HttpSession session, ModelAndView mav, int no) {
+		User accessor = (User) session.getAttribute("accessor");
+		User profile = uService.getProfile(new Follow(no, accessor.getNo()));
+		ArrayList<User> fList = uService.getFollow(new User(accessor.getNo(), 0, no));
+		
+		mav.addObject("fList", fList);
+		mav.addObject("profile", profile);
+		mav.setViewName("user/post/blog");
+		return mav;
+	}
+
+	@RequestMapping("follow")
+	public ModelAndView follow(HttpSession session, ModelAndView mav, int no) {
+		User accessor = (User) session.getAttribute("accessor");
+		User profile = uService.getProfile(new Follow(no, accessor.getNo()));
+		ArrayList<User> fList = uService.getFollow(new User(accessor.getNo(), no, 0));
+		mav.addObject("fList", fList);
+		mav.addObject("profile", profile);
+		mav.setViewName("user/post/blog");
+		return mav;
 	}
 
 	// 인증코드 생성하기

@@ -1,5 +1,7 @@
 package com.project.bmp.user.model.service;
 
+import java.util.ArrayList;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -73,6 +75,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public int delFile(User user) {
 		return uDAO.delFile(sqlSession, user);
+	}
+
+	@Override
+	public ArrayList<User> getFollow(User user) {
+		return uDAO.getFollow(sqlSession, user);
 	}
 
 }

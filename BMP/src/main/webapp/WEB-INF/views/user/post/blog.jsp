@@ -70,6 +70,9 @@ img {
 					<c:when test="${list != null }">
 						<c:import url="list.jsp" />
 					</c:when>
+					<c:when test="${fList != null }">
+						<c:import url="../user/follow.jsp"/>
+					</c:when>
 					<c:otherwise>
 						<c:import url="post.jsp" />
 					</c:otherwise>

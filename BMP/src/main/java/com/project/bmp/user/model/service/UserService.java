@@ -1,5 +1,7 @@
 package com.project.bmp.user.model.service;
 
+import java.util.ArrayList;
+
 import com.project.bmp.user.model.vo.Follow;
 import com.project.bmp.user.model.vo.User;
 
@@ -27,5 +29,7 @@ public interface UserService {
 	public int editFile(User user);
 
 	public int delFile(User user);
+
+	public ArrayList<User> getFollow(User user);
 
 }

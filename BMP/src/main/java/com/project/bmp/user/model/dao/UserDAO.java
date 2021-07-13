@@ -1,5 +1,7 @@
 package com.project.bmp.user.model.dao;
 
+import java.util.ArrayList;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -55,6 +57,10 @@ public class UserDAO {
 
 	public int delFile(SqlSessionTemplate sqlSession, User user) {
 		return sqlSession.delete("userMapper.delFile", user);
+	}
+
+	public ArrayList<User> getFollow(SqlSessionTemplate sqlSession, User user) {
+		return (ArrayList) sqlSession.selectList("userMapper.getFollow", user);
 	}
 
 }

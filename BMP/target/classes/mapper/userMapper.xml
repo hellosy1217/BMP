@@ -4,14 +4,14 @@
 
 	<select id="selectUser" resultType="User"
 		resultMap="userResultMap">
-		select user_no,user_email,user_password,user_nickname,user_admin,user_confirm,user_comment
+		select user_no,user_email,user_password,user_nickname,user_admin,user_confirm,user_comment,user_alarm,user_sub,user_private
 		from bmp_user
 		where user_email=#{email}
 	</select>
 	
 	<select id="selectGoogleUser" resultType="User"
 		resultMap="userResultMap">
-		select user_no,user_email,user_password,user_nickname,user_admin,user_comment
+		select user_no,user_email,user_password,user_nickname,user_admin,user_comment,user_alarm,user_sub,user_private
 		from bmp_user
 		where user_email=#{email} and user_password=#{password}
 	</select>
@@ -54,9 +54,10 @@
 		where follow_no=#{no}
 	</delete>
 	
-	<update id="editUser">
+	<update id="editUser" parameterType="User">
 		update bmp_user set
 		user_nickname=#{nickname}, user_comment=#{comment}
+		,user_sub=#{sub},user_alarm=#{alarm},user_private=#{userPrivate}
 		where user_no=#{no}
 	</update>
 	
@@ -75,6 +76,35 @@
 		delete from bmp_file
 		where user_no=#{no} and file_class='profile'
 	</delete>
+	
+	<select id="getFollow" parameterType="User" resultMap="userResultMap">
+		select user_no, user_nickname, file_name, follow_no, follow_permission, blocked
+		from ulist
+    		left join (select user_no, follow_no, follow_permission from ulist
+                    		left join bmp_follow on (user_no=to_user)
+            where from_user=#{no}) using (user_no)
+    		left join (select user_no, 'block' blocked from(
+    						select ulist.*, to_user, fu from ulist
+       								left join (select to_user, from_user from bmp_block where from_user=#{no}) on (user_no=to_user)
+        							left join (select from_user fu, to_user tu from bmp_block where to_user=#{no}) on (user_no=fu)
+           					order by from_user) 
+					   where to_user is not null or fu is not null) using (user_no)
+    		join
+		<choose>
+			<when test="follow > 0">	
+				(select from_user user_no 
+				 from bmp_follow
+          		 where to_user=#{follow}
+			</when>
+			<otherwise>
+				(select to_user user_no 
+				 from bmp_follow
+          		 where from_user=#{follower}
+			</otherwise>
+		</choose>
+			and follow_permission='Y') using (user_no)
+		order by follow_no desc	
+	</select>
 	
 	<resultMap type="User" id="userResultMap">
 		<id property="no" column="user_no" />

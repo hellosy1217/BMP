@@ -36,12 +36,12 @@ public class DMController {
 
 		int listCount = dService.listCount(accessor.getNo());
 		Paging paging = new Pagination().getPaging(page, 10, listCount);
-		ArrayList<Room> list = dService.getList(accessor.getNo(), paging);
+		ArrayList<Room> dList = dService.getList(accessor.getNo(), paging);
 
 		mav.addObject("paging", paging);
 		mav.addObject("profile", profile);
-		mav.addObject("list", list);
-		mav.setViewName("user/user/dmList");
+		mav.addObject("dList", dList);
+		mav.setViewName("user/message/dmList");
 
 		return mav;
 	}
@@ -55,7 +55,7 @@ public class DMController {
 		Room room = dService.getMessage(dm);
 		mav.addObject("profile", profile);
 		mav.addObject("room", room);
-		mav.setViewName("user/user/dm");
+		mav.setViewName("user/message/dm");
 		return mav;
 	}
 }

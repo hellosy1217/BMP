@@ -221,6 +221,22 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 	cursor: pointer;
 }
 
+#write-btn {
+	background: rgb(125, 186, 99);
+	border-radius: 4px;
+	color: #fff;
+	font-weight: bold;
+	letter-spacing: .02em;
+	-webkit-appearance: none;
+	padding: 5.5px 12px 4.5px;
+	font-size: 13px;
+}
+
+#write-btn:hover {
+	background: #6cb14f;
+	cursor: pointer;
+}
+
 .select {
 	display: inline-flex;
 	border-radius: 4px;
@@ -365,7 +381,14 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 				</ul>
 			</c:if>
 			<div class="filter-right">
-				<a id="post-btn" href="write">✎&nbsp;Post&nbsp;</a>
+				<c:choose>
+					<c:when test="${dList ne null or room ne null }">
+						<a id="write-btn" href="messagewrite">✎&nbsp;DM&nbsp;</a>
+					</c:when>
+					<c:otherwise>
+						<a id="post-btn" href="postwrite">✎&nbsp;Post&nbsp;</a>
+					</c:otherwise>
+				</c:choose>
 				<c:if test="${listInfo ne null }">
 					<div class="select">
 						<p id="sort">${listInfo.sort }</p>
@@ -419,7 +442,7 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 		if ($(this).text() == '내 블로그')
 			location.href = 'blog?blog=${accessor.no}';
 		else if ($(this).text() == '설정')
-			location.href = 'setting';
+			location.href = 'profile';
 		else
 			location.href = 'signOut';
 	});

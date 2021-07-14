@@ -94,7 +94,7 @@ table {
 		<input type="hidden" id="page" value="${paging.currentPage }">
 		<div id="msg">
 			<div id="msg-left">
-				<c:import url="profile.jsp" />
+				<c:import url="../user/profile.jsp" />
 			</div>
 			<div id="msg-right">
 				<div>

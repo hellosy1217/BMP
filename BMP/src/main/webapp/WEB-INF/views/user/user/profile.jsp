@@ -133,7 +133,7 @@
 	margin-top: 17px !important;
 }
 
-.follow-btn {
+.follow-btn, #setting-btn {
 	background: rgb(63, 140, 185);
 	border-radius: 4px;
 	color: #fff;
@@ -146,7 +146,7 @@
 	text-align: center;
 }
 
-.follow-btn:hover {
+.follow-btn:hover, #setting-btn:hover {
 	background: #33769c;
 	cursor: pointer;
 }
@@ -175,6 +175,9 @@
 			<div id="profile-btns">
 				<p>
 					<c:choose>
+						<c:when test="${accessor ne null && accessor.no eq profile.no }">
+							<a id="setting-btn">Setting</a>
+						</c:when>
 						<c:when
 							test="${profile.followInfo != null and profile.followInfo.no != 0}">
 							<a class="follow-btn followed" id="follow-btn">Following</a>
@@ -209,11 +212,32 @@
 </body>
 <script>
 	var followed = '${profile.followInfo.no}';
-
 	if (followed == '')
 		followed = 0;
 
-	$(document).on('click', '#more-btn', function() {
+	$(document).on('click', function(e) {
+		var id = $(e.target).attr('id');
+
+		if (id == 'more-btn')
+			moreBtn();
+		
+		else if ('${accessor!=null}') {
+			var id = $(e.target).attr('id');
+
+			switch (id) {
+			case 'dm-btn':
+				dm();
+				break;
+			case 'follow-btn':
+				follow();
+				break;
+			}
+		} else {
+
+		}
+	});
+
+	function moreBtn() {
 		if ($(this).attr('class') != 'font-rotate') {
 			$('#dm-p').css('display', 'flex');
 			$(this).attr('class', 'font-rotate');
@@ -221,40 +245,36 @@
 			$('#dm-p').css('display', 'none');
 			$(this).attr('class', '');
 		}
-	});
+	}
 
-	$(document).on('click', '#dm-btn', function() {
+	function dm() {
 		if ('${accessor.no}' == '${profile.no}')
 			location.href = 'dmList';
 		else {
-			//메시지 작성 
+			location.href = 'dm';
 		}
-	});
+	}
 
-	$(document).on('click', '#follow-btn', function() {
-		if ('${accessor}' != null && '${accessor}' != '') {
-			var text = $(this).text();
-			var pms = 'Y';
-			if ('${profile.userPrivate}' == 'Y')
-				pms = 'N';
-			$.ajax({
-				type : 'post',
-				url : 'follow.do',
-				dataType : 'json',
-				data : {
-					no : followed,
-					permission : pms,
-					toUser : '${profile.no}',
-					fromUser : '${accessor.no}'
-				},
-				success : function(data) {
-					followed = data;
-					location.reload(true);
-				}
-			});
-		} else {
-			location.href = 'signIn';
-		}
-	});
+	function follow() {
+		var text = $(this).text();
+		var pms = 'Y';
+		if ('${profile.userPrivate}' == 'Y')
+			pms = 'N';
+		$.ajax({
+			type : 'post',
+			url : 'follow.do',
+			dataType : 'json',
+			data : {
+				no : followed,
+				permission : pms,
+				toUser : '${profile.no}',
+				fromUser : '${accessor.no}'
+			},
+			success : function(data) {
+				followed = data;
+				location.reload(true);
+			}
+		});
+	}
 </script>
 </html>

@@ -76,13 +76,13 @@ public class PostController {
 		return gson.toJson(list);
 	}
 
-	@RequestMapping("write")
+	@RequestMapping("postwrite")
 	public String writeForm() {
 		return "user/post/write";
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "write.do", produces = "application/json;charset=utf-8")
+	@RequestMapping(value = "postwrite.do", produces = "application/json;charset=utf-8")
 	public String write(Post post, @RequestParam(value = "fileArr[]", required = false) ArrayList<String> fileArr) {
 		// 사용하지 않은 사진 삭제
 		if (fileArr != null) {

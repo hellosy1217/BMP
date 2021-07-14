@@ -7,6 +7,10 @@
 <meta charset="UTF-8">
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <style>
+.follower a {
+	color: unset;
+}
+
 .follower img {
 	border-radius: 50%;
 	width: 70px;
@@ -32,8 +36,6 @@
 	font-size: 16px;
 	padding: 20px 0 10px 0;
 }
-
-.followBrn
 </style>
 </head>
 <body>
@@ -50,52 +52,51 @@
 				<div>
 					<c:choose>
 						<c:when test="${list.followInfo.no eq 0}">
-							<a class="follow-btn" no="${list.followInfo.no}">Follow</a>
+							<a class="follow-btn" list="${list}">Follow</a>
 						</c:when>
 						<c:otherwise>
-							<a class="follow-btn followed" no="${list.followInfo.no}">Following</a>
+							<a class="follow-btn followed" list="${list }">Following</a>
 						</c:otherwise>
 					</c:choose>
-				</div>
-				${list.followInfo.permission }
+				</div> ${list.followInfo.permission }
 			</li>
 		</c:forEach>
 	</ol>
 </body>
 <script>
-$(document).on('click', '.follow-btn', function() {
-	var id = $(this).attr('id');
-	if(id==null)
-		console.log('hi..');
-	else
-		console.log('bye..');
-	var list = $(this).attr('list');
-	alert(list);
-	
-	/* if ('${accessor}' != null && '${accessor}' != '') {
-		var text = $(this).text();
-		var pms = 'Y';
-		if ('${profile.userPrivate}' == 'Y')
-			pms = 'N';
-		$.ajax({
-			type : 'post',
-			url : 'follow.do',
-			dataType : 'json',
-			data : {
-				no : followed,
-				permission : pms,
-				toUser : '${profile.no}',
-				fromUser : '${accessor.no}'
-			},
-			success : function(data) {
-				console.log(followed);
-				followed = data;
-				location.reload(true);
-			}
-		});
-	} else {
-		location.href = 'signIn';
-	} */
-});
+	$(document).on('click', '.follow-btn', function() {
+		var id = $(this).attr('id');
+		if (id == null)
+			console.log('hi..');
+		else
+			console.log('bye..');
+		var list = $(this).attr('list');
+		alert(list);
+
+		/* if ('${accessor}' != null && '${accessor}' != '') {
+			var text = $(this).text();
+			var pms = 'Y';
+			if ('${profile.userPrivate}' == 'Y')
+				pms = 'N';
+			$.ajax({
+				type : 'post',
+				url : 'follow.do',
+				dataType : 'json',
+				data : {
+					no : followed,
+					permission : pms,
+					toUser : '${profile.no}',
+					fromUser : '${accessor.no}'
+				},
+				success : function(data) {
+					console.log(followed);
+					followed = data;
+					location.reload(true);
+				}
+			});
+		} else {
+			location.href = 'signIn';
+		} */
+	});
 </script>
 </html>

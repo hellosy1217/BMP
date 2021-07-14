@@ -220,12 +220,12 @@ public class UserController {
 		return new Gson().toJson(result + "");
 	}
 
-	@RequestMapping("setting")
+	@RequestMapping("profile")
 	public String editProfile() {
 		return "user/user/editProfile";
 	}
 
-	@RequestMapping("setting/password")
+	@RequestMapping("password")
 	public String editPassword() {
 		return "user/user/editPw";
 	}
@@ -237,6 +237,7 @@ public class UserController {
 		User accessor = (User) session.getAttribute("accessor");
 		user.setNo(accessor.getNo());
 		int result = 0;
+		String msg = "error";
 
 		user.setSub('N');
 		user.setAlarm('N');
@@ -288,8 +289,9 @@ public class UserController {
 			accessor.setAlarm(user.getAlarm());
 			accessor.setUserPrivate(user.getUserPrivate());
 			session.setAttribute("accessor", accessor);
+			msg = "success";
 		}
-		return gson.toJson("");
+		return gson.toJson(msg);
 	}
 
 	@ResponseBody
@@ -299,7 +301,7 @@ public class UserController {
 		User accessor = (User) session.getAttribute("accessor");
 		String oldPw = accessor.getPassword();
 		String encPassword = bcryptPasswordEncoder.encode(pw);
-		if (oldPw.equals(pw)) {
+		if (bcryptPasswordEncoder.matches(pw, oldPw)) {
 			encPassword = bcryptPasswordEncoder.encode(newPw);
 			accessor.setPassword(encPassword);
 

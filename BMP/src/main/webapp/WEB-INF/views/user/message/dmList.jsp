@@ -65,6 +65,7 @@ table {
 
 #list {
 	padding-bottom: 10px;
+	min-height: 250px;
 }
 
 #list img {
@@ -171,16 +172,16 @@ table {
 		<input type="hidden" id="page" value="${paging.currentPage }">
 		<div id="msg">
 			<div id="msg-left">
-				<c:import url="profile.jsp" />
+				<c:import url="../user/profile.jsp" />
 			</div>
 			<div id="msg-right">
 				<div id="title">Messages</div>
 				<div id="pageInfo">
-					<span>1 - ${fn:length(list) } of ${paging.listCount }</span> <span>Messages</span>
+					<span>1 - ${fn:length(dList) } of ${paging.listCount }</span> <span>Messages</span>
 				</div>
 				<div id="list">
 					<table>
-						<c:forEach items="${list }" var="dm">
+						<c:forEach items="${dList }" var="dm">
 							<c:choose>
 								<c:when test="${dm.readDate eq null}">
 									<tr class="msg-new" no="${dm.roomNo }">

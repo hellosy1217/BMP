@@ -112,7 +112,7 @@ form#content>div:first-child {
 		var userNo = '${accessor.no}';
 		$.ajax({
 			type : 'post',
-			url : 'write.do',
+			url : 'postwrite.do',
 			dataType : 'json',
 			data : {
 				title : title,

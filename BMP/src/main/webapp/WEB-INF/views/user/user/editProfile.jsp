@@ -62,6 +62,11 @@
 	color: #6e6d7a;
 }
 
+.setting li:hover {
+	color: #333;
+	cursor: pointer;
+}
+
 #uploadBtn {
 	margin-left: 30px;
 }
@@ -126,13 +131,41 @@
 #checkBox input[type="checkbox"]:checked+label {
 	background: #ea4c89 !important;
 }
+
+#edit {
+	color: #333;
+	font-weight: 700;
+}
+
+.notice {
+	position: fixed;
+	background: white;
+	color: #333;
+	border-radius: 4px;
+	left: calc(50% - 60px);
+	top: calc(50% - 100px);
+	box-shadow: 0px 10px 70px rgb(0 0 0/ 15%);
+	font-size: 10px;
+	padding: 21px 20px 19px;
+	display: none;
+	transition: opacity 2000ms;
+	opacity: 0;
+}
+
+.notice h4 {
+	font-weight: 500;
+	font-size: 14px;
+}
 </style>
 </head>
 <body>
 	<c:import url="../common/header.jsp" />
 	<div class="setting">
+		<div class="notice">
+			<h4></h4>
+		</div>
 		<ol>
-			<li>Setting</li>
+			<li id="edit">Setting</li>
 			<li id="editPw">Password</li>
 		</ol>
 		<form id="editProfile">
@@ -210,7 +243,7 @@
 
 		switch (clicked) {
 		case 'editPw':
-			location.href = 'setting/password';
+			location.href = 'password';
 			break;
 		case 'saveBtn':
 			save();
@@ -262,9 +295,33 @@
 			enctype : 'multipart/form-data',
 			data : formData,
 			success : function(data) {
-				location.reload(true);
+				if (data == 'success')
+					$('.notice h4').text('프로필이 수정되었습니다.');
+				} else {
+					$('.notice h4').text('error!');
+				}
+				notice();
 			}
 		});
+	}
+	
+	function notice() {
+		setTimeout(function() {
+			$('.notice').css({
+				'display' : 'flex',
+				'opacity' : '100'
+			});
+		}, 100);
+		setTimeout(function() {
+			$('.notice').css({
+				'opacity' : '0'
+			});
+		}, 2000);
+		setTimeout(function() {
+			$('.notice').css({
+				'display' : 'none'
+			});
+		}, 4000);
 	}
 </script>
 </html>

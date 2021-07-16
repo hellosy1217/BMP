@@ -115,7 +115,7 @@
 }
 
 #checkBox label {
-	padding: 10px;
+	padding: 11px;
 	background: #fff;
 	border-radius: 4px;
 	cursor: pointer;
@@ -129,7 +129,9 @@
 }
 
 #checkBox input[type="checkbox"]:checked+label {
-	background: #ea4c89 !important;
+	padding: 3px 6.26px 0px !important;
+	font-family: serif;
+	color: #b9b9b9;
 }
 
 #edit {
@@ -256,6 +258,14 @@
 		}
 	});
 
+	$('input[type=checkbox]').change(function() {
+		var id = 'label[for="' + $(this).val() + '"]';
+		if ($(id).text() == '')
+			$(id).text('✓');
+		else
+			$(id).text('');
+	});
+
 	$("#uploadImg").change(function() {
 		if (this.files && this.files[0]) {
 			var reader = new FileReader();
@@ -269,12 +279,18 @@
 	});
 
 	$(function() {
-		if ('${accessor.sub}' == 'Y')
+		if ('${accessor.sub}' == 'Y') {
 			$('#sub').attr('checked', 'checked');
-		if ('${accessor.alarm}' == 'Y')
+			$('label[for="sub"]').text('✓');
+		}
+		if ('${accessor.alarm}' == 'Y') {
 			$('#alarm').attr('checked', 'checked');
-		if ('${accessor.userPrivate}' == 'Y')
+			$('label[for="alarm"]').text('✓');
+		}
+		if ('${accessor.userPrivate}' == 'Y') {
 			$('#userPrivate').attr('checked', 'checked');
+			$('label[for="userPrivate"]').text('✓');
+		}
 	});
 
 	function delImg() {
@@ -299,12 +315,12 @@
 					$('.notice h4').text('프로필이 수정되었습니다.');
 				else
 					$('.notice h4').text('error!');
-				
+
 				notice();
 			}
 		});
 	}
-	
+
 	function notice() {
 		setTimeout(function() {
 			$('.notice').css({

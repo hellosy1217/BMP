@@ -37,7 +37,7 @@ img {
 
 .blog {
 	background-color: #f4f4f4;
-	min-height: 400px;
+	min-height: 500px;
 	display: flex;
 }
 
@@ -99,7 +99,7 @@ img {
 						</div>
 					</c:when>
 					<c:when
-						test="${profile.userPrivate=='Y'.charAt(0) and profile.followInfo==null}">
+						test="${profile.userPrivate=='Y'.charAt(0) and profile.followInfo==null and (accessor==null||profile.no!=accessor.no)}">
 						<div id="notice">
 							<p>이 블로그는 비공개 설정 되어 있습니다.</p>
 							<p>승인된 팔로워만 ${profile.nickname } 님의 포스트를 볼 수 있습니다.</p>

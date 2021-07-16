@@ -32,7 +32,7 @@ public class DMController {
 	public ModelAndView dmList(HttpSession session, ModelAndView mav,
 			@RequestParam(value = "page", defaultValue = "1") int page) {
 		User accessor = (User) session.getAttribute("accessor");
-		User profile = uService.getProfile(new Follow(0, accessor.getNo()));
+		User profile = uService.getProfile(new Follow(accessor.getNo(), accessor.getNo()));
 
 		int listCount = dService.listCount(accessor.getNo());
 		Paging paging = new Pagination().getPaging(page, 10, listCount);
@@ -41,7 +41,7 @@ public class DMController {
 		mav.addObject("paging", paging);
 		mav.addObject("profile", profile);
 		mav.addObject("dList", dList);
-		mav.setViewName("user/message/dmList");
+		mav.setViewName("user/message/messages");
 
 		return mav;
 	}
@@ -55,7 +55,7 @@ public class DMController {
 		Room room = dService.getMessage(dm);
 		mav.addObject("profile", profile);
 		mav.addObject("room", room);
-		mav.setViewName("user/message/dm");
+		mav.setViewName("user/message/message");
 		return mav;
 	}
 }

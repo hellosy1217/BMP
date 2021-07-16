@@ -226,7 +226,7 @@ table {
 
 	$(document).on('click', '#list tr', function() {
 		var no = $(this).attr('no');
-		location.href='dm?no='+no;
+		location.href='message?no='+no;
 	});
 </script>
 </html>

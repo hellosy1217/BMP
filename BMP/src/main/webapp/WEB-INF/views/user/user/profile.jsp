@@ -200,12 +200,7 @@
 							<a class="block-btn blocked" id="block-btn">Blocked</a>
 						</p>
 					</c:when>
-					<c:when test="${profile.blocked > 0 }">
-						<p id="dmList-p">
-							<a id="dm-btn">Message</a>
-						</p>
-					</c:when>
-					<c:otherwise>
+					<c:when test="${profile.blocked == 0 }">
 						<p>
 							<c:choose>
 								<c:when
@@ -226,7 +221,7 @@
 						<p id="block-p">
 							<a class="block-btn" id="block-btn">Block</a>
 						</p>
-					</c:otherwise>
+					</c:when>
 				</c:choose>
 			</div>
 		</div>

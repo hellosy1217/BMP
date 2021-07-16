@@ -21,7 +21,7 @@
 			user_comment,file_name,countfollow,countfollower,follow_no,follow_permission,block_no
 		from ulist
 			left join (select * from bmp_follow where from_user=#{fromUser}) on (user_no=to_user)
-			left join (select block_no from bmp_block where from_user=#{fromUser}) on (user_no=to_user)
+			left join (select block_no, to_user tno from bmp_block where from_user=#{fromUser}) on (user_no=tno)
 		where user_no=#{toUser}
 	</select>
 	

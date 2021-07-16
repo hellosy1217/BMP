@@ -353,9 +353,11 @@ public class UserController {
 		if (followNo > 0) {
 			result = uService.delFollow(new Follow(followNo));
 		}
-		
+
 		if (block.getNo() > 0) {
 			result = uService.delBlock(block);
+			if (result > 0)
+				result = 0;
 		} else {
 			result = uService.addBlock(block);
 		}

@@ -67,6 +67,9 @@ img {
 			</div>
 			<div class="blog-right">
 				<c:choose>
+					<c:when test="${profile.blockInfo!=null&&profile.blockInfo.no>0 }">
+						<h2>차단된 계정입니다..</h2>
+					</c:when>
 					<c:when test="${list != null }">
 						<c:import url="list.jsp" />
 					</c:when>

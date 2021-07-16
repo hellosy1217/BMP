@@ -9,6 +9,11 @@ public class Follow {
 	public Follow() {
 	}
 
+	public Follow(int no) {
+		super();
+		this.no = no;
+	}
+	
 	public Follow(int toUser, int fromUser) {
 		super();
 		this.toUser = toUser;

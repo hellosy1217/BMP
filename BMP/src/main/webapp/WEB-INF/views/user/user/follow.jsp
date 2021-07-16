@@ -36,67 +36,91 @@
 	font-size: 16px;
 	padding: 20px 0 10px 0;
 }
+
+#list {
+	background: white;
+	border-radius: 8px;
+	padding: 10px 20px;
+	box-shadow: 0 1px 2px rgb(0 0 0/ 7%);
+}
+
+#list img {
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+}
+
+#list li {
+	padding: 15px 20px;
+	display: flex;
+	justify-content: space-between;
+	border-bottom: 1px solid rgb(221, 221, 221);
+}
+
+#list li:first-child {
+	padding: 15px 20px !important;
+}
+
+#list li:last-child {
+	border-color: transparent !important;
+	padding: 15px 20px 20px !important;
+}
+
+#list li>div {
+	display: flex;
+	align-items: center;
+}
+
+#list p {
+	padding: 0 10px;
+	font-weight: 700;
+}
 </style>
 </head>
 <body>
-	<ol class="follower">
-		<c:forEach items="${fList }" var="list">
-			<li>
-				<div>
-					<img
-						src="https://post.medicalnewstoday.com/wp-content/uploads/sites/3/2020/02/322868_1100-800x825.jpg">
-				</div>
-				<div class="nickname">
-					<a href="blog?blog=${list.no }">${list.nickname }</a>
-				</div>
-				<div>
-					<c:choose>
-						<c:when test="${list.followInfo.no eq 0}">
-							<a class="follow-btn" list="${list}">Follow</a>
-						</c:when>
-						<c:otherwise>
-							<a class="follow-btn followed" list="${list }">Following</a>
-						</c:otherwise>
-					</c:choose>
-				</div> ${list.followInfo.permission }
-			</li>
-		</c:forEach>
-	</ol>
+	<div id="list">
+		<ul>
+			<c:forEach items="${fList }" var="list">
+				<li><div>
+						<img src="${list.fileName }">
+						<p>${list.nickname }</p>
+					</div>
+					<div no="${list.no }" >
+						<c:choose>
+							<c:when test="${list.no eq accessor.no }"></c:when>
+							<c:when
+								test="${list.followInfo eq null or list.followInfo.no eq null}">
+								<a class="follow-btn">Follow</a>
+							</c:when>
+							<c:otherwise>
+								<a class="follow-btn followed">Following</a>
+							</c:otherwise>
+						</c:choose>
+					</div></li>
+			</c:forEach>
+		</ul>
+	</div>
 </body>
 <script>
-	$(document).on('click', '.follow-btn', function() {
-		var id = $(this).attr('id');
-		if (id == null)
-			console.log('hi..');
-		else
-			console.log('bye..');
-		var list = $(this).attr('list');
-		alert(list);
-
-		/* if ('${accessor}' != null && '${accessor}' != '') {
-			var text = $(this).text();
-			var pms = 'Y';
-			if ('${profile.userPrivate}' == 'Y')
-				pms = 'N';
+	$(document).on('click', '#list .follow-btn', function() {
+		var div = $(this).parent();
+		var no = div.attr('no');
+		if ('${accessor}' != null && '${accessor}' != '') {
 			$.ajax({
 				type : 'post',
 				url : 'follow.do',
-				dataType : 'json',
+				Type : 'json',
 				data : {
-					no : followed,
-					permission : pms,
-					toUser : '${profile.no}',
+					toUser : no,
 					fromUser : '${accessor.no}'
 				},
 				success : function(data) {
-					console.log(followed);
-					followed = data;
-					location.reload(true);
+					div.attr('followed', data);
 				}
 			});
 		} else {
 			location.href = 'signIn';
-		} */
+		}
 	});
 </script>
 </html>

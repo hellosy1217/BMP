@@ -297,9 +297,9 @@
 			success : function(data) {
 				if (data == 'success')
 					$('.notice h4').text('프로필이 수정되었습니다.');
-				} else {
+				else
 					$('.notice h4').text('error!');
-				}
+				
 				notice();
 			}
 		});

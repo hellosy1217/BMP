@@ -35,6 +35,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.gson.Gson;
 import com.project.bmp.common.AwsS3;
 import com.project.bmp.user.model.service.UserService;
+import com.project.bmp.user.model.vo.Block;
 import com.project.bmp.user.model.vo.Follow;
 import com.project.bmp.user.model.vo.User;
 
@@ -89,8 +90,6 @@ public class UserController {
 					msg = sendAuthMail(user.getEmail(), "회원", null);
 			}
 		}
-
-		System.out.println(user.toString());
 		return gson.toJson(msg);
 	}
 
@@ -198,28 +197,6 @@ public class UserController {
 		return new Gson().toJson(msg);
 	}
 
-	@ResponseBody
-	@RequestMapping("follow.do")
-	public String follow(Follow follow) {
-		int result = 0;
-		if (follow.getNo() == 0) {
-			result = uService.addFollow(follow);
-			if (result > 0) {
-				result = follow.getNo();
-			} else {
-				// 오류페이지
-			}
-		} else {
-			result = uService.delFollow(follow);
-			if (result > 0) {
-				result = 0;
-			} else {
-				// 오류페이지
-			}
-		}
-		return new Gson().toJson(result + "");
-	}
-
 	@RequestMapping("profile")
 	public String editProfile() {
 		return "user/user/editProfile";
@@ -322,8 +299,7 @@ public class UserController {
 	public ModelAndView follower(HttpSession session, ModelAndView mav, int no) {
 		User accessor = (User) session.getAttribute("accessor");
 		User profile = uService.getProfile(new Follow(no, accessor.getNo()));
-		ArrayList<User> fList = uService.getFollow(new User(accessor.getNo(), 0, no));
-		
+		ArrayList<User> fList = uService.getFollowList(new User(accessor.getNo(), no, 0));
 		mav.addObject("fList", fList);
 		mav.addObject("profile", profile);
 		mav.setViewName("user/post/blog");
@@ -334,11 +310,56 @@ public class UserController {
 	public ModelAndView follow(HttpSession session, ModelAndView mav, int no) {
 		User accessor = (User) session.getAttribute("accessor");
 		User profile = uService.getProfile(new Follow(no, accessor.getNo()));
-		ArrayList<User> fList = uService.getFollow(new User(accessor.getNo(), no, 0));
+		ArrayList<User> fList = uService.getFollowList(new User(accessor.getNo(), 0, no));
 		mav.addObject("fList", fList);
 		mav.addObject("profile", profile);
 		mav.setViewName("user/post/blog");
 		return mav;
+	}
+
+	@ResponseBody
+	@RequestMapping("follow.do")
+	public String follow(Follow follow) {
+		int result = 0;
+
+		if (follow.getPermission() == ' ') {
+			User user = uService.getFollow(follow);
+			if (user.getUserPrivate() == 'Y')
+				follow.setPermission('N');
+			else
+				follow.setPermission('Y');
+			follow.setNo(user.getNo());
+		}
+
+		if (follow.getNo() == 0) {
+			result = uService.addFollow(follow);
+			if (result > 0) {
+				result = follow.getNo();
+			}
+		} else {
+			result = uService.delFollow(follow);
+			if (result > 0) {
+				result = 0;
+			}
+		}
+		return new Gson().toJson(result + "");
+	}
+
+	@ResponseBody
+	@RequestMapping("block.do")
+	public String block(Block block, int followNo) {
+		int result = 0;
+
+		if (followNo > 0) {
+			result = uService.delFollow(new Follow(followNo));
+		}
+		
+		if (block.getNo() > 0) {
+			result = uService.delBlock(block);
+		} else {
+			result = uService.addBlock(block);
+		}
+		return new Gson().toJson(result + "");
 	}
 
 	// 인증코드 생성하기
@@ -382,4 +403,5 @@ public class UserController {
 			return null;
 		}
 	}
+
 }

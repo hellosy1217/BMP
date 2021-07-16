@@ -28,7 +28,7 @@ public class DMController {
 	@Autowired
 	private DMService dService;
 
-	@RequestMapping("dmList")
+	@RequestMapping("messages")
 	public ModelAndView dmList(HttpSession session, ModelAndView mav,
 			@RequestParam(value = "page", defaultValue = "1") int page) {
 		User accessor = (User) session.getAttribute("accessor");
@@ -46,7 +46,7 @@ public class DMController {
 		return mav;
 	}
 
-	@RequestMapping("dm")
+	@RequestMapping("message")
 	public ModelAndView dm(HttpSession session, ModelAndView mav, int no) {
 		User accessor = (User) session.getAttribute("accessor");
 		User profile = uService.getProfile(new Follow(0, accessor.getNo()));

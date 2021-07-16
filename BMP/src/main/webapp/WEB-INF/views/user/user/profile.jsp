@@ -25,8 +25,7 @@
 	color: rgb(146, 146, 146);
 }
 
-#dm-btn {
-	background: rgb(125, 186, 99);
+#dm-btn, #block-btn {
 	border-radius: 4px;
 	color: white;
 	font-weight: bold;
@@ -36,11 +35,19 @@
 	font-size: 14px;
 	min-width: 63px;
 	text-align: center;
+	cursor: pointer;
+}
+
+#dm-btn {
+	background: rgb(125, 186, 99);
 }
 
 #dm-btn:hover {
 	background: #6cb14f;
-	cursor: pointer;
+}
+
+#block-btn {
+	background: #c1c1c1;
 }
 
 #user-profile {
@@ -92,7 +99,7 @@
 	display: flex;
 }
 
-#dm-p {
+#dm-p, #block-p, #setting-p {
 	padding-top: 8px;
 	display: none;
 	transition: display 0.3s;
@@ -156,7 +163,7 @@
 	color: #929292 !important;
 }
 
-.follow a {
+.follow a, #blog-btn {
 	color: unset;
 }
 </style>
@@ -168,31 +175,54 @@
 				<img
 					src="https://www.unboxingdeals.com/wp-content/uploads/2018/08/Dogs.jpg">
 			</div>
-			<div>${profile.nickname }</div>
+			<div>
+				<a href="blog?blog=${profile.no }" id="blog-btn">${profile.nickname }</a>
+			</div>
 			<c:if test="${profile.comment ne null and profile.comment ne '' }">
 				<div id="profile-comment">${profile.comment }</div>
 			</c:if>
 			<div id="profile-btns">
-				<p>
-					<c:choose>
-						<c:when test="${accessor ne null && accessor.no eq profile.no }">
-							<a id="setting-btn">Setting</a>
-						</c:when>
-						<c:when
-							test="${profile.followInfo != null and profile.followInfo.no != 0}">
-							<a class="follow-btn followed" id="follow-btn">Following</a>
-						</c:when>
-						<c:otherwise>
-							<a class="follow-btn" id="follow-btn">Follow</a>
-						</c:otherwise>
-					</c:choose>
-				</p>
-				<p>
-					<a id="more-btn">⌵</a>
-				</p>
-				<p id="dm-p">
-					<a id="dm-btn">Message</a>
-				</p>
+				<c:choose>
+					<c:when test="${accessor ne null && accessor.no eq profile.no }">
+						<p id="dmList-p">
+							<a id="dm-btn">Message</a>
+						</p>
+						<p>
+							<a id="more-btn">⌵</a>
+						</p>
+						<p id="setting-p">
+							<a id="setting-btn" href="profile">Setting</a>
+						</p>
+					</c:when>
+					<c:when
+						test="${profile.blockInfo != null and profile.blockInfo.no != 0}">
+						<p id="block-p">
+							<a class="block-btn blocked" id="block-btn">Blocked</a>
+						</p>
+					</c:when>
+					<c:otherwise>
+						<p>
+							<c:choose>
+								<c:when
+									test="${profile.followInfo != null and profile.followInfo.no != 0}">
+									<a class="follow-btn followed" id="follow-btn">Following</a>
+								</c:when>
+								<c:otherwise>
+									<a class="follow-btn" id="follow-btn">Follow</a>
+								</c:otherwise>
+							</c:choose>
+						</p>
+						<p>
+							<a id="more-btn">⌵</a>
+						</p>
+						<p id="dm-p">
+							<a id="dm-btn">Message</a>
+						</p>
+						<p id="block-p">
+							<a class="block-btn" id="block-btn">Block</a>
+						</p>
+					</c:otherwise>
+				</c:choose>
 			</div>
 		</div>
 		<div class="follow">
@@ -212,15 +242,19 @@
 </body>
 <script>
 	var followed = '${profile.followInfo.no}';
+	var blocked = '${profile.blockInfo.no}';
+
 	if (followed == '')
 		followed = 0;
+	if (blocked == '')
+		blocked = 0;
 
 	$(document).on('click', function(e) {
 		var id = $(e.target).attr('id');
 
 		if (id == 'more-btn')
 			moreBtn();
-		
+
 		else if ('${accessor!=null}') {
 			var id = $(e.target).attr('id');
 
@@ -231,32 +265,37 @@
 			case 'follow-btn':
 				follow();
 				break;
+			case 'block-btn':
+				block();
+				break;
 			}
-		} else {
-
 		}
 	});
 
 	function moreBtn() {
-		if ($(this).attr('class') != 'font-rotate') {
+		if ($('#more-btn').attr('class') != 'font-rotate') {
+			$('#block-p').css('display', 'flex');
 			$('#dm-p').css('display', 'flex');
-			$(this).attr('class', 'font-rotate');
+			$('#setting-p').css('display', 'flex');
+			$('#more-btn').attr('class', 'font-rotate');
 		} else {
+			$('#block-p').css('display', 'none');
 			$('#dm-p').css('display', 'none');
-			$(this).attr('class', '');
+			$('#setting-p').css('display', 'none');
+			$('#more-btn').attr('class', '');
 		}
 	}
 
 	function dm() {
 		if ('${accessor.no}' == '${profile.no}')
-			location.href = 'dmList';
+			location.href = 'messages';
 		else {
-			location.href = 'dm';
+			location.href = 'message';
 		}
 	}
 
 	function follow() {
-		var text = $(this).text();
+		var text = $('#follow-btn').text();
 		var pms = 'Y';
 		if ('${profile.userPrivate}' == 'Y')
 			pms = 'N';
@@ -272,6 +311,28 @@
 			},
 			success : function(data) {
 				followed = data;
+				if (text == 'Follow')
+					$('#follow-btn').text('Following');
+				else
+					$('#follow-btn').text('Follow');
+
+			}
+		});
+	}
+
+	function block() {
+		$.ajax({
+			type : 'post',
+			url : 'block.do',
+			dataType : 'json',
+			data : {
+				followNo : followed,
+				no : blocked,
+				toUser : '${profile.no}',
+				fromUser : '${accessor.no}'
+			},
+			success : function(data) {
+				blocked = data;
 				location.reload(true);
 			}
 		});

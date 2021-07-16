@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.project.bmp.user.model.dao.UserDAO;
+import com.project.bmp.user.model.vo.Block;
 import com.project.bmp.user.model.vo.Follow;
 import com.project.bmp.user.model.vo.User;
 
@@ -78,8 +79,23 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ArrayList<User> getFollow(User user) {
-		return uDAO.getFollow(sqlSession, user);
+	public ArrayList<User> getFollowList(User user) {
+		return uDAO.getFollowList(sqlSession, user);
+	}
+
+	@Override
+	public User getFollow(Follow follow) {
+		return uDAO.getFollow(sqlSession, follow);
+	}
+
+	@Override
+	public int addBlock(Block block) {
+		return uDAO.addBlock(sqlSession, block);
+	}
+
+	@Override
+	public int delBlock(Block block) {
+		return uDAO.delBlock(sqlSession, block);
 	}
 
 }

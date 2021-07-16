@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -19,6 +20,7 @@ public class PostDAO {
 
 	public int getListCount(SqlSessionTemplate sqlSession, ListInfo listInfo) {
 		return sqlSession.selectOne("postMapper.listCount");
+		
 	}
 
 	public ArrayList<Post> getPostList(SqlSessionTemplate sqlSession, ListInfo listInfo) {

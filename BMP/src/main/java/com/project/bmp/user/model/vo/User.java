@@ -23,6 +23,7 @@ public class User {
 	private int follower;
 	private int post;
 	private Follow followInfo;
+	private Block blockInfo;
 
 	public User() {
 	}
@@ -57,7 +58,7 @@ public class User {
 
 	public User(int no, String email, String password, String nickname, String birth, String phone, Date regDate,
 			Date delDate, char confirm, char alarm, char dm, char sub, char userPrivate, char admin, String comment,
-			String fileName, int follow, int follower, int post, Follow followInfo) {
+			String fileName, int follow, int follower, int post, Follow followInfo, Block blockInfo) {
 		super();
 		this.no = no;
 		this.email = email;
@@ -79,6 +80,7 @@ public class User {
 		this.follower = follower;
 		this.post = post;
 		this.followInfo = followInfo;
+		this.blockInfo = blockInfo;
 	}
 
 	public int getNo() {
@@ -241,13 +243,21 @@ public class User {
 		this.followInfo = followInfo;
 	}
 
+	public Block getBlockInfo() {
+		return blockInfo;
+	}
+
+	public void setBlockInfo(Block blockInfo) {
+		this.blockInfo = blockInfo;
+	}
+
 	@Override
 	public String toString() {
 		return "User [no=" + no + ", email=" + email + ", password=" + password + ", nickname=" + nickname + ", birth="
 				+ birth + ", phone=" + phone + ", regDate=" + regDate + ", delDate=" + delDate + ", confirm=" + confirm
 				+ ", alarm=" + alarm + ", dm=" + dm + ", sub=" + sub + ", UserPrivate=" + UserPrivate + ", admin="
 				+ admin + ", comment=" + comment + ", fileName=" + fileName + ", follow=" + follow + ", follower="
-				+ follower + ", post=" + post + ", followInfo=" + followInfo + "]";
+				+ follower + ", post=" + post + ", followInfo=" + followInfo + ", blockInfo=" + blockInfo + "]";
 	}
 
 }

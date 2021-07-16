@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.project.bmp.user.model.vo.Block;
 import com.project.bmp.user.model.vo.Follow;
 import com.project.bmp.user.model.vo.User;
 
@@ -59,8 +60,20 @@ public class UserDAO {
 		return sqlSession.delete("userMapper.delFile", user);
 	}
 
-	public ArrayList<User> getFollow(SqlSessionTemplate sqlSession, User user) {
+	public ArrayList<User> getFollowList(SqlSessionTemplate sqlSession, User user) {
 		return (ArrayList) sqlSession.selectList("userMapper.getFollow", user);
+	}
+
+	public User getFollow(SqlSessionTemplate sqlSession, Follow follow) {
+		return sqlSession.selectOne("userMapper.getFollow", follow);
+	}
+
+	public int addBlock(SqlSessionTemplate sqlSession, Block block) {
+		return sqlSession.insert("userMapper.addBlock", block);
+	}
+
+	public int delBlock(SqlSessionTemplate sqlSession, Block block) {
+		return sqlSession.delete("userMapper.delBlock", block);
 	}
 
 }

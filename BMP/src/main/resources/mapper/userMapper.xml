@@ -18,9 +18,10 @@
 
 	<select id="getProfile" resultMap="userResultMap" parameterType="Follow">
 		select user_no,user_email,user_nickname,user_birth,user_reg_date,user_dm,user_private,
-			user_comment,file_name,countfollow,countfollower,follow_no,follow_permission
+			user_comment,file_name,countfollow,countfollower,follow_no,follow_permission,block_no
 		from ulist
 			left join (select * from bmp_follow where from_user=#{fromUser}) on (user_no=to_user)
+			left join (select block_no from bmp_block where from_user=#{fromUser}) on (user_no=to_user)
 		where user_no=#{toUser}
 	</select>
 	
@@ -106,6 +107,18 @@
 		order by follow_no desc	
 	</select>
 	
+	<insert id="addBlock">
+		<selectKey keyProperty="no" resultType="int" order="BEFORE">
+			select block_seq.nextval from dual
+		</selectKey>
+		insert into bmp_block
+		values (#{no},#{toUser},#{fromUser})
+	</insert>
+	
+	<delete id="delBlock">
+		delete from bmp_block where block_no=#{no}
+	</delete>
+	
 	<resultMap type="User" id="userResultMap">
 		<id property="no" column="user_no" />
 		<result property="email" column="user_email" />
@@ -127,6 +140,7 @@
 		<result property="follower" column="countfollower"/>
 		<result property="post" column="post"/>
 		<collection property="followInfo" resultMap="followResultMap"/>
+		<collection property="blockInfo" resultMap="blockResultMap"/>
 	</resultMap>
 	
 	<resultMap type="Follow" id="followResultMap">
@@ -136,4 +150,9 @@
 		<result property="fromUser" column="from_user"/>
 	</resultMap>
 	
+	<resultMap type="Block" id="blockResultMap">
+		<id property="no" column="block_no"/>
+		<result property="toUser" column="to_user"/>
+		<result property="fromUser" column="from_user"/>
+	</resultMap>
 </mapper>

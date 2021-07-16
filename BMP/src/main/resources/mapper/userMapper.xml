@@ -18,9 +18,10 @@
 
 	<select id="getProfile" resultMap="userResultMap" parameterType="Follow">
 		select user_no,user_email,user_nickname,user_birth,user_reg_date,user_dm,user_private,
-			user_comment,file_name,countfollow,countfollower,follow_no,follow_permission,block_no
+			user_comment,file_name,countfollow,countfollower,follow_no,follow_permission,block_no,blocked
 		from ulist
 			left join (select * from bmp_follow where from_user=#{fromUser}) on (user_no=to_user)
+			left join (select block_no blocked, from_user fno from bmp_block where from_user=#{toUser} and to_user=#{fromUser}) on (user_no=fno)
 			left join (select block_no, to_user tno from bmp_block where from_user=#{fromUser}) on (user_no=tno)
 		where user_no=#{toUser}
 	</select>
@@ -139,6 +140,7 @@
 		<result property="follow" column="countfollow"/>
 		<result property="follower" column="countfollower"/>
 		<result property="post" column="post"/>
+		<result property="blocked" column="blocked"/>
 		<collection property="followInfo" resultMap="followResultMap"/>
 		<collection property="blockInfo" resultMap="blockResultMap"/>
 	</resultMap>

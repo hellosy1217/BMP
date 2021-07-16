@@ -196,8 +196,13 @@
 					</c:when>
 					<c:when
 						test="${profile.blockInfo != null and profile.blockInfo.no != 0}">
-						<p id="block-p">
+						<p id="blocked-p">
 							<a class="block-btn blocked" id="block-btn">Blocked</a>
+						</p>
+					</c:when>
+					<c:when test="${profile.blocked > 0 }">
+						<p id="dmList-p">
+							<a id="dm-btn">Message</a>
 						</p>
 					</c:when>
 					<c:otherwise>

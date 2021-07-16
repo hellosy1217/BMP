@@ -139,6 +139,7 @@ public class PostController {
 
 		ArrayList<Post> list = pService.getPostList(listInfo);
 		User profile = uService.getProfile(new Follow(blog, listInfo.getAccessor_no()));
+		System.out.println(profile.toString());
 
 		mav.addObject("listInfo", listInfo);
 		mav.addObject("list", list);

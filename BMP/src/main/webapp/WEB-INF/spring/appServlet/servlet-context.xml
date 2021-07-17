@@ -50,5 +50,18 @@
 			value="200000000" />
 	</beans:bean>
 
+	<interceptors>
+		<interceptor>
+			<mapping path="/" />
+			<mapping path="/explorer"/>
+			<beans:bean id="adminInterceptor"
+				class="com.project.bmp.interceptor.AdminInterceptor" />
+		</interceptor>
+		<interceptor>
+			<mapping path="/admin" />
+			<beans:bean id="userInterceptor"
+				class="com.project.bmp.interceptor.UserInterceptor" />
+		</interceptor>
+	</interceptors>
 
 </beans:beans>

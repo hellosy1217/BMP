@@ -209,7 +209,8 @@ public class UserController {
 
 	@ResponseBody
 	@RequestMapping(value = "editProfile.do")
-	public String setting(User user, @RequestParam MultipartFile upload, String[] checkBox, HttpSession session) {
+	public String setting(User user, @RequestParam MultipartFile upload, String[] checkBox, HttpSession session)
+			throws IllegalStateException, IOException {
 		Gson gson = new Gson();
 		User accessor = (User) session.getAttribute("accessor");
 		user.setNo(accessor.getNo());
@@ -233,6 +234,7 @@ public class UserController {
 		if (!orgFileName.equals("") && !user.getFileName().equals("")) {
 			String saveFileName = aws.getSaveFileName(orgFileName);
 			File file = new File(orgFileName);
+			upload.transferTo(file);
 			aws.upload(file, saveFileName);
 
 			user.setFileName(aws.getURL() + saveFileName);

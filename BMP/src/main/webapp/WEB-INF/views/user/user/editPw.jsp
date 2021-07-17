@@ -221,12 +221,12 @@
 			$('.notice').css({
 				'opacity' : '0'
 			});
-		}, 2000);
+		}, 1000);
 		setTimeout(function() {
 			$('.notice').css({
 				'display' : 'none'
 			});
-		}, 4000);
+		}, 2000);
 	}
 </script>
 </html>

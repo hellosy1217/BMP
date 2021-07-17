@@ -350,7 +350,7 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 					</c:when>
 					<c:otherwise>
 						<li id="t-profile"><img
-							src="https://i.pinimg.com/736x/63/a1/e8/63a1e82490841a1022595197bd7ac835.jpg">
+							src="${accessor.fileName }">
 							<div id="profile-dropdown">
 								<ol>
 									<li>내 블로그</li>

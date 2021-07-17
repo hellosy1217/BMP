@@ -49,7 +49,7 @@ public class DMController {
 	@RequestMapping("message")
 	public ModelAndView dm(HttpSession session, ModelAndView mav, int no) {
 		User accessor = (User) session.getAttribute("accessor");
-		User profile = uService.getProfile(new Follow(0, accessor.getNo()));
+		User profile = uService.getProfile(new Follow(accessor.getNo(), accessor.getNo()));
 
 		DM dm = new DM(no, accessor.getNo());
 		Room room = dService.getMessage(dm);

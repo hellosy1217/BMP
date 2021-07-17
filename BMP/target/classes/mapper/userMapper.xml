@@ -4,15 +4,15 @@
 
 	<select id="selectUser" resultType="User"
 		resultMap="userResultMap">
-		select user_no,user_email,user_password,user_nickname,user_admin,user_confirm,user_comment,user_alarm,user_sub,user_private
-		from bmp_user
+		select user_no,user_email,user_password,user_nickname,user_admin,user_confirm,user_comment,user_alarm,user_sub,user_private,file_name
+		from ulist
 		where user_email=#{email}
 	</select>
 	
 	<select id="selectGoogleUser" resultType="User"
 		resultMap="userResultMap">
-		select user_no,user_email,user_password,user_nickname,user_admin,user_comment,user_alarm,user_sub,user_private
-		from bmp_user
+		select user_no,user_email,user_password,user_nickname,user_admin,user_comment,user_alarm,user_sub,user_private,file_name
+		from ulist
 		where user_email=#{email} and user_password=#{password}
 	</select>
 

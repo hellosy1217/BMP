@@ -173,7 +173,7 @@
 		<div id="profile">
 			<div>
 				<img
-					src="https://www.unboxingdeals.com/wp-content/uploads/2018/08/Dogs.jpg">
+					src="${profile.fileName }">
 			</div>
 			<div>
 				<a href="blog?blog=${profile.no }" id="blog-btn">${profile.nickname }</a>

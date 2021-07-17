@@ -329,15 +329,12 @@
 			});
 		}, 100);
 		setTimeout(function() {
-			$('.notice').css({
-				'opacity' : '0'
-			});
-		}, 2000);
+			$('.notice').css('opacity', '0');
+		}, 1000);
 		setTimeout(function() {
-			$('.notice').css({
-				'display' : 'none'
-			});
-		}, 4000);
+			$('.notice').css('display','none');
+			location.reload(true);
+		}, 2000);
 	}
 </script>
 </html>

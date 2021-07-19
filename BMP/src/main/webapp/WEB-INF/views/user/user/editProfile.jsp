@@ -245,7 +245,7 @@
 
 		switch (clicked) {
 		case 'editPw':
-			location.href = 'password';
+			location.href = '/bmp/setting/password';
 			break;
 		case 'saveBtn':
 			save();
@@ -303,7 +303,7 @@
 		var form = $('#editProfile')[0];
 		var formData = new FormData(form);
 		$.ajax({
-			url : 'editProfile.do',
+			url : '/bmp/editProfile.do',
 			type : 'post',
 			dataType : 'json',
 			processData : false,

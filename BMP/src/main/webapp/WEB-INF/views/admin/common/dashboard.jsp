@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -24,7 +25,7 @@
 
 #body {
 	display: flex;
-	padding-left: 291.36px;
+	padding-left: 269px;
 	background: #f4f4f4;
 }
 
@@ -60,7 +61,7 @@
 	background: white;
 	border-radius: 4px;
 	padding: 20px 20px 30px 20px;
-	box-shadow: 0 1px 2px rgb(0 0 0 / 7%);
+	box-shadow: 0 1px 2px rgb(0 0 0/ 7%);
 }
 
 #statistics>ul>li>div>p:last-child {
@@ -78,7 +79,7 @@
 	background: white;
 	padding: 20px 30px;
 	border-radius: 4px;
-	box-shadow: 0 1px 2px rgb(0 0 0 / 7%);
+	box-shadow: 0 1px 2px rgb(0 0 0/ 7%);
 }
 
 #myChart {
@@ -87,23 +88,24 @@
 </style>
 </head>
 <body>
-	<c:import url="navigation.jsp"/>
+	<c:import url="navigation.jsp" />
 	<div id="body">
 		<div id="container">
 			<div id="container_inner">
 				<div id="statistics">
+				<c:set var="listSize" value="${fn:length(sList)-1 }"/>
 					<ul>
 						<li><div>
 								<p>Visit</p>
-								<p>1000</p>
+								<p>${sList[listSize].countVisit }</p>
 							</div></li>
 						<li><div>
 								<p>Post</p>
-								<p>1000</p>
+								<p>${sList[listSize].countPost }</p>
 							</div></li>
 						<li><div>
-								<p>Comment</p>
-								<p>1000</p>
+								<p>New Member</p>
+								<p>${sList[listSize].countUser }</p>
 							</div></li>
 					</ul>
 				</div>
@@ -117,47 +119,42 @@
 	</div>
 </body>
 <script>
-	var today = new Date();
-
-	var year = today.getFullYear();
-	var month = today.getMonth() + 1;
-
 	var months = [];
+	var vArr = [];
+	var uArr = [];
 
-	for (var i = 0; i < 6; i++) {
-		var m = month - 5 + i;
-		if (m < 1)
-			m = m + 12;
-		months[i] = m;
-	}
-	
-	const mydata = [ 100, 20, 30, 40, 300,20 ];
-	const mydataHalf = [ 100, 10, 20, 7,100,90 ];
-
-	var ctx = $('#myChart');
-	var mixedChart = {
-		type : 'bar',
-		labels : months,
-		datasets : [{
-			label : '접속자',
-			data : mydataHalf,
-			backgroundColor : 'transparent',
-			/* borderColor : '#ea4c89', */
-			type : 'line'
-		}, {
-			label : '신규회원',
-			data : mydata
+	$(function() {
+		<c:forEach items="${sList }" var="list">
+		months.push('${list.date}');
+		vArr.push('${list.countVisit}');
+		uArr.push('${list.countUser}');
+		</c:forEach>
+		
+		var ctx = $('#myChart');
+		var mixedChart = {
+			type : 'bar',
+			labels : months,
+			datasets : [ {
+				label : '접속자',
+				data : vArr,
+				backgroundColor : 'transparent',
+				/* borderColor : '#ea4c89', */
+				type : 'line'
+			}, {
+				label : '신규회원',
+				data : uArr
 			/* backgroundColor : 'skyblue' */
-		} ]
-	};
-	var myChart = new Chart(ctx, {
-		type : 'bar',
-		data : mixedChart,
-		options : {
-			legend : {
-				display : true
+			} ]
+		};
+		var myChart = new Chart(ctx, {
+			type : 'bar',
+			data : mixedChart,
+			options : {
+				legend : {
+					display : true
+				}
 			}
-		}
+		});
 	});
 </script>
 </html>

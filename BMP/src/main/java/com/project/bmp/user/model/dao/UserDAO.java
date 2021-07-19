@@ -2,9 +2,11 @@ package com.project.bmp.user.model.dao;
 
 import java.util.ArrayList;
 
+import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.project.bmp.post.model.vo.ListInfo;
 import com.project.bmp.user.model.vo.Block;
 import com.project.bmp.user.model.vo.Follow;
 import com.project.bmp.user.model.vo.User;
@@ -74,6 +76,16 @@ public class UserDAO {
 
 	public int delBlock(SqlSessionTemplate sqlSession, Block block) {
 		return sqlSession.delete("userMapper.delBlock", block);
+	}
+
+	public int getListCount(SqlSessionTemplate sqlSession, ListInfo listInfo) {
+		return sqlSession.selectOne("userMapper.listCount", listInfo);
+	}
+
+	public ArrayList<User> getUserList(SqlSessionTemplate sqlSession, ListInfo listInfo) {
+		int offset = (listInfo.getPaging().getCurrentPage() - 1) * listInfo.getPaging().getBoardLimit();
+		RowBounds rowBounds = new RowBounds(offset, listInfo.getPaging().getBoardLimit());
+		return (ArrayList) sqlSession.selectList("userMapper.getUserList", listInfo, rowBounds);
 	}
 
 }

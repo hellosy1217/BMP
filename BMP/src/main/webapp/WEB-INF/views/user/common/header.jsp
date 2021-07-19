@@ -18,10 +18,10 @@
 	font-family: sans-serif;
 }
 
-::selection {
+/* ::selection {
 	background: #ea4c89;
 	color: rgba(255, 255, 255, 0.85);
-}
+} */
 
 body {
 	color: #444;

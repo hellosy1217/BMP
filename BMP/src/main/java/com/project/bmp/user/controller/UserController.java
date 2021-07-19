@@ -34,6 +34,9 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.gson.Gson;
 import com.project.bmp.common.AwsS3;
+import com.project.bmp.common.Pagination;
+import com.project.bmp.common.Paging;
+import com.project.bmp.post.model.vo.ListInfo;
 import com.project.bmp.user.model.service.UserService;
 import com.project.bmp.user.model.vo.Block;
 import com.project.bmp.user.model.vo.Follow;
@@ -197,12 +200,12 @@ public class UserController {
 		return new Gson().toJson(msg);
 	}
 
-	@RequestMapping("profile")
+	@RequestMapping("setting")
 	public String editProfile() {
 		return "user/user/editProfile";
 	}
 
-	@RequestMapping("password")
+	@RequestMapping("setting/password")
 	public String editPassword() {
 		return "user/user/editPw";
 	}
@@ -366,6 +369,21 @@ public class UserController {
 		return new Gson().toJson(result + "");
 	}
 
+	@RequestMapping("admin/user")
+	public ModelAndView userList(HttpSession session, @RequestParam(value = "sort", defaultValue = "인기순") String sort,
+			@RequestParam(value = "keyword", defaultValue = "") String keyword, ModelAndView mav,
+			@RequestParam(value = "page", defaultValue = "1") int page) {
+
+		ListInfo listInfo = getListInfo(session, sort, keyword, page, 20);
+		ArrayList<User> uList = uService.getUserList(listInfo);
+
+		mav.addObject("uList", uList);
+		mav.addObject("listInfo", listInfo);
+		mav.addObject("paging", listInfo.getPaging());
+		mav.setViewName("admin/user/list");
+		return mav;
+	}
+
 	// 인증코드 생성하기
 	public String getAuthCode() {
 		Random random = new Random();
@@ -408,4 +426,16 @@ public class UserController {
 		}
 	}
 
+	public ListInfo getListInfo(HttpSession session, String sort, String keyword, int currentPage, int boardLimit) {
+
+		ListInfo listInfo = new ListInfo(sort, keyword);
+
+		int listCount = uService.getListCount(listInfo);
+
+		Paging paging = new Pagination().getPaging(currentPage, boardLimit, listCount);
+
+		listInfo.setPaging(paging);
+
+		return listInfo;
+	}
 }

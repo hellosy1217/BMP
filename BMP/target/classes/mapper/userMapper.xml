@@ -120,6 +120,31 @@
 		delete from bmp_block where block_no=#{no}
 	</delete>
 	
+	<select id="listCount" parameterType="ListInfo" resultType="_int">
+		select count(user_no) from ulist
+		where user_admin='N'
+		<if test="keyword != ''">
+			and user_email like #{keyword}||'%' or user_nickname like #{keyword}||'%'
+		</if>
+	</select>
+	
+	<select id="getUserList" resultMap="userResultMap" parameterType="ListInfo">
+		select user_no, user_email, user_nickname, user_sub from ulist
+		where user_admin='N'
+		<if test="keyword != ''">
+			and user_email like #{keyword}||'%' or user_nickname like #{keyword}||'%'
+		</if>
+		<choose>
+			<when test="sort == '가입순'">
+				order by user_reg_date
+			</when>
+			<otherwise>
+				order by user_nickname
+			</otherwise>
+		</choose>
+		desc, user_no desc
+	</select>
+	
 	<resultMap type="User" id="userResultMap">
 		<id property="no" column="user_no" />
 		<result property="email" column="user_email" />

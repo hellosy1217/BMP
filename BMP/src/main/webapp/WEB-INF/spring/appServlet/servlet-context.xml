@@ -58,7 +58,8 @@
 				class="com.project.bmp.interceptor.AdminInterceptor" />
 		</interceptor>
 		<interceptor>
-			<mapping path="/admin" />
+			<mapping path="/admin"/>
+			<mapping path="/admin/*" />
 			<beans:bean id="userInterceptor"
 				class="com.project.bmp.interceptor.UserInterceptor" />
 		</interceptor>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="statsMapper">
+
+	<select id="getList" resultMap="statsResultMap">
+		select * from bmp_stats
+	</select>
+
+	<resultMap type="Stats" id="statsResultMap">
+		<result property="date" column="count_date"/>
+		<result property="countUser" column="countuser"/>
+		<result property="countVisit" column="countvisit"/>
+		<result property="countPost" column="countpost"/>
+	</resultMap>
+	
+</mapper>

@@ -6,6 +6,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.bmp.post.model.vo.ListInfo;
 import com.project.bmp.user.model.dao.UserDAO;
 import com.project.bmp.user.model.vo.Block;
 import com.project.bmp.user.model.vo.Follow;
@@ -96,6 +97,16 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public int delBlock(Block block) {
 		return uDAO.delBlock(sqlSession, block);
+	}
+
+	@Override
+	public int getListCount(ListInfo listInfo) {
+		return uDAO.getListCount(sqlSession, listInfo);
+	}
+
+	@Override
+	public ArrayList<User> getUserList(ListInfo listInfo) {
+		return uDAO.getUserList(sqlSession, listInfo);
 	}
 
 }

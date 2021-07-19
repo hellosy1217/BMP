@@ -282,12 +282,6 @@ public class PostController {
 		return new Gson().toJson(result + "");
 	}
 	
-	@RequestMapping("admin")
-	public ModelAndView admin(ModelAndView mav) {
-		mav.setViewName("admin/common/dashboard");
-		return mav;
-	}
-
 	public ListInfo getListInfo(HttpSession session, String sort, String keyword, int currentPage, int boardLimit,
 			String tab) {
 		User accessor = (User) session.getAttribute("accessor");

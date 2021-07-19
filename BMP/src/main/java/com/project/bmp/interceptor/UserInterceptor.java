@@ -14,7 +14,7 @@ public class UserInterceptor implements HandlerInterceptor {
 		User accessor = (User) request.getSession().getAttribute("accessor");
 
 		if (accessor == null || accessor.getAdmin() == 'N') {
-			response.sendRedirect("explorer");
+			response.sendRedirect("/bmp/explorer");
 
 			return false;
 		}

@@ -13,6 +13,12 @@ public class ListInfo {
 	public ListInfo() {
 	}
 
+	public ListInfo(String sort, String keyword) {
+		super();
+		this.sort = sort;
+		this.keyword = keyword;
+	}
+
 	public ListInfo(int accessorNo, String sort, String keyword, String tab) {
 		super();
 		this.accessorNo = accessorNo;

@@ -142,7 +142,7 @@
 	var cp = '';
 
 	$('#editProfile').on('click', function() {
-		location.href = 'profile';
+		location.href = '/bmp/setting';
 	});
 
 	$('#saveBtn').on('click', function() {
@@ -154,7 +154,7 @@
 			$('#cnPassword').focus();
 		else {
 			$.ajax({
-				url : 'editPw.do',
+				url : '/bmp/editPw.do',
 				type : 'post',
 				dataType : 'json',
 				data : {

@@ -29,12 +29,16 @@
 			alias="DM" />
 		<typeAlias type="com.project.bmp.dm.model.vo.Room"
 			alias="Room" />
+		<typeAlias type="com.project.bmp.stats.model.vo.Stats"
+			alias="Stats" />		
 	</typeAliases>
 
 	<mappers>
 		<mapper resource="mapper/userMapper.xml" />
 		<mapper resource="mapper/postMapper.xml" />
 		<mapper resource="mapper/dmMapper.xml" />
+		<mapper resource="mapper/visitMapper.xml" />
+		<mapper resource="mapper/statsMapper.xml" />
 	</mappers>
 
 </configuration>

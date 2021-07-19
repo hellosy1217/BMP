@@ -14,8 +14,12 @@
 	background: transparent;
 	font-size: 15px;
 	font-weight: 500;
-	color: #19345e;
+	color: #333;
 	font-family: sans-serif;
+}
+
+img {
+	object-fit: cover;
 }
 
 #navigation {
@@ -28,7 +32,7 @@
 	height: 100%;
 }
 
-#navigation_inner {
+#navigation-inner {
 	display: flex;
 	padding: 40px 0;
 	flex-direction: column;
@@ -48,9 +52,10 @@
 
 #profile>div {
 	display: flex;
-	background: #eef0f2;
+	background: #f9f9f9;
 	padding: 15px;
-	border-radius: 8px;
+	width: 180px;
+	border-radius: 4px;
 }
 
 #profile>div>div {
@@ -125,7 +130,7 @@
 </head>
 <body>
 	<div id="navigation">
-		<div id="navigation_inner">
+		<div id="navigation-inner">
 			<div id="navigation_top">
 				<div id="logo" class="click" link="admin">Blog My Pet</div>
 				<div id="profile">
@@ -135,8 +140,8 @@
 								src="https://i.pinimg.com/236x/f7/0b/b1/f70bb194ab10d7c51ef0cc26d8760e8b.jpg">
 						</div>
 						<div id="profile_info">
-							<p>AdminTom1210</p>
-							<p>adminTom1210@gmail.com</p>
+							<p>${accessor.nickname }</p>
+							<p>${accessor.email }</p>
 						</div>
 					</div>
 				</div>
@@ -146,16 +151,16 @@
 						<li>
 							<p class="toggle">User</p>
 							<ol class="toggle_dropdown">
-								<li class="click" link="uList.admin">사용자 목록</li>
+								<li class="click" link="admin/user">사용자 목록</li>
 							</ol>
 						</li>
 						<li><p class="toggle">Post</p>
 							<ol class="toggle_dropdown">
-								<li class="click" link="pList.admin">게시글 목록</li>
+								<li class="click" link="admin/post">게시글 목록</li>
 								<li>신고된 게시글</li>
 							</ol></li>
-						<li class="click" link="qList.admin">Question</li>
-						<li class="click" link="setting.admin">Setting</li>
+						<li class="click" link="admin/report">Question</li>
+						<li class="click" link="admin/setting">Setting</li>
 					</ul>
 				</div>
 			</div>

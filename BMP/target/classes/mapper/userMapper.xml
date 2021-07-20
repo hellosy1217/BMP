@@ -129,17 +129,24 @@
 	</select>
 	
 	<select id="getUserList" resultMap="userResultMap" parameterType="ListInfo">
-		select user_no, user_email, user_nickname, user_sub from ulist
+		select user_no, user_email, user_nickname, user_sub, user_reg_date, user_del_date, 
+			countfollow, countfollower, nvl(count_post,0)
+		from ulist
+			left join (select user_no, count(post_no) count_post from bmp_post where post_del_date is null group by user_no) using (user_no)
 		where user_admin='N'
 		<if test="keyword != ''">
 			and user_email like #{keyword}||'%' or user_nickname like #{keyword}||'%'
 		</if>
+		order by
 		<choose>
 			<when test="sort == '가입순'">
-				order by user_reg_date
+				user_reg_date
+			</when>
+			<when test="sort == '인기순'">
+				countfollower
 			</when>
 			<otherwise>
-				order by user_nickname
+				user_nickname
 			</otherwise>
 		</choose>
 		desc, user_no desc

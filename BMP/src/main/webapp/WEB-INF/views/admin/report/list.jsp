@@ -27,14 +27,10 @@ html, body {
 	padding: 40px 30px 30px 30px;
 	flex-direction: column;
 }
-/* 
-input::placeholder {
-	color: #a8aebb;
-} */
 
 .filter {
 	display: flex;
-	justify-content: space-between;
+	justify-content: flex-end;
 	padding-bottom: 10px;
 }
 
@@ -117,7 +113,7 @@ input::placeholder {
 	cursor: unset !important;
 }
 
-#sort-dropdown{
+#sort-dropdown {
 	position: absolute;
 	left: 0px;
 	top: 30px;
@@ -139,10 +135,6 @@ input::placeholder {
 	background: #f4f4f4;
 }
 
-#search {
-	padding-left: 5px;
-	position: relative;
-}
 
 #search input {
 	background-color: #fff;
@@ -303,27 +295,10 @@ input::placeholder {
 </style>
 </head>
 <body>
-<c:set var="paging" value="${listInfo.paging }"/>
 	<c:import url="../common/navigation.jsp" />
 	<div id="body">
 		<div id="container">
 			<div class="filter">
-				<div id="filter-left">
-					<div id="changeBtn">
-						<div>
-							<p>회원</p>
-						</div>
-					</div>
-					<div class="select">
-						<p id="sort">${listInfo.sort }</p>
-						<p>⌵</p>
-						<ul id="sort-dropdown">
-							<li id="New">가입순</li>
-							<li id="Name">이름순</li>
-							<li id="Follow">인기순</li>
-						</ul>
-					</div>
-				</div>
 				<form action="/bmp/admin/user" method="get">
 					<div id="search">
 						<input placeholder="검색" value="${keyword }" id="keyword"
@@ -338,33 +313,25 @@ input::placeholder {
 					<table>
 						<tr>
 							<td></td>
-							<td>닉네임</td>
-							<td>이메일</td>
-							<td>팔로우</td>
-							<td>팔로워</td>
-							<td>포스트</td>
-							<td>구독</td>
-							<td>가입일</td>
+							<td>제목</td>
+							<td>작성자</td>
+							<td>상태</td>
+							<td>등록일</td>
 						</tr>
-						<c:forEach items="${uList }" var="user">
-							<tr no="${user.no }">
+						<c:forEach items="${rList }" var="list">
+							<tr no="${list.no }">
 								<td><input type="checkbox"></td>
-								<td class="nickname"><p>${user.nickname }</p></td>
-								<td><p>
-										<c:choose>
-											<c:when test="${user.confirm eq 'N'.charAt(0) }">
-												<span class="confirm_none">${user.email }</span>
-											</c:when>
-											<c:otherwise>
-												<span>${user.email }</span>
-											</c:otherwise>
-										</c:choose>
-									</p></td>
-								<td>${user.follow }</td>
-								<td>${user.follower }</td>
-								<td>${user.post }</td>
-								<td>${user.sub }</td>
-								<td>${user.regDate }</td>
+								<td><p>${list.title }</p></td>
+								<td>${list.nickname }</td>
+								<c:choose>
+									<c:when test="${list.commDate eq null }">
+										<td>답변대기</td>
+									</c:when>
+									<c:otherwise>
+										<td>답변완료</td>
+									</c:otherwise>
+								</c:choose>
+								<td>${list.regDate }</td>
 							</tr>
 						</c:forEach>
 					</table>
@@ -382,31 +349,6 @@ input::placeholder {
 	<div id="dialog"></div>
 </body>
 <script>
-	$(document).on('click', '.select', function() {
-		if ($(this).children('ul').css('display') == 'none') {
-			$(this).children('ul').show();
-		} else {
-			$(this).children('ul').hide();
-		}
-	});
-
-	$(document).on('click', '#changeBtn>div', function() {
-		var text = $('#changeBtn>div p').text();
-		var sort = $('#sort').text();
-		var keyword = '${keyword}';
-		var filter = '${filter}';
-
-		var url = null;
-
-		if (text == '관리자') {
-			url = 'uList.admin';
-		} else {
-			url = 'aList.admin';
-		}
-
-		location.href = url;
-	});
-
 	$(document).on('click', '#paging p', function() {
 		var classname = $(this).attr('class');
 
@@ -449,31 +391,5 @@ input::placeholder {
 							// ajax 회원 삭제 만들기
 						}
 					});
-
-	$(document).on('click', '#sort-dropdown li', function() {
-		var sort = $(this).text();
-		var keyword = '${listInfo.keyword}';
-		var url = '/bmp/admin/user?sort=' + sort;
-		if (keyword != '')
-			url += '&keyword=' + keyword;
-		location.href = url;
-	});
-
-	$(function() {
-		selectbox();
-	});
-	
-	function selectbox() {
-		var sort = $('#sort').text();
-
-		if (sort == '가입순')
-			$('#New').attr('class', 'selected');
-		else if (sort == '이름순')
-			$('#Name').attr('class', 'selected');
-		else
-			$('#Follow').attr('class', 'selected');
-
-		$('#form_sort').val(sort);
-	}
 </script>
 </html>

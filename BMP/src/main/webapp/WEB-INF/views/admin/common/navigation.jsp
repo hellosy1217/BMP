@@ -12,9 +12,6 @@
 	list-style: none;
 	border: 0;
 	background: transparent;
-	font-size: 15px;
-	font-weight: 500;
-	color: #333;
 	font-family: sans-serif;
 }
 
@@ -88,6 +85,7 @@ img {
 #menu ul>li {
 	padding-bottom: 20px;
 	font-weight: 600;
+	font-size: 15px;
 }
 
 #menu ol {
@@ -105,8 +103,22 @@ img {
 }
 
 #navigation_bottom {
-	font-weight: 600;
-	color: rgb(240, 115, 110);
+	background: rgb(63, 140, 185);
+	border-radius: 4px;
+	width : max-content;
+	text-align: center;
+	color: #fff;
+	font-weight: bold;
+	letter-spacing: .02em;
+	-webkit-appearance: none;
+	padding: 5px 12px;
+	font-size: 14px;
+	width: max-content;
+}
+
+#navigation_bottom:hover {
+	background: #33769c;
+	cursor: pointer;
 }
 
 .click, .toggle {
@@ -115,16 +127,14 @@ img {
 
 .click:hover, .toggle:hover {
 	cursor: pointer;
-	opacity: 50%;
 }
 
 .toggle {
 	font-weight: 600;
 }
 
-.toggle_dropdown {
+.toggle-dropdown {
 	display: none;
-	color: #19345e;
 }
 </style>
 </head>
@@ -132,7 +142,7 @@ img {
 	<div id="navigation">
 		<div id="navigation-inner">
 			<div id="navigation_top">
-				<div id="logo" class="click" link="admin">Blog My Pet</div>
+				<div id="logo" class="click" link="/bmp/admin">Blog My Pet</div>
 				<div id="profile">
 					<div>
 						<div id="profile_img">
@@ -147,24 +157,26 @@ img {
 				</div>
 				<div id="menu">
 					<ul>
-						<li class="click" link="admin">Dashboard</li>
+						<li class="click" link="/bmp/admin">Dashboard</li>
 						<li>
 							<p class="toggle">User</p>
-							<ol class="toggle_dropdown">
-								<li class="click" link="admin/user">사용자 목록</li>
+							<ol class="toggle-dropdown">
+								<li class="click" link="/bmp/admin/user">사용자 목록</li>
 							</ol>
 						</li>
-						<li><p class="toggle">Post</p>
-							<ol class="toggle_dropdown">
-								<li class="click" link="admin/post">게시글 목록</li>
-								<li>신고된 게시글</li>
-							</ol></li>
-						<li class="click" link="admin/report">Question</li>
-						<li class="click" link="admin/setting">Setting</li>
+						<li>
+							<p class="toggle">Post</p>
+							<ol class="toggle-dropdown">
+								<li class="click" link="/bmp/admin/post">신고 게시글 목록</li>
+							</ol>
+						</li>
+						<li><p class="click" link="/bmp/admin/report">Report</p>
+						<li class="click" link="/bmp/admin/setting">Setting</li>
 					</ul>
 				</div>
 			</div>
-			<div id="navigation_bottom" class="click" link="logout">Log Out</div>
+			<div id="navigation_bottom" class="click" link="/bmp/signOut">Log
+				Out</div>
 		</div>
 	</div>
 </body>
@@ -177,7 +189,7 @@ img {
 	$(document).on('click', '.toggle', function() {
 		var ol = $(this).parent('li').children('ol');
 		if (ol.css('display') == 'none') {
-			$('.toggle_dropdown').hide();
+			$('.toggle-dropdown').hide();
 			ol.show();
 		} else {
 			ol.hide();

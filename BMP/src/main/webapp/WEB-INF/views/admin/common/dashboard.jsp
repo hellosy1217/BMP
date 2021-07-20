@@ -12,16 +12,6 @@
 	src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-* {
-	margin: 0;
-	padding: 0;
-	text-decoration: none;
-	list-style: none;
-	border: 0;
-	background: transparent;
-	font-size: 15px;
-	font-weight: 500;
-}
 
 #body {
 	display: flex;

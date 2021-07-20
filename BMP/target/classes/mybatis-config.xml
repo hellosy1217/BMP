@@ -25,12 +25,13 @@
 			alias="Like" />
 		<typeAlias type="com.project.bmp.post.model.vo.AttachedFile"
 			alias="AttachedFile" />
-		<typeAlias type="com.project.bmp.dm.model.vo.DM"
-			alias="DM" />
+		<typeAlias type="com.project.bmp.dm.model.vo.DM" alias="DM" />
 		<typeAlias type="com.project.bmp.dm.model.vo.Room"
 			alias="Room" />
 		<typeAlias type="com.project.bmp.stats.model.vo.Stats"
-			alias="Stats" />		
+			alias="Stats" />
+		<typeAlias type="com.project.bmp.report.model.vo.Report"
+			alias="Report" />
 	</typeAliases>
 
 	<mappers>
@@ -39,6 +40,7 @@
 		<mapper resource="mapper/dmMapper.xml" />
 		<mapper resource="mapper/visitMapper.xml" />
 		<mapper resource="mapper/statsMapper.xml" />
+		<mapper resource="mapper/reportMapper.xml" />
 	</mappers>
 
 </configuration>

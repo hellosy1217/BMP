@@ -379,7 +379,6 @@ public class UserController {
 
 		mav.addObject("uList", uList);
 		mav.addObject("listInfo", listInfo);
-		mav.addObject("paging", listInfo.getPaging());
 		mav.setViewName("admin/user/list");
 		return mav;
 	}

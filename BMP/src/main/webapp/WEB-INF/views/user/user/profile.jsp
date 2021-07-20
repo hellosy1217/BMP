@@ -172,8 +172,7 @@
 	<div id="user-profile">
 		<div id="profile">
 			<div>
-				<img
-					src="${profile.fileName }">
+				<img src="${profile.fileName }">
 			</div>
 			<div>
 				<a href="blog?blog=${profile.no }" id="blog-btn">${profile.nickname }</a>
@@ -254,8 +253,7 @@
 
 		if (id == 'more-btn')
 			moreBtn();
-
-		else if ('${accessor!=null}') {
+		else if ('${accessor}' != '') {
 			var id = $(e.target).attr('id');
 
 			switch (id) {
@@ -269,6 +267,8 @@
 				block();
 				break;
 			}
+		} else {
+			location.href = 'signIn';
 		}
 	});
 

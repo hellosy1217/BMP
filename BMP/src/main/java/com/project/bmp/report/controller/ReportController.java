@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.google.gson.Gson;
 import com.project.bmp.common.Pagination;
 import com.project.bmp.common.Paging;
 import com.project.bmp.report.model.service.ReportService;
@@ -30,5 +32,16 @@ public class ReportController {
 		mav.addObject("rList", rList);
 		mav.setViewName("admin/report/list");
 		return mav;
+	}
+
+	@ResponseBody
+	@RequestMapping("report.do")
+	public String report(Report report) {
+		int result = rService.addReport(report);
+		String msg = "error";
+		if (result > 0)
+			msg = "success";
+
+		return new Gson().toJson(msg);
 	}
 }

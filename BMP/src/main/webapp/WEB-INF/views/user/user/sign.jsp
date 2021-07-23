@@ -8,6 +8,7 @@
 <title>Blog My Pet</title>
 <script type="text/javascript"
 	src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="<c:url value="/resources/js/CommonJS.js"/>"></script>
 <style>
 * {
 	margin: 0;
@@ -337,14 +338,6 @@ label>a:hover {
 		setTimeout(function() {
 			$(show).css('opacity', '100');
 		}, 450);
-	}
-
-	function validateEmail(inputEmail) {
-		var filter = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-		if (filter.test(inputEmail))
-			return true;
-		else
-			return false;
 	}
 </script>
 <script src="https://apis.google.com/js/platform.js?onload=init" async

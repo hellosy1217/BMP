@@ -254,8 +254,6 @@
 		if (id == 'more-btn')
 			moreBtn();
 		else if ('${accessor}' != '') {
-			var id = $(e.target).attr('id');
-
 			switch (id) {
 			case 'dm-btn':
 				dm();
@@ -268,7 +266,8 @@
 				break;
 			}
 		} else {
-			location.href = 'signIn';
+			if (id.indexOf('btn') > -1)
+				location.href = 'signIn';
 		}
 	});
 

@@ -283,6 +283,7 @@
 </body>
 <script type="text/javascript">
 	var hideDate = '${post.hideDate}';
+	
 	$(document).on(
 			'click',
 			function(e) {
@@ -324,11 +325,17 @@
 					case 'delCommentBtn':
 						delComment(no);
 						break;
+					case 'reportBtn':
+						$('#reportForm').css('display', 'flex');
+						break;
+					case 'submitBtn':
+						report();
+						break;
 					default:
 						break;
 					}
 				} else {
-					if (clicked.indexOf('Btn') != -1)
+					if (clicked.indexOf('Btn') > -1)
 						location.href = 'signIn';
 				}
 			});
@@ -469,6 +476,47 @@
 		location.reload();
 		showComment();
 		$(document).scrollTop($(id).offset().top);
+	}
+
+	function report() {
+		var title = $('#report-title').val().trim();
+		var content = $('#report-content').val().trim();
+		var email = $('#report-email').val().trim();
+
+		console.log(title);
+		console.log(content);
+		console.log(email);
+		if (title == '') {
+			$('#report-title').focus();
+		} else if (content == '') {
+			$('#report-content').focus();
+		} else if (email == '') {
+			$('#report-email').focus();
+		} else if (!validateEmail(email)) {
+			
+		} else {
+			$.ajax({
+				type: 'post',
+				url:'report.do',
+				dataType: 'json',
+				data:{
+					title:title,
+					content:content,
+					email:email,
+					postNo:'${post.no}',
+					userNo:'${accessor.no}'
+				},
+				success:function(data){
+					$('#reportForm').css('display', 'none');
+					if(data=='success')
+						$('.notice h4').text('접수되었습니다.');
+					else
+						$('.notice h4').text('접수 도중 오류가 발생했습니다.');
+					notice('none');
+					resetReportForm();
+				}
+			});
+		}
 	}
 
 	ClassicEditor

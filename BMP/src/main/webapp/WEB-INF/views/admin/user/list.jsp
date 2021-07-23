@@ -16,7 +16,7 @@ html, body {
 
 #body {
 	display: flex;
-	padding-left: 291.36px;
+	padding-left: 269px;
 	background: #f4f4f4;
 }
 

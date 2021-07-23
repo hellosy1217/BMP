@@ -7,6 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Blog My Pet</title>
+<script src="<c:url value="/resources/js/CommonJS.js"/>"></script>
 <style>
 .setting {
 	display: flex;
@@ -316,25 +317,10 @@
 				else
 					$('.notice h4').text('error!');
 
-				notice();
+				notice('reset');
 			}
 		});
 	}
 
-	function notice() {
-		setTimeout(function() {
-			$('.notice').css({
-				'display' : 'flex',
-				'opacity' : '100'
-			});
-		}, 100);
-		setTimeout(function() {
-			$('.notice').css('opacity', '0');
-		}, 1000);
-		setTimeout(function() {
-			$('.notice').css('display','none');
-			location.reload(true);
-		}, 2000);
-	}
 </script>
 </html>

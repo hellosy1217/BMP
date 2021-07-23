@@ -11,4 +11,6 @@ public interface ReportService {
 
 	ArrayList<Report> getList(Paging paging);
 
+	int addReport(Report report);
+
 }

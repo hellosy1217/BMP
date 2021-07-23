@@ -12,10 +12,10 @@ import com.project.bmp.report.model.vo.Report;
 
 @Service("rService")
 public class ReportServiceImpl implements ReportService {
-	
+
 	@Autowired
 	private SqlSessionTemplate sqlSession;
-	
+
 	@Autowired
 	private ReportDAO rDAO;
 
@@ -23,10 +23,15 @@ public class ReportServiceImpl implements ReportService {
 	public int listCount() {
 		return rDAO.listCount(sqlSession);
 	}
-	
+
 	@Override
 	public ArrayList<Report> getList(Paging paging) {
 		return rDAO.getList(sqlSession, paging);
 	}
-	
+
+	@Override
+	public int addReport(Report report) {
+		return rDAO.addReport(sqlSession, report);
+	}
+
 }

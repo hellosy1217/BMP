@@ -9,6 +9,10 @@
 	<select id="getList" resultMap="reportResultMap">
 		select * from rlist
 	</select>
+	
+	<insert id="addReport">
+		insert into bmp_report values (report_seq.nextval,#{title},#{content},sysdate,null,null,null,#{postNo},#{userNo})
+	</insert>
 
 	<resultMap type="Report" id="reportResultMap">
 		<id property="no" column="report_no" />

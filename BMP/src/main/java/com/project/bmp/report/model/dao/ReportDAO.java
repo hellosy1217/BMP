@@ -15,11 +15,15 @@ public class ReportDAO {
 	public int listCount(SqlSessionTemplate sqlSession) {
 		return sqlSession.selectOne("reportMapper.listCount");
 	}
-	
+
 	public ArrayList<Report> getList(SqlSessionTemplate sqlSession, Paging paging) {
 		int offset = (paging.getCurrentPage() - 1) * paging.getBoardLimit();
 		RowBounds rowBounds = new RowBounds(offset, paging.getBoardLimit());
 		return (ArrayList) sqlSession.selectList("reportMapper.getList");
+	}
+
+	public int addReport(SqlSessionTemplate sqlSession, Report report) {
+		return sqlSession.insert("reportMapper.addReport", report);
 	}
 
 }

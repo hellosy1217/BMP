@@ -8,6 +8,7 @@
 <title>Blog My Pet</title>
 <script type="text/javascript"
 	src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="<c:url value="/resources/js/CommonJS.js"/>"></script>
 <style>
 * {
 	margin: 0;
@@ -70,7 +71,120 @@ img {
 	font-weight: 700;
 	padding-bottom: 10px;
 }
-#notice
+
+#reportForm {
+	position: fixed;
+	background: white;
+	flex-direction: column;
+	top: 50%;
+	left: 50%;
+	z-index: 6;
+	border-radius: 4px;
+	box-shadow: 0 1px 2px rgb(0 0 0/ 7%);
+	width: 432.73px;
+	height: 355px;
+	margin: -177.5px 0 0 -216.365px;
+	display: none;
+}
+
+#reportForm textarea {
+	resize: none;
+}
+
+#reportForm>div:first-child {
+	background: #333;
+	color: white;
+	border-radius: 4px 4px 0 0;
+	padding: 6px 10px 4px;
+}
+
+#reportForm form {
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+}
+
+#reportForm textarea, #reportForm input {
+	outline: none;
+	background: #fff;
+	border: 1px solid #e0e0e0;
+	width: calc(100% - 10px);
+	padding: 6px 5px 4px;
+	font-size: 13px;
+	width: calc(100% - 10px);
+}
+
+#reportForm textarea {
+	min-height: 80px;
+}
+
+#reportForm p {
+	padding: 3px 0;
+	font-size: 14px;
+}
+
+#reportForm span {
+	font-size: 11px;
+	opacity: 90%;
+}
+
+#reportForm form>div {
+	padding-bottom: 5px;
+}
+
+#form-btn {
+	display: flex;
+	justify-content: flex-end;
+}
+
+#form-btn a {
+	border-radius: 4px;
+	color: #fff;
+	font-weight: bold;
+	letter-spacing: .02em;
+	-webkit-appearance: none;
+	padding: 5.5px 12px 4.5px;
+	font-size: 13px;
+	cursor: pointer;
+}
+
+#form-btn #cancelBtn {
+	background: #c1c1c1;
+	margin-right: 10px;
+}
+
+#form-btn #cancelBtn:hover {
+	background: #b1b1b1;
+}
+
+#form-btn #submitBtn {
+	background: #ea4c89;
+}
+
+#form-btn #submitBtn:hover {
+	background: #dd417c;
+}
+
+.notice {
+	position: fixed;
+	background: white;
+	color: #333;
+	border-radius: 4px;
+	left: calc(50% - 60px);
+	top: calc(50% - 100px);
+	box-shadow: 0 1px 2px rgb(0 0 0 / 7%);
+	font-size: 10px;
+	padding: 21px 20px 19px;
+	display: none;
+	transition: opacity 2000ms;
+	opacity: 0;
+	z-index: 10;
+}
+
+.notice h4 {
+	font-weight: 500;
+	font-size: 14px;
+}
 </style>
 </head>
 <body>
@@ -86,16 +200,16 @@ img {
 					<c:when
 						test="${profile.blockInfo!=null and profile.blockInfo.no>0 }">
 						<div id="notice">
-							<p>${profile.nickname } 님은 차단되어 있습니다.</p>
+							<p>${profile.nickname }님은차단되어있습니다.</p>
 							<p>차단을 해제해야 ${profile.nickname } 님의 포스트를 볼 수 있습니다.</p>
 							<p>"Blocked" 버튼을 탭해 차단을 해제해주세요.</p>
 						</div>
 					</c:when>
 					<c:when test="${profile.blocked > 0}">
 						<div id="notice">
-							<p>${profile.nickname } 님이 나를 차단했습니다.</p>
-							<p>${profile.nickname } 님을 팔로우하거나</p>
-							<p>${profile.nickname } 님의 포스트를 볼 수 없습니다.</p>
+							<p>${profile.nickname }님이나를차단했습니다.</p>
+							<p>${profile.nickname }님을팔로우하거나</p>
+							<p>${profile.nickname }님의포스트를볼수없습니다.</p>
 						</div>
 					</c:when>
 					<c:when
@@ -118,8 +232,35 @@ img {
 				</c:choose>
 			</div>
 		</div>
+		<c:if test="${post ne null and accessor ne null}">
+			<div id="reportForm">
+				<div>report</div>
+				<form>
+					<div>
+						<p>제목</p>
+						<input type="text" name="title" value="포스트 신고합니다."
+							id="report-title">
+					</div>
+					<div>
+						<p>설명</p>
+						<textarea name="content" id="report-content"></textarea>
+						<span>*위의 항목은 필수 사항입니다. 꼭! 모든 항목을 작성해주세요.</span>
+					</div>
+					<div>
+						<p>이메일</p>
+						<input type="email" name="email" value="${accessor.email }"
+							id="report-email"> <span>답변 받으실 이메일을 입력해주세요.</span>
+					</div>
+					<div id="form-btn">
+						<a id="cancelBtn">취소</a> <a id="submitBtn">전송</a>
+					</div>
+				</form>
+			</div>
+		</c:if>
+		<div class="notice">
+			<h4></h4>
+		</div>
 	</div>
-	<%-- <c:import url="detail.jsp" /> --%>
 </body>
 <script>
 	$(document).on('mouseover', '.contents', function() {
@@ -134,10 +275,20 @@ img {
 		}, 300);
 	});
 
+	$('#cancelBtn').on('click', function() {
+		$('#reportForm').attr('display', 'none');
+	});
+
 	$(function() {
 		setTimeout(function() {
 			scrollTo(0, 0);
 		}, 100);
 	});
+	
+	function resetReportForm(){
+		$('#report-title').val('포스트 신고합니다.');
+		$('#report-content').val('');
+		$('#report-email').val('${accessor.email}');
+	}
 </script>
 </html>

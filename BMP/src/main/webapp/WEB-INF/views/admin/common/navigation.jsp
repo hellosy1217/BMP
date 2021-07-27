@@ -161,7 +161,7 @@ img {
 						<li>
 							<p class="toggle">User</p>
 							<ol class="toggle-dropdown">
-								<li class="click" link="/bmp/admin/user">사용자 목록</li>
+								<li class="click" link="/bmp/admin/users">사용자 목록</li>
 							</ol>
 						</li>
 						<li>

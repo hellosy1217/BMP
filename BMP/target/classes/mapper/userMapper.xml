@@ -4,20 +4,20 @@
 
 	<select id="selectUser" resultType="User"
 		resultMap="userResultMap">
-		select user_no,user_email,user_password,user_nickname,user_admin,user_confirm,user_comment,user_alarm,user_sub,user_private,file_name
+		select user_no,user_email,user_password,user_nickname,user_admin,user_confirm,user_comment,user_alarm,user_sub,user_private,user_ban_date,file_name
 		from ulist
 		where user_email=#{email}
 	</select>
 	
 	<select id="selectGoogleUser" resultType="User"
 		resultMap="userResultMap">
-		select user_no,user_email,user_password,user_nickname,user_admin,user_comment,user_alarm,user_sub,user_private,file_name
+		select user_no,user_email,user_password,user_nickname,user_admin,user_comment,user_alarm,user_sub,user_private,user_ban_date,file_name
 		from ulist
 		where user_email=#{email} and user_password=#{password}
 	</select>
 
 	<select id="getProfile" resultMap="userResultMap" parameterType="Follow">
-		select user_no,user_email,user_nickname,user_birth,user_reg_date,user_dm,user_private,
+		select user_no,user_email,user_nickname,user_birth,user_reg_date,user_dm,user_private,user_ban_date,
 			user_comment,file_name,countfollow,countfollower,follow_no,follow_permission,block_no,blocked
 		from ulist
 			left join (select * from bmp_follow where from_user=#{fromUser}) on (user_no=to_user)
@@ -28,8 +28,8 @@
 	
 	<insert id="addUser" parameterType="User">
 		insert into bmp_user values
-			(user_seq.nextval,#{email},#{password},#{nickname},null,null,null,sysdate,
-			null,default,default,default,default,default,default)
+			(user_seq.nextval,#{email},#{password},#{nickname},null,null,sysdate,
+			null,default,default,default,default,default,default,null)
 	</insert>
 	
 	<update id="updateConfirm">
@@ -130,7 +130,7 @@
 	
 	<select id="getUserList" resultMap="userResultMap" parameterType="ListInfo">
 		select user_no, user_email, user_nickname, user_sub, user_reg_date, user_del_date, 
-			countfollow, countfollower, nvl(count_post,0)
+			user_ban_date, countfollow, countfollower, nvl(count_post,0)
 		from ulist
 			left join (select user_no, count(post_no) count_post from bmp_post where post_del_date is null group by user_no) using (user_no)
 		where user_admin='N'
@@ -168,6 +168,7 @@
 		<result property="userPrivate" column="user_private" />
 		<result property="admin" column="user_admin" />
 		<result property="comment" column="user_comment" />
+		<result property="banDate" column="user_ban_date" />
 		<result property="fileName" column="file_name"/>
 		<result property="follow" column="countfollow"/>
 		<result property="follower" column="countfollower"/>

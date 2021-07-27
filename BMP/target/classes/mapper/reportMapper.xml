@@ -13,6 +13,14 @@
 	<insert id="addReport">
 		insert into bmp_report values (report_seq.nextval,#{title},#{content},sysdate,null,null,null,#{postNo},#{userNo})
 	</insert>
+	
+	<update id="editReport">
+		update bmp_report set report_comment=#{comment}, report_comm_date=sysdate where report_no=#{no}
+	</update>
+	
+	<update id="delReport">
+		update bmp_report set report_del_date=sysdate where report_no=#{no}
+	</update>
 
 	<resultMap type="Report" id="reportResultMap">
 		<id property="no" column="report_no" />

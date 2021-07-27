@@ -15,9 +15,10 @@ public class User {
 	private char alarm;
 	private char dm;
 	private char sub;
-	private char UserPrivate;
+	private char userPrivate;
 	private char admin;
 	private String comment;
+	private Date banDate;
 	private String fileName;
 	private int follow;
 	private int follower;
@@ -59,7 +60,8 @@ public class User {
 
 	public User(int no, String email, String password, String nickname, String birth, String phone, Date regDate,
 			Date delDate, char confirm, char alarm, char dm, char sub, char userPrivate, char admin, String comment,
-			String fileName, int follow, int follower, int post, int blocked, Follow followInfo, Block blockInfo) {
+			Date banDate, String fileName, int follow, int follower, int post, int blocked, Follow followInfo,
+			Block blockInfo) {
 		super();
 		this.no = no;
 		this.email = email;
@@ -73,9 +75,10 @@ public class User {
 		this.alarm = alarm;
 		this.dm = dm;
 		this.sub = sub;
-		UserPrivate = userPrivate;
+		this.userPrivate = userPrivate;
 		this.admin = admin;
 		this.comment = comment;
+		this.banDate = banDate;
 		this.fileName = fileName;
 		this.follow = follow;
 		this.follower = follower;
@@ -182,11 +185,11 @@ public class User {
 	}
 
 	public char getUserPrivate() {
-		return UserPrivate;
+		return userPrivate;
 	}
 
 	public void setUserPrivate(char userPrivate) {
-		UserPrivate = userPrivate;
+		userPrivate = userPrivate;
 	}
 
 	public char getAdmin() {
@@ -203,6 +206,14 @@ public class User {
 
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+
+	public Date getBanDate() {
+		return banDate;
+	}
+
+	public void setBanDate(Date banDate) {
+		this.banDate = banDate;
 	}
 
 	public String getFileName() {
@@ -265,10 +276,11 @@ public class User {
 	public String toString() {
 		return "User [no=" + no + ", email=" + email + ", password=" + password + ", nickname=" + nickname + ", birth="
 				+ birth + ", phone=" + phone + ", regDate=" + regDate + ", delDate=" + delDate + ", confirm=" + confirm
-				+ ", alarm=" + alarm + ", dm=" + dm + ", sub=" + sub + ", UserPrivate=" + UserPrivate + ", admin="
-				+ admin + ", comment=" + comment + ", fileName=" + fileName + ", follow=" + follow + ", follower="
-				+ follower + ", post=" + post + ", blocked=" + blocked + ", followInfo=" + followInfo + ", blockInfo="
-				+ blockInfo + "]";
+				+ ", alarm=" + alarm + ", dm=" + dm + ", sub=" + sub + ", UserPrivate=" + userPrivate + ", admin="
+				+ admin + ", comment=" + comment + ", banDate=" + banDate + ", fileName=" + fileName + ", follow="
+				+ follow + ", follower=" + follower + ", post=" + post + ", blocked=" + blocked + ", followInfo="
+				+ followInfo + ", blockInfo=" + blockInfo + "]";
 	}
+
 
 }

@@ -27,10 +27,6 @@ html, body {
 	padding: 40px 30px 30px 30px;
 	flex-direction: column;
 }
-/* 
-input::placeholder {
-	color: #a8aebb;
-} */
 
 .filter {
 	display: flex;
@@ -48,7 +44,7 @@ input::placeholder {
 	display: flex;
 }
 
-#filter-left #changeBtn>div {
+.btns {
 	display: inline-flex;
 	border-radius: 4px;
 	position: relative;
@@ -58,14 +54,9 @@ input::placeholder {
 	background: white;
 	border: 1px solid #e0e0e0;
 	min-width: 36px;
-}
-
-#filter-left #changeBtn>div:hover {
+	justify-content: center;
 	cursor: pointer;
-}
-
-#filter-left #changeBtn p {
-	margin: 0 auto;
+	margin-right: 5px;
 }
 
 .select {
@@ -77,7 +68,6 @@ input::placeholder {
 	font-size: 12px;
 	background: white;
 	border: 1px solid #e0e0e0;
-	margin-left: 5px;
 	min-width: 52px;
 }
 
@@ -117,7 +107,7 @@ input::placeholder {
 	cursor: unset !important;
 }
 
-#sort-dropdown{
+#sort-dropdown {
 	position: absolute;
 	left: 0px;
 	top: 30px;
@@ -300,19 +290,54 @@ input::placeholder {
 	padding: 5px 16px;
 	font-size: 13px;
 }
+
+.userInfo:hover {
+	cursor: pointer;
+}
+
+#checkBox>div {
+	display: flex;
+	align-items: center;
+}
+
+#checkBox input {
+	display: none;
+}
+
+#checkBox label {
+	padding: 9px;
+	background: #fff;
+	border-radius: 4px;
+	cursor: pointer;
+	border: 1px solid #e0e0e0;
+}
+
+#checkBox p {
+	margin-left: 7px;
+	font-size: 15px;
+	margin-top: 3px;
+}
+
+#checkBox input[type="checkbox"]:checked+label {
+	padding: 3px 5.15px 0px !important;
+	font-family: serif;
+	color: #b9b9b9;
+}
+
+#bottom-btns {
+	display: flex;
+	justify-content: space-between;
+}
 </style>
 </head>
 <body>
-<c:set var="paging" value="${listInfo.paging }"/>
 	<c:import url="../common/navigation.jsp" />
 	<div id="body">
 		<div id="container">
 			<div class="filter">
 				<div id="filter-left">
 					<div id="changeBtn">
-						<div>
-							<p>회원</p>
-						</div>
+						<a class="btns">회원</a>
 					</div>
 					<div class="select">
 						<p id="sort">${listInfo.sort }</p>
@@ -324,7 +349,7 @@ input::placeholder {
 						</ul>
 					</div>
 				</div>
-				<form action="/bmp/admin/user" method="get">
+				<form action="/bmp/admin/users" method="get">
 					<div id="search">
 						<input placeholder="검색" value="${keyword }" id="keyword"
 							name="keyword">
@@ -346,9 +371,15 @@ input::placeholder {
 							<td>구독</td>
 							<td>가입일</td>
 						</tr>
-						<c:forEach items="${uList }" var="user">
-							<tr no="${user.no }">
-								<td><input type="checkbox"></td>
+						<c:forEach items="${list }" var="user">
+							<tr class="userInfo" no="${user.no }">
+								<td id="checkBox">
+									<div>
+										<input type="checkbox" id="checkbox${user.no }"
+											value="checkbox${user.no }"><label class=""
+											for="checkbox${user.no }"></label>
+									</div>
+								</td>
 								<td class="nickname"><p>${user.nickname }</p></td>
 								<td><p>
 										<c:choose>
@@ -376,13 +407,47 @@ input::placeholder {
 					</ul>
 				</div>
 			</div>
-			<c:import url="../../common/paging.jsp" />
+			<div id="bottom-btns">
+				<div>
+					<a class="btns" id="checkAllBtn">전체 선택</a><a class="btns">선택 삭제</a><a
+						class="btns">메일 전송</a>
+				</div>
+				<div>
+					<c:import url="../../common/paging.jsp" />
+				</div>
+			</div>
 		</div>
 	</div>
 	<div id="dialog"></div>
 </body>
 <script>
-	$(document).on('click', '.select', function() {
+	$('#checkAllBtn').on('click', function() {
+		var id = $('input[type=checkbox]');
+		var checked = $('input[type=checkbox]:checked').length;
+		if (checked==15) {
+			id.prop('checked', false);
+			$('#table label').text('');
+		} else {
+			id.prop('checked', true);
+			$('#table label').text('✓');
+		}
+	});
+	
+	$(document).on('change', 'input[type=checkbox]', function() {
+		var id = 'label[for="' + $(this).val() + '"]';
+		if ($(this).prop('checked'))
+			$(id).text('✓');
+		else
+			$(id).text('');
+	});
+
+	$('.userInfo').on('click', function() {
+		var no = $(this).attr('no');
+		console.log(no);
+
+	});
+
+	$('.select').on('click', function() {
 		if ($(this).children('ul').css('display') == 'none') {
 			$(this).children('ul').show();
 		} else {
@@ -391,20 +456,7 @@ input::placeholder {
 	});
 
 	$(document).on('click', '#changeBtn>div', function() {
-		var text = $('#changeBtn>div p').text();
-		var sort = $('#sort').text();
-		var keyword = '${keyword}';
-		var filter = '${filter}';
-
-		var url = null;
-
-		if (text == '관리자') {
-			url = 'uList.admin';
-		} else {
-			url = 'aList.admin';
-		}
-
-		location.href = url;
+		location.href = '/bmp/admin/admins';
 	});
 
 	$(document).on('click', '#paging p', function() {
@@ -416,7 +468,7 @@ input::placeholder {
 			var keyword = '${keyword}';
 			var filter = '${filter}';
 
-			var url = '/bmp/admin/user?page=' + page;
+			var url = '/bmp/admin/users?page=' + page;
 			if (keyword != null && keyword != '')
 				url += ('&keyword=' + keyword);
 
@@ -462,7 +514,7 @@ input::placeholder {
 	$(function() {
 		selectbox();
 	});
-	
+
 	function selectbox() {
 		var sort = $('#sort').text();
 

@@ -369,17 +369,31 @@ public class UserController {
 		return new Gson().toJson(result + "");
 	}
 
-	@RequestMapping("admin/user")
+	@RequestMapping("admin/users")
 	public ModelAndView userList(HttpSession session, @RequestParam(value = "sort", defaultValue = "인기순") String sort,
 			@RequestParam(value = "keyword", defaultValue = "") String keyword, ModelAndView mav,
 			@RequestParam(value = "page", defaultValue = "1") int page) {
 
-		ListInfo listInfo = getListInfo(session, sort, keyword, page, 20);
-		ArrayList<User> uList = uService.getUserList(listInfo);
+		ListInfo listInfo = getListInfo(session, sort, keyword, page, 15);
+		ArrayList<User> list = uService.getUserList(listInfo);
 
-		mav.addObject("uList", uList);
+		mav.addObject("list", list);
 		mav.addObject("listInfo", listInfo);
-		mav.setViewName("admin/user/list");
+		mav.addObject("paging", listInfo.getPaging());
+		mav.setViewName("admin/user/users");
+		return mav;
+	}
+	
+	@RequestMapping("admin/admins")
+	public ModelAndView adminList(HttpSession session, ModelAndView mav) {
+//
+//		ListInfo listInfo = getListInfo(session, sort, keyword, page, 15);
+//		ArrayList<User> uList = uService.getUserList(listInfo);
+//
+//		mav.addObject("uList", uList);
+//		mav.addObject("listInfo", listInfo);
+//		mav.addObject("paging", listInfo.getPaging());
+		mav.setViewName("admin/user/admins");
 		return mav;
 	}
 

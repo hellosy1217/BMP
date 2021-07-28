@@ -44,4 +44,6 @@ public interface UserService {
 	
 	public ArrayList<User> getUserList(ListInfo listInfo);
 
+	public int delUsers(ArrayList<String> users);
+
 }

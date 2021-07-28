@@ -109,4 +109,9 @@ public class UserServiceImpl implements UserService {
 		return uDAO.getUserList(sqlSession, listInfo);
 	}
 
+	@Override
+	public int delUsers(ArrayList<String> users) {
+		return uDAO.delUsers(sqlSession, users);
+	}
+
 }

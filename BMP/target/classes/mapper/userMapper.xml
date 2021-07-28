@@ -4,138 +4,163 @@
 
 	<select id="selectUser" resultType="User"
 		resultMap="userResultMap">
-		select user_no,user_email,user_password,user_nickname,user_admin,user_confirm,user_comment,user_alarm,user_sub,user_private,user_ban_date,file_name
+		select
+		user_no,user_email,user_password,user_nickname,user_admin,user_confirm,user_comment,user_alarm,user_sub,user_private,user_ban_date,file_name
 		from ulist
 		where user_email=#{email}
 	</select>
-	
+
 	<select id="selectGoogleUser" resultType="User"
 		resultMap="userResultMap">
-		select user_no,user_email,user_password,user_nickname,user_admin,user_comment,user_alarm,user_sub,user_private,user_ban_date,file_name
+		select
+		user_no,user_email,user_password,user_nickname,user_admin,user_comment,user_alarm,user_sub,user_private,user_ban_date,file_name
 		from ulist
 		where user_email=#{email} and user_password=#{password}
 	</select>
 
-	<select id="getProfile" resultMap="userResultMap" parameterType="Follow">
-		select user_no,user_email,user_nickname,user_birth,user_reg_date,user_dm,user_private,user_ban_date,
-			user_comment,file_name,countfollow,countfollower,follow_no,follow_permission,block_no,blocked
+	<select id="getProfile" resultMap="userResultMap"
+		parameterType="Follow">
+		select
+		user_no,user_email,user_nickname,user_birth,user_reg_date,user_dm,user_private,user_ban_date,
+		user_comment,file_name,countfollow,countfollower,follow_no,follow_permission,block_no,blocked
 		from ulist
-			left join (select * from bmp_follow where from_user=#{fromUser}) on (user_no=to_user)
-			left join (select block_no blocked, from_user fno from bmp_block where from_user=#{toUser} and to_user=#{fromUser}) on (user_no=fno)
-			left join (select block_no, to_user tno from bmp_block where from_user=#{fromUser}) on (user_no=tno)
+		left join (select * from bmp_follow where from_user=#{fromUser}) on
+		(user_no=to_user)
+		left join (select block_no blocked, from_user fno from bmp_block where
+		from_user=#{toUser} and to_user=#{fromUser}) on (user_no=fno)
+		left join (select block_no, to_user tno from bmp_block where
+		from_user=#{fromUser}) on (user_no=tno)
 		where user_no=#{toUser}
 	</select>
-	
+
 	<insert id="addUser" parameterType="User">
 		insert into bmp_user values
-			(user_seq.nextval,#{email},#{password},#{nickname},null,null,sysdate,
-			null,default,default,default,default,default,default,null)
+		(user_seq.nextval,#{email},#{password},#{nickname},null,null,sysdate,
+		null,default,default,default,default,default,default,null)
 	</insert>
-	
+
 	<update id="updateConfirm">
 		update bmp_user set user_confirm='Y'
-		where user_email=#{email}
+		where
+		user_email=#{email}
 	</update>
-	
+
 	<update id="updatePw">
-		update bmp_user 
+		update bmp_user
 		set user_password=#{password},user_confirm='Y'
 		where user_email=#{email}
 	</update>
-	
+
 	<insert id="addFollow" useGeneratedKeys="false">
 		<selectKey keyProperty="no" resultType="int" order="BEFORE">
-			select follow_seq.nextval from dual
+			select
+			follow_seq.nextval from dual
 		</selectKey>
-		insert into bmp_follow 
+		insert into bmp_follow
 		values (#{no},#{permission},#{toUser},#{fromUser})
 	</insert>
-	
+
 	<delete id="delFollow">
 		delete from bmp_follow
 		where follow_no=#{no}
 	</delete>
-	
+
 	<update id="editUser" parameterType="User">
 		update bmp_user set
 		user_nickname=#{nickname}, user_comment=#{comment}
 		,user_sub=#{sub},user_alarm=#{alarm},user_private=#{userPrivate}
-		where user_no=#{no}
+		where
+		user_no=#{no}
 	</update>
-	
+
 	<insert id="addFile">
 		insert into bmp_file
-		values (file_seq.nextval,#{fileName},'profile',#{no},null,null)
+		values
+		(file_seq.nextval,#{fileName},'profile',#{no},null,null)
 	</insert>
-	
+
 	<update id="editFile">
 		update bmp_file set
 		file_name=#{fileName}
-		where user_no=#{no} and file_class='profile'
+		where
+		user_no=#{no} and file_class='profile'
 	</update>
-	
+
 	<delete id="delFile">
 		delete from bmp_file
-		where user_no=#{no} and file_class='profile'
+		where user_no=#{no} and
+		file_class='profile'
 	</delete>
-	
-	<select id="getFollow" parameterType="User" resultMap="userResultMap">
-		select user_no, user_nickname, file_name, follow_no, follow_permission, blocked
+
+	<select id="getFollow" parameterType="User"
+		resultMap="userResultMap">
+		select user_no, user_nickname, file_name, follow_no,
+		follow_permission, blocked
 		from ulist
-    		left join (select user_no, follow_no, follow_permission from ulist
-                    		left join bmp_follow on (user_no=to_user)
-            where from_user=#{no}) using (user_no)
-    		left join (select user_no, 'block' blocked from(
-    						select ulist.*, to_user, fu from ulist
-       								left join (select to_user, from_user from bmp_block where from_user=#{no}) on (user_no=to_user)
-        							left join (select from_user fu, to_user tu from bmp_block where to_user=#{no}) on (user_no=fu)
-           					order by from_user) 
-					   where to_user is not null or fu is not null) using (user_no)
-    		join
+		left join (select user_no, follow_no, follow_permission from ulist
+		left join bmp_follow on (user_no=to_user)
+		where from_user=#{no}) using (user_no)
+		left join (select user_no, 'block' blocked from(
+		select ulist.*, to_user, fu from ulist
+		left join (select to_user, from_user from bmp_block where from_user=#{no})
+		on (user_no=to_user)
+		left join (select from_user fu, to_user tu from bmp_block where
+		to_user=#{no}) on (user_no=fu)
+		order by from_user)
+		where to_user is not null or fu is not null) using (user_no)
+		join
 		<choose>
-			<when test="follow > 0">	
-				(select from_user user_no 
-				 from bmp_follow
-          		 where to_user=#{follow}
+			<when test="follow > 0">
+				(select from_user user_no
+				from bmp_follow
+				where to_user=#{follow}
 			</when>
 			<otherwise>
-				(select to_user user_no 
-				 from bmp_follow
-          		 where from_user=#{follower}
+				(select to_user user_no
+				from bmp_follow
+				where from_user=#{follower}
 			</otherwise>
 		</choose>
-			and follow_permission='Y') using (user_no)
-		order by follow_no desc	
+		and follow_permission='Y') using (user_no)
+		order by follow_no desc
 	</select>
-	
+
 	<insert id="addBlock">
 		<selectKey keyProperty="no" resultType="int" order="BEFORE">
-			select block_seq.nextval from dual
+			select
+			block_seq.nextval from dual
 		</selectKey>
 		insert into bmp_block
 		values (#{no},#{toUser},#{fromUser})
 	</insert>
-	
+
 	<delete id="delBlock">
 		delete from bmp_block where block_no=#{no}
 	</delete>
-	
-	<select id="listCount" parameterType="ListInfo" resultType="_int">
+
+	<select id="listCount" parameterType="ListInfo"
+		resultType="_int">
 		select count(user_no) from ulist
 		where user_admin='N'
 		<if test="keyword != ''">
-			and user_email like #{keyword}||'%' or user_nickname like #{keyword}||'%'
+			and user_email like #{keyword}||'%' or user_nickname like
+			#{keyword}||'%'
 		</if>
 	</select>
-	
-	<select id="getUserList" resultMap="userResultMap" parameterType="ListInfo">
-		select user_no, user_email, user_nickname, user_sub, user_reg_date, user_del_date, 
-			user_ban_date, countfollow, countfollower, nvl(count_post,0)
+
+	<select id="getUserList" resultMap="userResultMap"
+		parameterType="ListInfo">
+		select user_no, user_email, user_nickname, user_sub, user_reg_date,
+		user_del_date,
+		user_ban_date, countfollow, countfollower, nvl(count_post,0)
 		from ulist
-			left join (select user_no, count(post_no) count_post from bmp_post where post_del_date is null group by user_no) using (user_no)
-		where user_admin='N'
+		left join (select user_no, count(post_no) count_post from bmp_post where
+		post_del_date is null group by user_no) using (user_no)
+		where
+		user_admin='N' and user_del_date is null
 		<if test="keyword != ''">
-			and user_email like #{keyword}||'%' or user_nickname like #{keyword}||'%'
+			and user_email like #{keyword}||'%' or user_nickname like
+			#{keyword}||'%'
 		</if>
 		order by
 		<choose>
@@ -151,7 +176,16 @@
 		</choose>
 		desc, user_no desc
 	</select>
-	
+
+	<update id="delUsers" parameterType="java.util.ArrayList">
+		update bmp_user set user_del_date=sysdate
+		<where>
+			<foreach collection="list" item="item">
+				and user_no=#{item}
+			</foreach>
+		</where>
+	</update>
+
 	<resultMap type="User" id="userResultMap">
 		<id property="no" column="user_no" />
 		<result property="email" column="user_email" />
@@ -169,25 +203,26 @@
 		<result property="admin" column="user_admin" />
 		<result property="comment" column="user_comment" />
 		<result property="banDate" column="user_ban_date" />
-		<result property="fileName" column="file_name"/>
-		<result property="follow" column="countfollow"/>
-		<result property="follower" column="countfollower"/>
-		<result property="post" column="post"/>
-		<result property="blocked" column="blocked"/>
-		<collection property="followInfo" resultMap="followResultMap"/>
-		<collection property="blockInfo" resultMap="blockResultMap"/>
+		<result property="fileName" column="file_name" />
+		<result property="follow" column="countfollow" />
+		<result property="follower" column="countfollower" />
+		<result property="post" column="post" />
+		<result property="blocked" column="blocked" />
+		<collection property="followInfo"
+			resultMap="followResultMap" />
+		<collection property="blockInfo" resultMap="blockResultMap" />
 	</resultMap>
-	
+
 	<resultMap type="Follow" id="followResultMap">
-		<id property="no" column="follow_no"/>
-		<result property="permission" column="follow_permission"/>
-		<result property="toUser" column="to_user"/>
-		<result property="fromUser" column="from_user"/>
+		<id property="no" column="follow_no" />
+		<result property="permission" column="follow_permission" />
+		<result property="toUser" column="to_user" />
+		<result property="fromUser" column="from_user" />
 	</resultMap>
-	
+
 	<resultMap type="Block" id="blockResultMap">
-		<id property="no" column="block_no"/>
-		<result property="toUser" column="to_user"/>
-		<result property="fromUser" column="from_user"/>
+		<id property="no" column="block_no" />
+		<result property="toUser" column="to_user" />
+		<result property="fromUser" column="from_user" />
 	</resultMap>
 </mapper>

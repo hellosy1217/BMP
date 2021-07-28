@@ -88,4 +88,8 @@ public class UserDAO {
 		return (ArrayList) sqlSession.selectList("userMapper.getUserList", listInfo, rowBounds);
 	}
 
+	public int delUsers(SqlSessionTemplate sqlSession, ArrayList<String> users) {
+		return sqlSession.update("userMapper.delUsers", users);
+	}
+
 }

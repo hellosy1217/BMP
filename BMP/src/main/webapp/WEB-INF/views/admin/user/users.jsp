@@ -268,29 +268,6 @@ html, body {
 	align-items: center;
 }
 
-.contextmenu {
-	display: none;
-	flex-direction: column;
-	position: absolute;
-	margin: 0;
-	background: white;
-	border-radius: 4px;
-	overflow: hidden;
-	z-index: 3;
-	border: 1px solid #f0f3f6;
-}
-
-.contextmenu ul {
-	color: #a8aebb;
-	width: fit-content;
-	padding: 5px 0;
-}
-
-.contextmenu li {
-	padding: 5px 16px;
-	font-size: 13px;
-}
-
 .userInfo:hover {
 	cursor: pointer;
 }
@@ -327,6 +304,56 @@ html, body {
 #bottom-btns {
 	display: flex;
 	justify-content: space-between;
+}
+
+.notice {
+	position: fixed;
+	background: white;
+	color: #333;
+	border-radius: 4px;
+	left: calc(50% - 60px);
+	top: calc(50% - 100px);
+	box-shadow: 0px 10px 70px rgb(0 0 0/ 15%);
+	font-size: 10px;
+	padding: 21px 20px 19px;
+	display: none;
+	transition: opacity 2000ms;
+	opacity: 0;
+	flex-direction: column;
+	align-items: center
+}
+
+.notice h4 {
+	font-weight: 500;
+	font-size: 14px;
+}
+
+.notice div {
+	display: flex;
+	padding-top: 10px;
+}
+
+.notice a {
+	border-radius: 4px;
+	width: max-content;
+	text-align: center;
+	letter-spacing: .02em;
+	-webkit-appearance: none;
+	padding: 4px 12px 3px;
+	font-size: 12px;
+	width: max-content;
+	margin: 0 2.5px;
+	cursor: pointer;
+}
+
+#delete-cancel {
+	background: #ddd;
+	color: #929292;
+}
+
+#delete-submit {
+	background: rgb(63, 140, 185);
+	color: #fff;
 }
 </style>
 </head>
@@ -376,7 +403,7 @@ html, body {
 								<td id="checkBox">
 									<div>
 										<input type="checkbox" id="checkbox${user.no }"
-											value="checkbox${user.no }"><label class=""
+											value="${user.no }"><label class=""
 											for="checkbox${user.no }"></label>
 									</div>
 								</td>
@@ -400,17 +427,11 @@ html, body {
 						</c:forEach>
 					</table>
 				</div>
-				<div class="contextmenu">
-					<ul>
-						<li><a href="#">상세보기</a></li>
-						<li><a href="#">삭제</a></li>
-					</ul>
-				</div>
 			</div>
 			<div id="bottom-btns">
 				<div>
-					<a class="btns" id="checkAllBtn">전체 선택</a><a class="btns">선택 삭제</a><a
-						class="btns">메일 전송</a>
+					<a class="btns" id="checkAllBtn">전체 선택</a><a class="btns"
+						id="deleteBtn">선택 삭제</a><a class="btns" id="mailBtn">메일 전송</a>
 				</div>
 				<div>
 					<c:import url="../../common/paging.jsp" />
@@ -418,33 +439,38 @@ html, body {
 			</div>
 		</div>
 	</div>
-	<div id="dialog"></div>
+	<div class="notice">
+		<h4>선택한 회원을 삭제하시겠습니까?</h4>
+		<div>
+			<a id="delete-cancel">취소</a><a id="delete-submit">확인</a>
+		</div>
+	</div>
 </body>
 <script>
-	$('#checkAllBtn').on('click', function() {
-		var id = $('input[type=checkbox]');
-		var checked = $('input[type=checkbox]:checked').length;
-		if (checked==15) {
-			id.prop('checked', false);
-			$('#table label').text('');
-		} else {
-			id.prop('checked', true);
-			$('#table label').text('✓');
-		}
-	});
-	
 	$(document).on('change', 'input[type=checkbox]', function() {
-		var id = 'label[for="' + $(this).val() + '"]';
+		var id = 'label[for="' + $(this).attr('id') + '"]';
 		if ($(this).prop('checked'))
 			$(id).text('✓');
 		else
 			$(id).text('');
 	});
 
-	$('.userInfo').on('click', function() {
+	/* $('.userInfo').on('click', function() {
 		var no = $(this).attr('no');
 		console.log(no);
 
+	});
+	 */
+	$('#checkAllBtn').on('click', function() {
+		var id = $('input[type=checkbox]');
+		var checked = $('input[type=checkbox]:checked').length;
+		if (checked == 15) {
+			id.prop('checked', false);
+			$('#table label').text('');
+		} else {
+			id.prop('checked', true);
+			$('#table label').text('✓');
+		}
 	});
 
 	$('.select').on('click', function() {
@@ -455,11 +481,11 @@ html, body {
 		}
 	});
 
-	$(document).on('click', '#changeBtn>div', function() {
+	$('#changeBtn>div').on('click', function() {
 		location.href = '/bmp/admin/admins';
 	});
 
-	$(document).on('click', '#paging p', function() {
+	$('#paging p').on('click', function() {
 		var classname = $(this).attr('class');
 
 		if (classname != 'numBtn noneselect') {
@@ -476,36 +502,45 @@ html, body {
 		}
 	});
 
-	$(document)
-			.on(
-					'click',
-					'#btn button',
-					function() {
-						var selectCount = $('.checked').length;
-						if (selectCount > 0) {
-							var str = "";
-							var userNo = new Array(selectCount);
-							for (var i = 0; i < selectCount; i++) {
-								str += ('<p>'
-										+ $('.checked .nickname>p').eq(i)
-												.text() + '</p>')
-								userNo[i] = $('.checked').eq(i).attr('no');
-							}
-							str += '<p>회원을 삭제하시겠습니까?</p>'
-							$('#dialog').css({
-								'display' : 'flex',
-								'opacity' : '100'
-							});
+	$('#deleteBtn').on('click', function() {
+		if ($('input[type=checkbox]:checked').length > 0) {
+			$('.notice').css({
+				'display' : 'flex',
+				'opacity' : '100'
+			});
+		}
+	});
 
-							$('#dialog').html(str);
-							// ajax 회원 삭제 만들기
-						}
-					});
+	$('#delete-cancel').on('click', function() {
+		$('.notice').css('opacity', '0');
+		setTimeout(function() {
+			$('.notice').css('display', 'none');
+		}, 2000);
+
+	});
+
+	$('#delete-submit').on('click', function() {
+		var users = [];
+		$('input[type=checkbox]:checked').each(function() {
+			var user = $(this).val();
+			users.push(user);
+		});
+		$.ajax({
+			url : 'delUsers.do',
+			data : {
+				users : users
+			},
+			success : function(data) {
+				console.log(data);
+				location.reload(true);
+			}
+		});
+	});
 
 	$(document).on('click', '#sort-dropdown li', function() {
 		var sort = $(this).text();
 		var keyword = '${listInfo.keyword}';
-		var url = '/bmp/admin/user?sort=' + sort;
+		var url = '/bmp/admin/users?sort=' + sort;
 		if (keyword != '')
 			url += '&keyword=' + keyword;
 		location.href = url;

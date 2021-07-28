@@ -31,7 +31,6 @@ html, body {
 input::placeholder {
 	color: #a8aebb;
 } */
-
 .filter {
 	display: flex;
 	justify-content: space-between;
@@ -117,7 +116,7 @@ input::placeholder {
 	cursor: unset !important;
 }
 
-#sort-dropdown{
+#sort-dropdown {
 	position: absolute;
 	left: 0px;
 	top: 30px;
@@ -300,6 +299,27 @@ input::placeholder {
 	padding: 5px 16px;
 	font-size: 13px;
 }
+
+
+.notice {
+	position: fixed;
+	background: white;
+	color: #333;
+	border-radius: 4px;
+	left: calc(50% - 60px);
+	top: calc(50% - 100px);
+	box-shadow: 0px 10px 70px rgb(0 0 0/ 15%);
+	font-size: 10px;
+	padding: 21px 20px 19px;
+	display: none;
+	transition: opacity 2000ms;
+	opacity: 0;
+}
+
+.notice h4 {
+	font-weight: 500;
+	font-size: 14px;
+}
 </style>
 </head>
 <body>
@@ -360,7 +380,6 @@ input::placeholder {
 			</div>
 		</div>
 	</div>
-	<div id="dialog"></div>
 </body>
 <script>
 	$(document).on('click', '.select', function() {
@@ -430,7 +449,7 @@ input::placeholder {
 	$(function() {
 		selectbox();
 	});
-	
+
 	function selectbox() {
 		var sort = $('#sort').text();
 

@@ -383,7 +383,14 @@ public class UserController {
 		mav.setViewName("admin/user/users");
 		return mav;
 	}
-	
+
+	@ResponseBody
+	@RequestMapping("admin/delUsers.do")
+	public String delUsers(@RequestParam(value = "users[]") ArrayList<String> users) {
+		int result = uService.delUsers(users);
+		return new Gson().toJson(result);
+	}
+
 	@RequestMapping("admin/admins")
 	public ModelAndView adminList(HttpSession session, ModelAndView mav) {
 //

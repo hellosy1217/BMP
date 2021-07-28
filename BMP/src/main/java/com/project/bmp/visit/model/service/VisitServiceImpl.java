@@ -14,7 +14,7 @@ public class VisitServiceImpl implements VisitService {
 
 	@Autowired
 	private VisitDAO vDAO;
-
+	
 	@Override
 	public int addVisit(String ip) {
 		return vDAO.addVisit(sqlSession, ip);

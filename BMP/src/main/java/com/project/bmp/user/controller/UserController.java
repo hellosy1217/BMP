@@ -391,19 +391,6 @@ public class UserController {
 		return new Gson().toJson(result);
 	}
 
-	@RequestMapping("admin/admins")
-	public ModelAndView adminList(HttpSession session, ModelAndView mav) {
-//
-//		ListInfo listInfo = getListInfo(session, sort, keyword, page, 15);
-//		ArrayList<User> uList = uService.getUserList(listInfo);
-//
-//		mav.addObject("uList", uList);
-//		mav.addObject("listInfo", listInfo);
-//		mav.addObject("paging", listInfo.getPaging());
-		mav.setViewName("admin/user/admins");
-		return mav;
-	}
-
 	// 인증코드 생성하기
 	public String getAuthCode() {
 		Random random = new Random();

@@ -141,7 +141,15 @@
 	<select id="listCount" parameterType="ListInfo"
 		resultType="_int">
 		select count(user_no) from ulist
-		where user_admin='N'
+		where user_admin=
+		<choose>
+			<when test="sort == 'admin'">
+				'Y'
+			</when>
+			<otherwise>
+				'N'
+			</otherwise>
+		</choose>
 		<if test="keyword != ''">
 			and user_email like #{keyword}||'%' or user_nickname like
 			#{keyword}||'%'
@@ -157,10 +165,13 @@
 		left join (select user_no, count(post_no) count_post from bmp_post where
 		post_del_date is null group by user_no) using (user_no)
 		where
-		user_admin='N' and user_del_date is null
+		user_del_date is null
 		<if test="keyword != ''">
 			and user_email like #{keyword}||'%' or user_nickname like
 			#{keyword}||'%'
+		</if>
+		<if test="sort == 'admin'">
+			and user_admin='Y'
 		</if>
 		order by
 		<choose>

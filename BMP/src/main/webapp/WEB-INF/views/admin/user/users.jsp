@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -238,7 +238,7 @@ html, body {
 	flex-direction: column;
 }
 
-.confirm_none {
+.confirm-none {
 	color: rgb(240, 115, 110);
 }
 
@@ -270,6 +270,20 @@ html, body {
 
 .userInfo:hover {
 	cursor: pointer;
+}
+
+.userInfo span {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.userInfo span>a {
+	background: #4285f4;
+	color: #fff;
+	padding: 0 5.3px 2px;
+	border-radius: 4px;
+	margin-right: 5px;
 }
 
 #checkBox>div {
@@ -364,10 +378,24 @@ html, body {
 			<div class="filter">
 				<div id="filter-left">
 					<div id="changeBtn">
-						<a class="btns">회원</a>
+						<c:choose>
+							<c:when test="${listInfo.sort eq 'admin' }">
+								<a class="btns">회원</a>
+							</c:when>
+							<c:otherwise>
+								<a class="btns">관리자</a>
+							</c:otherwise>
+						</c:choose>
 					</div>
 					<div class="select">
-						<p id="sort">${listInfo.sort }</p>
+						<c:choose>
+							<c:when test="${listInfo.sort eq 'admin' }">
+								<p id="sort">인기순</p>
+							</c:when>
+							<c:otherwise>
+								<p id="sort">${listInfo.sort }</p>
+							</c:otherwise>
+						</c:choose>
 						<p>⌵</p>
 						<ul id="sort-dropdown">
 							<li id="New">가입순</li>
@@ -410,8 +438,9 @@ html, body {
 								<td class="nickname"><p>${user.nickname }</p></td>
 								<td><p>
 										<c:choose>
-											<c:when test="${user.confirm eq 'N'.charAt(0) }">
-												<span class="confirm_none">${user.email }</span>
+											<c:when test="${fn:contains(user.email,'google:')}">
+												<span><a>g</a> <c:out
+														value="${fn:substring(user.email,7,fn:length(user.email)) }" /></span>
 											</c:when>
 											<c:otherwise>
 												<span>${user.email }</span>
@@ -481,8 +510,12 @@ html, body {
 		}
 	});
 
-	$('#changeBtn>div').on('click', function() {
-		location.href = '/bmp/admin/admins';
+	$('#changeBtn>a').on('click', function() {
+		console.log($(this).text());
+		if ($(this).text() == '회원')
+			location.href = '/bmp/admin/users';
+		else
+			location.href = '/bmp/admin/users?sort=admin'
 	});
 
 	$('#paging p').on('click', function() {

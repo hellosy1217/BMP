@@ -40,10 +40,17 @@ public class ReportController {
 		mav.setViewName("admin/report/list");
 		return mav;
 	}
-
+	
+	@ResponseBody
+	@RequestMapping("admin/report.do")
+	public String getReport(int no) {
+		Report report = rService.getReport(no);
+		return new Gson().toJson(report);
+	}
+	
 	@ResponseBody
 	@RequestMapping("report.do")
-	public String report(Report report) {
+	public String addReport(Report report) {
 		int result = rService.addReport(report);
 		String msg = "error";
 		if (result > 0)

@@ -150,27 +150,6 @@ html, body {
 	outline: none;
 }
 
-#search_result {
-	opacity: 0;
-	top: 45px;
-	display: none;
-	transition: display 200ms, opacity 500ms;
-	background: rgb(251, 252, 253);
-}
-
-#search_result>li {
-	display: flex;
-	min-width: 148px;
-	align-items: flex-start;
-}
-
-#search_result p {
-	display: flex;
-	align-items: center;
-	font-size: 13px;
-	color: #6d6d7f;
-}
-
 .search_pr {
 	padding-right: 10px;
 }
@@ -458,7 +437,7 @@ html, body {
 						</ul>
 					</div>
 				</div>
-				<form action="/bmp/admin/users" method="get">
+				<form action="/bmp/admin/user" method="get">
 					<div id="search">
 						<input placeholder="검색" value="${keyword }" id="keyword"
 							name="keyword">
@@ -539,7 +518,7 @@ html, body {
 			</p>
 		</div>
 		<div>
-			<a id="mail-cancel">취소</a><a id="mail-submit">확인</a>
+			<a id="mail-cancel">취소</a><a id="mail-submit">전송</a>
 		</div>
 	</div>
 </body>
@@ -581,9 +560,9 @@ html, body {
 	$('#changeBtn>a').on('click', function() {
 		console.log($(this).text());
 		if ($(this).text() == '회원')
-			location.href = '/bmp/admin/users';
+			location.href = '/bmp/admin/user';
 		else
-			location.href = '/bmp/admin/users?sort=admin'
+			location.href = '/bmp/admin/user?sort=admin'
 	});
 
 	$('#paging p').on('click', function() {
@@ -595,7 +574,7 @@ html, body {
 			var keyword = '${keyword}';
 			var filter = '${filter}';
 
-			var url = '/bmp/admin/users?page=' + page;
+			var url = '/bmp/admin/user?page=' + page;
 			if (keyword != null && keyword != '')
 				url += ('&keyword=' + keyword);
 
@@ -691,7 +670,7 @@ html, body {
 	$(document).on('click', '#sort-dropdown li', function() {
 		var sort = $(this).text();
 		var keyword = '${listInfo.keyword}';
-		var url = '/bmp/admin/users?sort=' + sort;
+		var url = '/bmp/admin/user?sort=' + sort;
 		if (keyword != '')
 			url += '&keyword=' + keyword;
 		location.href = url;

@@ -15,4 +15,6 @@ public interface ReportService {
 
 	int addComment(Report report);
 
+	Report getReport(int no);
+
 }

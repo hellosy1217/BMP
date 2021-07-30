@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -44,7 +44,7 @@ html, body {
 	display: flex;
 }
 
-#filter-left #changeBtn>div {
+.btns {
 	display: inline-flex;
 	border-radius: 4px;
 	position: relative;
@@ -54,53 +54,9 @@ html, body {
 	background: white;
 	border: 1px solid #e0e0e0;
 	min-width: 36px;
-}
-
-#filter-left #changeBtn>div:hover {
+	justify-content: center;
 	cursor: pointer;
-}
-
-#filter-left #changeBtn p {
-	margin: 0 auto;
-}
-
-.select {
-	display: inline-flex;
-	border-radius: 4px;
-	position: relative;
-	justify-content: space-between;
-	padding: 7px 10px 4px;
-	font-size: 12px;
-	background: white;
-	border: 1px solid #e0e0e0;
-	margin-left: 5px;
-	min-width: 52px;
-}
-
-.select:hover {
-	cursor: pointer;
-}
-
-.select>p:nth-child(2) {
-	margin-top: -2px;
-	padding-left: 8px;
-}
-
-.select ul, #search_result {
-	display: none;
-	flex-direction: column;
-	background: white;
-	border-radius: 4px;
-	position: absolute;
-	z-index: 2;
-	width: fit-content;
-	padding: 5px 0;
-	color: #a8aebb;
-	border: 1px solid #f0f3f6;
-}
-
-.select ul>li:hover, #search_result>li:hover {
-	cursor: pointer;
+	margin-right: 5px;
 }
 
 .selected {
@@ -135,6 +91,10 @@ html, body {
 	background: #f4f4f4;
 }
 
+#search {
+	padding-left: 5px;
+	position: relative;
+}
 
 #search input {
 	background-color: #fff;
@@ -150,27 +110,6 @@ html, body {
 
 #search input:focus, #search input:hover {
 	outline: none;
-}
-
-#search_result {
-	opacity: 0;
-	top: 45px;
-	display: none;
-	transition: display 200ms, opacity 500ms;
-	background: rgb(251, 252, 253);
-}
-
-#search_result>li {
-	display: flex;
-	min-width: 148px;
-	align-items: flex-start;
-}
-
-#search_result p {
-	display: flex;
-	align-items: center;
-	font-size: 13px;
-	color: #6d6d7f;
 }
 
 .search_pr {
@@ -240,7 +179,7 @@ html, body {
 	flex-direction: column;
 }
 
-.confirm_none {
+.confirm-none {
 	color: rgb(240, 115, 110);
 }
 
@@ -270,27 +209,160 @@ html, body {
 	align-items: center;
 }
 
-.contextmenu {
-	display: none;
-	flex-direction: column;
-	position: absolute;
-	margin: 0;
-	background: white;
+.userInfo:hover {
+	cursor: pointer;
+}
+
+.userInfo span {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.userInfo span>a {
+	background: #4285f4;
+	color: #fff;
+	padding: 0 5.3px 2px;
 	border-radius: 4px;
-	overflow: hidden;
-	z-index: 3;
-	border: 1px solid #f0f3f6;
+	margin-right: 5px;
 }
 
-.contextmenu ul {
-	color: #a8aebb;
-	width: fit-content;
-	padding: 5px 0;
+#checkBox>div {
+	display: flex;
+	align-items: center;
 }
 
-.contextmenu li {
-	padding: 5px 16px;
-	font-size: 13px;
+#checkBox input {
+	display: none;
+}
+
+#checkBox label {
+	padding: 9px;
+	background: #fff;
+	border-radius: 4px;
+	cursor: pointer;
+	border: 1px solid #e0e0e0;
+}
+
+#checkBox p {
+	margin-left: 7px;
+	font-size: 15px;
+	margin-top: 3px;
+}
+
+#checkBox input[type="checkbox"]:checked+label {
+	padding: 3px 5.15px 0px !important;
+	font-family: serif;
+	color: #b9b9b9;
+}
+
+#bottom-btns {
+	display: flex;
+	justify-content: space-between;
+}
+
+.notice {
+	position: fixed;
+	background: white;
+	color: #333;
+	border-radius: 4px;
+	left: calc(50% - 60px);
+	top: calc(50% - 100px);
+	box-shadow: 0px 10px 70px rgb(0 0 0/ 15%);
+	font-size: 10px;
+	padding: 21px 20px 19px;
+	display: none;
+	transition: opacity 2000ms;
+	opacity: 0;
+	flex-direction: column;
+	align-items: center
+}
+
+.notice h4 {
+	font-weight: 500;
+	font-size: 14px;
+}
+
+.notice div {
+	display: flex;
+	padding-top: 10px;
+}
+
+.notice a, .dialog a {
+	border-radius: 4px;
+	width: max-content;
+	text-align: center;
+	letter-spacing: .02em;
+	-webkit-appearance: none;
+	padding: 4px 12px 3px;
+	font-size: 12px;
+	width: max-content;
+	margin: 0 2.5px;
+	cursor: pointer;
+}
+
+#delete-cancel, #mail-cancel {
+	background: #ddd;
+	color: #929292;
+}
+
+#delete-submit, #mail-submit {
+	background: rgb(63, 140, 185);
+	color: #fff;
+}
+
+.dialog {
+	position: fixed;
+	background: white;
+	color: #333;
+	border-radius: 4px;
+	left: calc(50% - 281px);
+	top: calc(50% - 183.5px);
+	box-shadow: 0px 10px 70px rgb(0 0 0/ 15%);
+	font-size: 10px;
+	padding: 21px 20px 19px;
+	transition: opacity 2000ms;
+	flex-direction: column;
+	align-items: center;
+	display: none;
+	opacity: 0;
+	z-index: 5;
+}
+
+.dialog input, .dialog textarea {
+	outline: none;
+	border-radius: 6px;
+	padding: 8.5px 10px 7.5px;
+	outline: none;
+	font-size: 12px;
+	background: #fff;
+	border: 1px solid #e0e0e0;
+	cursor: text;
+	width: 500px;
+	transition: background 0.3s;
+	resize: none;
+	margin-bottom: 10px;
+}
+
+.dialog textarea {
+	height: 200px;
+}
+
+.dialog>div:first-child, .dialog p {
+	display: flex;
+	flex-direction: column;
+}
+
+.dialog>div:last-child {
+	display: flex;
+	justify-content: flex-end;
+	width: 100%;
+}
+
+.dialog p>label {
+	font-weight: 500;
+	padding-bottom: 2px;
+	font-size: 12px;
 }
 </style>
 </head>
@@ -299,7 +371,7 @@ html, body {
 	<div id="body">
 		<div id="container">
 			<div class="filter">
-				<form action="/bmp/admin/user" method="get">
+				<form action="/bmp/admin/report" method="get">
 					<div id="search">
 						<input placeholder="검색" value="${keyword }" id="keyword"
 							name="keyword">
@@ -319,7 +391,7 @@ html, body {
 							<td>등록일</td>
 						</tr>
 						<c:forEach items="${rList }" var="list">
-							<tr no="${list.no }">
+							<tr no="${list.no }" class="reportInfo">
 								<td><input type="checkbox"></td>
 								<td><p>${list.title }</p></td>
 								<td>${list.nickname }</td>
@@ -336,20 +408,82 @@ html, body {
 						</c:forEach>
 					</table>
 				</div>
-				<div class="contextmenu">
-					<ul>
-						<li><a href="#">상세보기</a></li>
-						<li><a href="#">삭제</a></li>
-					</ul>
+			</div>
+			<div id="bottom-btns">
+				<div>
+					<a class="btns" id="checkAllBtn">전체 선택</a><a class="btns"
+						id="deleteBtn">선택 삭제</a>
+				</div>
+				<div>
+					<c:import url="../../common/paging.jsp" />
 				</div>
 			</div>
-			<c:import url="../../common/paging.jsp" />
 		</div>
 	</div>
-	<div id="dialog"></div>
+	<div class="notice">
+		<h4>선택한 문의글을 삭제하시겠습니까?</h4>
+		<div>
+			<a id="delete-cancel">취소</a><a id="delete-submit">확인</a>
+		</div>
+	</div>
+	<div class="dialog">
+		<div>
+			<p>
+				<label>제목</label> <input type="text" id="report-title"
+					readonly="readonly">
+			</p>
+			<p>
+				<label>내용</label>
+				<textarea id="report-content" readonly="readonly"></textarea>
+			</p>
+			<p>
+				<label>답변</label>
+				<textarea id="report-comment"></textarea>
+			</p>
+		</div>
+		<div>
+			<a id="mail-cancel">취소</a><a id="mail-submit">등록</a>
+		</div>
+	</div>
 </body>
 <script>
-	$(document).on('click', '#paging p', function() {
+	$(document).on('change', 'input[type=checkbox]', function() {
+		var id = 'label[for="' + $(this).attr('id') + '"]';
+		if ($(this).prop('checked'))
+			$(id).text('✓');
+		else
+			$(id).text('');
+	});
+
+	$('.reportInfo').on('click', function() {
+		var no = $(this).attr('no');
+		$.ajax({
+			url : 'report.do',
+			dataType : 'json',
+			data : {
+				no : no
+			},
+			success : function(data) {
+				console.log(data);
+				$('#report-title').val(data.title);
+				$('#report-content').val(data.content);
+			}
+		});
+	});
+
+	$('#checkAllBtn').on('click', function() {
+		var id = $('input[type=checkbox]');
+		var checked = $('input[type=checkbox]:checked').length;
+		if (checked == 15) {
+			id.prop('checked', false);
+			$('#table label').text('');
+		} else {
+			id.prop('checked', true);
+			$('#table label').text('✓');
+		}
+	});
+
+	$('#paging p').on('click', function() {
 		var classname = $(this).attr('class');
 
 		if (classname != 'numBtn noneselect') {
@@ -358,7 +492,7 @@ html, body {
 			var keyword = '${keyword}';
 			var filter = '${filter}';
 
-			var url = '/bmp/admin/user?page=' + page;
+			var url = '/bmp/admin/report?page=' + page;
 			if (keyword != null && keyword != '')
 				url += ('&keyword=' + keyword);
 
@@ -366,30 +500,80 @@ html, body {
 		}
 	});
 
-	$(document)
-			.on(
-					'click',
-					'#btn button',
-					function() {
-						var selectCount = $('.checked').length;
-						if (selectCount > 0) {
-							var str = "";
-							var userNo = new Array(selectCount);
-							for (var i = 0; i < selectCount; i++) {
-								str += ('<p>'
-										+ $('.checked .nickname>p').eq(i)
-												.text() + '</p>')
-								userNo[i] = $('.checked').eq(i).attr('no');
-							}
-							str += '<p>회원을 삭제하시겠습니까?</p>'
-							$('#dialog').css({
-								'display' : 'flex',
-								'opacity' : '100'
-							});
+	$('#deleteBtn').on('click', function() {
+		if ($('input[type=checkbox]:checked').length > 0) {
+			$('.notice').css({
+				'display' : 'flex',
+				'opacity' : '100'
+			});
+		}
+	});
 
-							$('#dialog').html(str);
-							// ajax 회원 삭제 만들기
-						}
-					});
+	$('#delete-cancel').on('click', function() {
+		$('.notice').css('opacity', '0');
+		setTimeout(function() {
+			$('.notice').css('display', 'none');
+		}, 2000);
+
+	});
+
+	$('#delete-submit').on('click', function() {
+		var users = [];
+		$('input[type=checkbox]:checked').each(function() {
+			var user = $(this).val();
+			users.push(user);
+		});
+		$.ajax({
+			type : 'post',
+			url : 'delReports.do',
+			data : {
+				users : users
+			},
+			dataType : 'json',
+			success : function(data) {
+				console.log(data);
+				location.reload(true);
+			}
+		});
+	});
+	
+	$('#mail-cancel').on('click', function() {
+		$('.dialog').css('opacity', '0');
+		setTimeout(function() {
+			$('.dialog').css('display', 'none');
+			$('#mail-title').val('');
+			$('#mail-content').val('');
+		}, 2000);
+	});
+
+	$('#mail-submit').on('click', function() {
+		var title = $('#mail-title').val().trim();
+		var content = $('#comm-content').val().trim();
+		if (title == '') {
+			$('#mail-title').focus();
+		} else if (content == '') {
+			$('#mail-content').focus();
+		} else {
+			var emailArr = [];
+			$('input[type=checkbox]:checked').each(function() {
+				var email = $(this).attr('email');
+				emailArr.push(email);
+			});
+			$.ajax({
+				type : 'post',
+				url : 'sendMails.do',
+				dataType : 'json',
+				data : {
+					title : title,
+					content : content,
+					emailArr : emailArr
+				},
+				success : function(data) {
+					console.log(data);
+				}
+			});
+
+		}
+	});
 </script>
 </html>

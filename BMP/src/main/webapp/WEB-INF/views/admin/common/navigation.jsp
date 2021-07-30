@@ -105,7 +105,7 @@ img {
 #navigation_bottom {
 	background: rgb(63, 140, 185);
 	border-radius: 4px;
-	width : max-content;
+	width: max-content;
 	text-align: center;
 	color: #fff;
 	font-weight: bold;
@@ -158,12 +158,7 @@ img {
 				<div id="menu">
 					<ul>
 						<li class="click" link="/bmp/admin">Dashboard</li>
-						<li>
-							<p class="toggle">User</p>
-							<ol class="toggle-dropdown">
-								<li class="click" link="/bmp/admin/users">사용자 목록</li>
-							</ol>
-						</li>
+						<li class="click" link="/bmp/admin/user">User</li>
 						<li>
 							<p class="toggle">Post</p>
 							<ol class="toggle-dropdown">

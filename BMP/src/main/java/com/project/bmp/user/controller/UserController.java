@@ -367,7 +367,7 @@ public class UserController {
 		return new Gson().toJson(result + "");
 	}
 
-	@RequestMapping("admin/users")
+	@RequestMapping("admin/user")
 	public ModelAndView userList(HttpSession session, @RequestParam(value = "sort", defaultValue = "인기순") String sort,
 			@RequestParam(value = "keyword", defaultValue = "") String keyword, ModelAndView mav,
 			@RequestParam(value = "page", defaultValue = "1") int page) {
@@ -378,7 +378,7 @@ public class UserController {
 		mav.addObject("list", list);
 		mav.addObject("listInfo", listInfo);
 		mav.addObject("paging", listInfo.getPaging());
-		mav.setViewName("admin/user/users");
+		mav.setViewName("admin/user/list");
 		return mav;
 	}
 

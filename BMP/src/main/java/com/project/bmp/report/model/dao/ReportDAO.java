@@ -30,4 +30,8 @@ public class ReportDAO {
 		return sqlSession.update("reportMapper.addComment", report);
 	}
 
+	public Report getReport(SqlSessionTemplate sqlSession, int no) {
+		return sqlSession.selectOne("reportMapper.getReport", no);
+	}
+
 }

@@ -34,4 +34,9 @@ public class ReportServiceImpl implements ReportService {
 		return rDAO.addReport(sqlSession, report);
 	}
 
+	@Override
+	public int addComment(Report report) {
+		return rDAO.addComment(sqlSession,report);
+	}
+
 }

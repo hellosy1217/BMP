@@ -5,12 +5,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +31,7 @@ import com.google.gson.Gson;
 import com.project.bmp.common.AwsS3;
 import com.project.bmp.common.Pagination;
 import com.project.bmp.common.Paging;
+import com.project.bmp.common.SendMail;
 import com.project.bmp.post.model.vo.ListInfo;
 import com.project.bmp.user.model.service.UserService;
 import com.project.bmp.user.model.vo.Block;
@@ -47,15 +43,17 @@ import com.project.bmp.user.model.vo.User;
 public class UserController {
 
 	@Autowired
+	private JavaMailSender mailSender;
+
+	@Autowired
 	private UserService uService;
 
 	@Autowired
 	private BCryptPasswordEncoder bcryptPasswordEncoder;
 
-	@Autowired
-	private JavaMailSender mailSender;
-
 	private AwsS3 aws = AwsS3.getInstance();
+
+	private SendMail sendMail = new SendMail();
 
 	// send = 이메일 인증 종류 (0:회원가입, 1:비밀번호 찾기)
 	@ResponseBody
@@ -67,7 +65,7 @@ public class UserController {
 		if (user != null) {
 			result = user.getNo() + "";
 			if (send > 0)
-				result = sendAuthMail(email, "비밀번호 찾기", null);
+				result = sendMail.sendMail(mailSender, email, "비밀번호 찾기", null);
 		}
 		return gson.toJson(result);
 	}
@@ -90,7 +88,7 @@ public class UserController {
 					model.addAttribute("accessor", user);
 					msg = "explorer";
 				} else
-					msg = sendAuthMail(user.getEmail(), "회원", null);
+					msg = sendMail.sendMail(mailSender, user.getEmail(), "회원", null);
 			}
 		}
 		return gson.toJson(msg);
@@ -113,7 +111,7 @@ public class UserController {
 		int result = uService.addUser(user);
 		String authKey = null;
 		if (result > 0) {
-			authKey = sendAuthMail(user.getEmail(), "회원가입", null);
+			authKey = sendMail.sendMail(mailSender, user.getEmail(), "회원가입", null);
 		}
 
 		return gson.toJson(authKey);
@@ -391,56 +389,18 @@ public class UserController {
 		return new Gson().toJson(result);
 	}
 
-	// 인증코드 생성하기
-	public String getAuthCode() {
-		Random random = new Random();
-		StringBuffer buffer = new StringBuffer();
-		int num = 0;
-
-		while (buffer.length() < 6) {
-			num = random.nextInt(10);
-			buffer.append(num);
-		}
-
-		return buffer.toString();
-	}
-
-	// 메일 전송하기
-	public String sendAuthMail(String email, String type, String report) {
-		String authKey = null;
-		String mailContent = null;
-		if (report == null) {
-			authKey = getAuthCode();
-			mailContent = "<h1>[이메일 인증]</h1><br><p>아래의 인증번호를 입력하시면 이메일 인증이 완료됩니다.</p>" + "<p>" + authKey + "</p>";
-			type += " 이메일 인증 ";
-		} else {
-		}
-
-		MimeMessage mail = mailSender.createMimeMessage();
-		try {
-			mail.setSubject(type, "utf-8");
-			mail.setText(mailContent, "utf-8", "html");
-			mail.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-
-			mailSender.send(mail);
-			if (report == null)
-				return authKey;
-			else
-				return "success";
-		} catch (MessagingException e) {
-			e.printStackTrace();
-			return null;
-		}
+	@ResponseBody
+	@RequestMapping("admin/sendMails.do")
+	public String sendMails(@RequestParam(value = "emailArr[]") ArrayList<String> emailArr, String title,
+			String content) {
+		String result = sendMail.sendMails(mailSender, emailArr, title, content);
+		return new Gson().toJson(result);
 	}
 
 	public ListInfo getListInfo(HttpSession session, String sort, String keyword, int currentPage, int boardLimit) {
-
 		ListInfo listInfo = new ListInfo(sort, keyword);
-
 		int listCount = uService.getListCount(listInfo);
-
 		Paging paging = new Pagination().getPaging(currentPage, boardLimit, listCount);
-
 		listInfo.setPaging(paging);
 
 		return listInfo;

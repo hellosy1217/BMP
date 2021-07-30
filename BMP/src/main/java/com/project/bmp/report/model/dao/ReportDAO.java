@@ -26,4 +26,8 @@ public class ReportDAO {
 		return sqlSession.insert("reportMapper.addReport", report);
 	}
 
+	public int addComment(SqlSessionTemplate sqlSession, Report report) {
+		return sqlSession.update("reportMapper.addComment", report);
+	}
+
 }

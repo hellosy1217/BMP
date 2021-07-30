@@ -347,7 +347,7 @@ html, body {
 	padding-top: 10px;
 }
 
-.notice a {
+.notice a, .dialog a {
 	border-radius: 4px;
 	width: max-content;
 	text-align: center;
@@ -360,14 +360,68 @@ html, body {
 	cursor: pointer;
 }
 
-#delete-cancel {
+#delete-cancel, #mail-cancel {
 	background: #ddd;
 	color: #929292;
 }
 
-#delete-submit {
+#delete-submit, #mail-submit {
 	background: rgb(63, 140, 185);
 	color: #fff;
+}
+
+.dialog {
+	position: fixed;
+	background: white;
+	color: #333;
+	border-radius: 4px;
+	left: calc(50% - 281px);
+	top: calc(50% - 183.5px);
+	box-shadow: 0px 10px 70px rgb(0 0 0/ 15%);
+	font-size: 10px;
+	padding: 21px 20px 19px;
+	transition: opacity 2000ms;
+	flex-direction: column;
+	align-items: center;
+	display: none;
+	opacity: 0;
+	z-index: 5;
+}
+
+.dialog input, .dialog textarea {
+	outline: none;
+	border-radius: 6px;
+	padding: 8.5px 10px 7.5px;
+	outline: none;
+	font-size: 12px;
+	background: #fff;
+	border: 1px solid #e0e0e0;
+	cursor: text;
+	width: 500px;
+	transition: background 0.3s;
+	resize: none;
+	margin-bottom: 10px;
+}
+
+.dialog textarea {
+	height: 200px;
+}
+
+.dialog>div:first-child, .dialog p {
+	display: flex;
+	flex-direction: column;
+}
+
+.dialog>div:last-child {
+	display: flex;
+	justify-content: flex-end;
+	width: 100%;
+}
+
+.dialog p>label {
+	font-weight: 500;
+	padding-bottom: 2px;
+	font-size: 12px;
 }
 </style>
 </head>
@@ -431,8 +485,8 @@ html, body {
 								<td id="checkBox">
 									<div>
 										<input type="checkbox" id="checkbox${user.no }"
-											value="${user.no }"><label class=""
-											for="checkbox${user.no }"></label>
+											value="${user.no }" email="${user.email }"><label
+											class="" for="checkbox${user.no }"></label>
 									</div>
 								</td>
 								<td class="nickname"><p>${user.nickname }</p></td>
@@ -474,6 +528,20 @@ html, body {
 			<a id="delete-cancel">취소</a><a id="delete-submit">확인</a>
 		</div>
 	</div>
+	<div class="dialog">
+		<div>
+			<p>
+				<label>제목</label> <input type="text" id="mail-title">
+			</p>
+			<p>
+				<label>내용</label>
+				<textarea id="mail-content"></textarea>
+			</p>
+		</div>
+		<div>
+			<a id="mail-cancel">취소</a><a id="mail-submit">확인</a>
+		</div>
+	</div>
 </body>
 <script>
 	$(document).on('change', 'input[type=checkbox]', function() {
@@ -484,12 +552,12 @@ html, body {
 			$(id).text('');
 	});
 
-	/* $('.userInfo').on('click', function() {
+	$('.userInfo').on('click', function() {
 		var no = $(this).attr('no');
 		console.log(no);
 
 	});
-	 */
+
 	$('#checkAllBtn').on('click', function() {
 		var id = $('input[type=checkbox]');
 		var checked = $('input[type=checkbox]:checked').length;
@@ -559,15 +627,65 @@ html, body {
 			users.push(user);
 		});
 		$.ajax({
+			type : 'post',
 			url : 'delUsers.do',
 			data : {
 				users : users
 			},
+			dataType : 'json',
 			success : function(data) {
 				console.log(data);
 				location.reload(true);
 			}
 		});
+	});
+
+	$('#mailBtn').on('click', function() {
+		if ($('input[type=checkbox]:checked').length > 0) {
+			$('.dialog').css({
+				'display' : 'flex',
+				'opacity' : '100'
+			});
+		}
+	});
+
+	$('#mail-cancel').on('click', function() {
+		$('.dialog').css('opacity', '0');
+		setTimeout(function() {
+			$('.dialog').css('display', 'none');
+			$('#mail-title').val('');
+			$('#mail-content').val('');
+		}, 2000);
+	});
+
+	$('#mail-submit').on('click', function() {
+		var title = $('#mail-title').val().trim();
+		var content = $('#mail-content').val().trim();
+		if (title == '') {
+			$('#mail-title').focus();
+		} else if (content == '') {
+			$('#mail-content').focus();
+		} else {
+			var emailArr = [];
+			$('input[type=checkbox]:checked').each(function() {
+				var email = $(this).attr('email');
+				emailArr.push(email);
+			});
+			$.ajax({
+				type : 'post',
+				url : 'sendMails.do',
+				dataType : 'json',
+				data : {
+					title : title,
+					content : content,
+					emailArr : emailArr
+				},
+				success : function(data) {
+					console.log(data);
+				}
+			});
+
+		}
 	});
 
 	$(document).on('click', '#sort-dropdown li', function() {

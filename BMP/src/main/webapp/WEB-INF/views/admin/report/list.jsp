@@ -40,10 +40,6 @@ html, body {
 	float: right;
 }
 
-#filter-left {
-	display: flex;
-}
-
 .btns {
 	display: inline-flex;
 	border-radius: 4px;
@@ -59,36 +55,9 @@ html, body {
 	margin-right: 5px;
 }
 
-.selected {
-	color: rgb(63, 140, 185);
-	background: #f4f4f4;
-}
-
 .nonehover:hover {
 	background: unset !important;
 	cursor: unset !important;
-}
-
-#sort-dropdown {
-	position: absolute;
-	left: 0px;
-	top: 30px;
-	background: white;
-	border: 1px solid #e0e0e0;
-	border-radius: 4px;
-	width: -webkit-fill-available;
-	padding: 5px 0;
-	z-index: 3;
-	display: none;
-}
-
-#sort-dropdown li {
-	padding: 4px 10px 2px 10px;
-}
-
-#sort-dropdown li:hover {
-	cursor: pointer;
-	background: #f4f4f4;
 }
 
 #search {
@@ -209,17 +178,17 @@ html, body {
 	align-items: center;
 }
 
-.userInfo:hover {
+.reportInfo:hover {
 	cursor: pointer;
 }
 
-.userInfo span {
+.reportInfo span {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 }
 
-.userInfo span>a {
+.reportInfo span>a {
 	background: #4285f4;
 	color: #fff;
 	padding: 0 5.3px 2px;
@@ -317,7 +286,7 @@ html, body {
 	color: #333;
 	border-radius: 4px;
 	left: calc(50% - 281px);
-	top: calc(50% - 183.5px);
+	top: calc(50% - 210.5px);
 	box-shadow: 0px 10px 70px rgb(0 0 0/ 15%);
 	font-size: 10px;
 	padding: 21px 20px 19px;
@@ -345,7 +314,7 @@ html, body {
 }
 
 .dialog textarea {
-	height: 200px;
+	height: 100px;
 }
 
 .dialog>div:first-child, .dialog p {
@@ -387,23 +356,31 @@ html, body {
 							<td></td>
 							<td>제목</td>
 							<td>작성자</td>
+							<td>이메일</td>
 							<td>상태</td>
 							<td>등록일</td>
 						</tr>
-						<c:forEach items="${rList }" var="list">
-							<tr no="${list.no }" class="reportInfo">
-								<td><input type="checkbox"></td>
-								<td><p>${list.title }</p></td>
-								<td>${list.nickname }</td>
+						<c:forEach items="${list }" var="report">
+							<tr class="reportInfo" no="${report.no }">
+								<td id="checkBox">
+									<div>
+										<input type="checkbox" id="checkbox${report.no }"
+											value="${report.no }"><label class=""
+											for="checkbox${report.no }"></label>
+									</div>
+								</td>
+								<td class="nickname"><p>${report.title }</p></td>
+								<td>${report.nickname }</td>
+								<td>${report.email }</td>
 								<c:choose>
-									<c:when test="${list.commDate eq null }">
+									<c:when test="${report.commDate eq null }">
 										<td>답변대기</td>
 									</c:when>
 									<c:otherwise>
 										<td>답변완료</td>
 									</c:otherwise>
 								</c:choose>
-								<td>${list.regDate }</td>
+								<td>${report.regDate }</td>
 							</tr>
 						</c:forEach>
 					</table>
@@ -412,7 +389,7 @@ html, body {
 			<div id="bottom-btns">
 				<div>
 					<a class="btns" id="checkAllBtn">전체 선택</a><a class="btns"
-						id="deleteBtn">선택 삭제</a>
+						id="deleteBtn">선택 삭제</a><a class="btns" id="mailBtn">메일 전송</a>
 				</div>
 				<div>
 					<c:import url="../../common/paging.jsp" />
@@ -429,24 +406,27 @@ html, body {
 	<div class="dialog">
 		<div>
 			<p>
-				<label>제목</label> <input type="text" id="report-title"
+				<label>제목</label><input type="text" id="mail-title"
 					readonly="readonly">
 			</p>
 			<p>
 				<label>내용</label>
-				<textarea id="report-content" readonly="readonly"></textarea>
+				<textarea id="mail-content" readonly="readonly"></textarea>
 			</p>
 			<p>
 				<label>답변</label>
-				<textarea id="report-comment"></textarea>
+				<textarea id="mail-comment"></textarea>
 			</p>
 		</div>
 		<div>
-			<a id="mail-cancel">취소</a><a id="mail-submit">등록</a>
+			<a id="mail-cancel">취소</a><a id="mail-submit">전송</a>
 		</div>
 	</div>
 </body>
 <script>
+	var email = '';
+	var no = 0;
+
 	$(document).on('change', 'input[type=checkbox]', function() {
 		var id = 'label[for="' + $(this).attr('id') + '"]';
 		if ($(this).prop('checked'))
@@ -456,7 +436,7 @@ html, body {
 	});
 
 	$('.reportInfo').on('click', function() {
-		var no = $(this).attr('no');
+		no = $(this).attr('no');
 		$.ajax({
 			url : 'report.do',
 			dataType : 'json',
@@ -464,9 +444,15 @@ html, body {
 				no : no
 			},
 			success : function(data) {
-				console.log(data);
-				$('#report-title').val(data.title);
-				$('#report-content').val(data.content);
+				$('#mail-title').val(data.title);
+				$('#mail-content').val(data.content);
+				email = data.email;
+				setTimeout(function() {
+					$('.dialog').css({
+						'display' : 'flex',
+						'opacity' : '100'
+					});
+				}, 100);
 			}
 		});
 	});
@@ -474,7 +460,7 @@ html, body {
 	$('#checkAllBtn').on('click', function() {
 		var id = $('input[type=checkbox]');
 		var checked = $('input[type=checkbox]:checked').length;
-		if (checked == 15) {
+		if (checked == '${fn:length(list)}') {
 			id.prop('checked', false);
 			$('#table label').text('');
 		} else {
@@ -488,13 +474,7 @@ html, body {
 
 		if (classname != 'numBtn noneselect') {
 			var page = $(this).attr('no');
-			var sort = $('#sort').text();
-			var keyword = '${keyword}';
-			var filter = '${filter}';
-
 			var url = '/bmp/admin/report?page=' + page;
-			if (keyword != null && keyword != '')
-				url += ('&keyword=' + keyword);
 
 			location.href = url;
 		}
@@ -514,20 +494,19 @@ html, body {
 		setTimeout(function() {
 			$('.notice').css('display', 'none');
 		}, 2000);
-
 	});
 
 	$('#delete-submit').on('click', function() {
 		var users = [];
 		$('input[type=checkbox]:checked').each(function() {
-			var user = $(this).val();
-			users.push(user);
+			var report = $(this).val();
+			reports.push(report);
 		});
 		$.ajax({
 			type : 'post',
 			url : 'delReports.do',
 			data : {
-				users : users
+				reports : reports
 			},
 			dataType : 'json',
 			success : function(data) {
@@ -536,40 +515,43 @@ html, body {
 			}
 		});
 	});
-	
+
+	$('#mailBtn').on('click', function() {
+		if ($('input[type=checkbox]:checked').length > 0) {
+			$('.dialog').css({
+				'display' : 'flex',
+				'opacity' : '100'
+			});
+		}
+	});
+
 	$('#mail-cancel').on('click', function() {
 		$('.dialog').css('opacity', '0');
 		setTimeout(function() {
 			$('.dialog').css('display', 'none');
-			$('#mail-title').val('');
-			$('#mail-content').val('');
+			$('#mail-comment').val('');
 		}, 2000);
 	});
 
 	$('#mail-submit').on('click', function() {
 		var title = $('#mail-title').val().trim();
-		var content = $('#comm-content').val().trim();
-		if (title == '') {
-			$('#mail-title').focus();
-		} else if (content == '') {
-			$('#mail-content').focus();
+		var comment = $('#mail-comment').val().trim();
+		if (comment == '') {
+			$('#mail-comment').focus();
 		} else {
-			var emailArr = [];
-			$('input[type=checkbox]:checked').each(function() {
-				var email = $(this).attr('email');
-				emailArr.push(email);
-			});
 			$.ajax({
 				type : 'post',
-				url : 'sendMails.do',
+				url : 'comment.do',
 				dataType : 'json',
 				data : {
+					no : no,
 					title : title,
-					content : content,
-					emailArr : emailArr
+					comment : comment,
+					email : email
 				},
 				success : function(data) {
 					console.log(data);
+					location.reload(true);
 				}
 			});
 

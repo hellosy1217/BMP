@@ -34,9 +34,10 @@ public class ReportController {
 		int listCount = rService.listCount();
 
 		Paging paging = new Pagination().getPaging(page, 15, listCount);
-		ArrayList<Report> rList = rService.getList(paging);
+		ArrayList<Report> list = rService.getList(paging);
 
-		mav.addObject("rList", rList);
+		mav.addObject("paging",paging);
+		mav.addObject("list", list);
 		mav.setViewName("admin/report/list");
 		return mav;
 	}
@@ -49,19 +50,8 @@ public class ReportController {
 	}
 	
 	@ResponseBody
-	@RequestMapping("report.do")
-	public String addReport(Report report) {
-		int result = rService.addReport(report);
-		String msg = "error";
-		if (result > 0)
-			msg = "success";
-
-		return new Gson().toJson(msg);
-	}
-
-	@ResponseBody
-	@RequestMapping("comment.do")
-	public String comment(Report report) {
+	@RequestMapping("admin/comment.do")
+	public String sendComment(Report report) {
 		String msg = null;
 		String result = sendMail.sendMail(mailSender, report.getEmail(), "RE: " + report.getTitle(), report);
 
@@ -70,6 +60,23 @@ public class ReportController {
 			if (r > 0)
 				msg = "success";
 		}
+		return new Gson().toJson(msg);
+	}
+	@ResponseBody
+	@RequestMapping("admin/delReports.do")
+	public String delReports(@RequestParam(value = "reports[]") ArrayList<String> reports) {
+		int result = rService.delReports(reports);
+		return new Gson().toJson(result);
+	}
+	
+	@ResponseBody
+	@RequestMapping("report.do")
+	public String addReport(Report report) {
+		int result = rService.addReport(report);
+		String msg = "error";
+		if (result > 0)
+			msg = "success";
+
 		return new Gson().toJson(msg);
 	}
 

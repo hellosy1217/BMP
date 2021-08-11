@@ -17,4 +17,6 @@ public interface ReportService {
 
 	Report getReport(int no);
 
+	int delReports(ArrayList<String> reports);
+
 }

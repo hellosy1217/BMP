@@ -34,4 +34,8 @@ public class ReportDAO {
 		return sqlSession.selectOne("reportMapper.getReport", no);
 	}
 
+	public int delReports(SqlSessionTemplate sqlSession, ArrayList<String> reports) {
+		return sqlSession.update("reportMapper.delReports", reports);
+	}
+
 }

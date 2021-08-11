@@ -540,7 +540,7 @@ html, body {
 	$('#checkAllBtn').on('click', function() {
 		var id = $('input[type=checkbox]');
 		var checked = $('input[type=checkbox]:checked').length;
-		if (checked == 15) {
+		if (checked == '${fn:length(list)}') {
 			id.prop('checked', false);
 			$('#table label').text('');
 		} else {

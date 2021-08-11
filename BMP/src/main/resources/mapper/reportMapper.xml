@@ -7,7 +7,7 @@
 	</select>
 
 	<select id="getList" resultMap="reportResultMap">
-		select report_no, report_title, report_date, report_comm_date, user_nickname 
+		select report_no, report_title, report_date, report_comm_date, user_nickname, user_email
 		from rlist
 		order by report_date desc
 	</select>
@@ -25,10 +25,19 @@
 	</update>
 	
 	<select id="getReport" resultMap="reportResultMap">
-		select report_no, report_title, report_content, user_email 
+		select report_no, report_title, report_content, user_email, post_no, user_no
 		from rlist 
 		where report_no=#{no}
 	</select>
+	
+	<update id="delReports" parameterType="java.util.ArrayList">
+		update bmp_report set report_del_date=sysdate
+		<where>
+			<foreach collection="list" item="item">
+				and report_no=#{item}
+			</foreach>
+		</where>
+	</update>
 	
 	<resultMap type="Report" id="reportResultMap">
 		<id property="no" column="report_no" />

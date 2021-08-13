@@ -218,6 +218,28 @@
 		values (comment_seq.nextval,#{content},#{postNo},#{userNo})
 	</insert>
 	
+	<select id="getAdminPostList" resultMap="postResultMap" parameterType="ListInfo">
+		select post_no, post_title, post_count, countlike, countcomment, post_reg_date, post_del_date, user_nickname
+		from plist
+		left join bmp_user using (user_no)
+		<if test="keyword != ''">
+			where ((tag_name like '#'||#{keyword}||'%') or (post_title like '%'||#{keyword}||'%') or 
+	 			(post_content like '%'||#{keyword}||'%') or (user_nickname like #{keyword}||'%'))
+		</if>
+		<choose>
+			<when test="sort == '인기순'">
+				order by countlike
+			</when>
+			<when test="sort == '조회순'">
+				order by post_count
+			</when>
+			<otherwise>
+				order by post_reg_date
+			</otherwise>
+		</choose>
+		desc, post_no desc
+	</select>
+	
 	<resultMap type="Post" id="postResultMap">
 		<id property="no" column="post_no" />
 		<result property="title" column="post_title" />

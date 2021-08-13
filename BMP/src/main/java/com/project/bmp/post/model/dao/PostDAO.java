@@ -20,13 +20,16 @@ public class PostDAO {
 
 	public int getListCount(SqlSessionTemplate sqlSession, ListInfo listInfo) {
 		return sqlSession.selectOne("postMapper.listCount");
-		
+
 	}
 
 	public ArrayList<Post> getPostList(SqlSessionTemplate sqlSession, ListInfo listInfo) {
 		int offset = (listInfo.getPaging().getCurrentPage() - 1) * listInfo.getPaging().getBoardLimit();
 		RowBounds rowBounds = new RowBounds(offset, listInfo.getPaging().getBoardLimit());
-		return (ArrayList) sqlSession.selectList("postMapper.getPostList", listInfo, rowBounds);
+		String str = "postMapper.getPostList";
+		if (!listInfo.getTab().isEmpty() && listInfo.getTab().equals("admin"))
+			str = "postMapper.getAdminPostList";
+		return (ArrayList) sqlSession.selectList(str, listInfo, rowBounds);
 	}
 
 	public int addLike(SqlSessionTemplate sqlSession, Like like) {

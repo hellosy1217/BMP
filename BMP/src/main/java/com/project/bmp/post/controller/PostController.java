@@ -282,6 +282,21 @@ public class PostController {
 		return new Gson().toJson(result + "");
 	}
 	
+	@RequestMapping("admin/post")
+	public ModelAndView postList(HttpSession session, @RequestParam(value = "sort", defaultValue = "등록순") String sort,
+			@RequestParam(value = "keyword", defaultValue = "") String keyword, ModelAndView mav,
+			@RequestParam(value = "page", defaultValue = "1") int page) {
+
+		ListInfo listInfo = getListInfo(session, sort, keyword, page, 15, "admin");
+		ArrayList<Post> list = pService.getPostList(listInfo);
+
+		mav.addObject("list", list);
+		mav.addObject("listInfo", listInfo);
+		mav.addObject("paging", listInfo.getPaging());
+		mav.setViewName("admin/post/list");
+		return mav;
+	}
+	
 	public ListInfo getListInfo(HttpSession session, String sort, String keyword, int currentPage, int boardLimit,
 			String tab) {
 		User accessor = (User) session.getAttribute("accessor");

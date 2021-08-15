@@ -190,7 +190,7 @@
 							<a id="more-btn">⌵</a>
 						</p>
 						<p id="setting-p">
-							<a id="setting-btn" href="profile">Setting</a>
+							<a id="setting-btn" href="setting">Setting</a>
 						</p>
 					</c:when>
 					<c:when

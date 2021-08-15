@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.google.gson.Gson;
 import com.project.bmp.common.Pagination;
 import com.project.bmp.common.Paging;
 import com.project.bmp.dm.model.service.DMService;
@@ -57,5 +59,21 @@ public class DMController {
 		mav.addObject("room", room);
 		mav.setViewName("user/message/message");
 		return mav;
+	}
+	
+	@ResponseBody
+	@RequestMapping("sendMessage.do")
+	public String sendDM(DM dm) {
+		int result = dService.addMessage(dm);
+		
+		return new Gson().toJson(result);
+	}
+	
+	@ResponseBody
+	@RequestMapping("updateMessage.do")
+	public String updateDM(DM dm) {
+		ArrayList<DM> dmList = dService.updateMessage(dm);
+		
+		return new Gson().toJson(dmList);
 	}
 }

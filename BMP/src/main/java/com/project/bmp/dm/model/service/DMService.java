@@ -14,4 +14,8 @@ public interface DMService {
 
 	Room getMessage(DM dm);
 
+	int addMessage(DM dm);
+
+	ArrayList<DM> updateMessage(DM dm);
+
 }

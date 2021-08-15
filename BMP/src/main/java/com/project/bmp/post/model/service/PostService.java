@@ -43,4 +43,6 @@ public interface PostService {
 
 	int delComment(int no);
 
+	int delPosts(ArrayList<String> posts);
+
 }

@@ -35,4 +35,14 @@ public class DMServiceImpl implements DMService {
 		return dDAO.getMessage(sqlSession, dm);
 	}
 
+	@Override
+	public int addMessage(DM dm) {
+		return dDAO.addMessage(sqlSession, dm);
+	}
+
+	@Override
+	public ArrayList<DM> updateMessage(DM dm) {
+		return dDAO.updateMessage(sqlSession, dm);
+	}
+
 }

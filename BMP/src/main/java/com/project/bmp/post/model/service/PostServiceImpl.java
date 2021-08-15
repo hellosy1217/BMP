@@ -101,4 +101,9 @@ public class PostServiceImpl implements PostService {
 	public int delComment(int no) {
 		return pDAO.delComment(sqlSession, no);
 	}
+
+	@Override
+	public int delPosts(ArrayList<String> posts) {
+		return pDAO.delPosts(sqlSession, posts);
+	}
 }

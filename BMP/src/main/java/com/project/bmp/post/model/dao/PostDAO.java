@@ -90,4 +90,8 @@ public class PostDAO {
 		return sqlSession.delete("postMapper.delComment", no);
 	}
 
+	public int delPosts(SqlSessionTemplate sqlSession, ArrayList<String> posts) {
+		return sqlSession.update("postMapper.delPosts", posts);
+	}
+
 }

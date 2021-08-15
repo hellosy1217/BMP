@@ -77,7 +77,7 @@ table {
 }
 
 .receiveMessage>div {
-	background: skyblue;
+	background: #f4f4f4;
 	border-radius: 8px;
 }
 
@@ -99,24 +99,23 @@ table {
 			<div id="msg-right">
 				<div>
 					<div>
-					<div></div>
-
-
+						<div></div>
 						<ol>
 							<c:forEach items="${room.dmList}" var="dms">
 								<c:choose>
 									<c:when test="${dms.userNo eq accessor.no }">
-										<li class="sendMessage"><div>${dms.content }</div></li>
+										<li class="sendMessage" no="${dms.no }"><div>${dms.content }</div></li>
 									</c:when>
 									<c:otherwise>
-										<li class="receiveMessage"><div>${dms.content }</div></li>
+										<li class="receiveMessage" no="${dms.no }"><div>${dms.content }</div></li>
 									</c:otherwise>
 								</c:choose>
 							</c:forEach>
 						</ol>
 					</div>
-					<div>
-						<input type="text" placeholder="Add Message...">
+					<div id="input">
+						<input type="text" placeholder="Add Message..."
+							id="message-content"><a id="sendBtn">Send</a>
 					</div>
 				</div>
 			</div>
@@ -124,6 +123,60 @@ table {
 	</div>
 </body>
 <script>
-	
+	var roomNo = '${room.no}';
+	var no = 0;
+	$(document).keydown(function(e) {
+		if (e.keyCode == 13) {
+			send();
+		}
+	});
+
+	$('#sendBtn').on('click', function() {
+		send();
+	});
+
+	$(function() {
+		setInterval(function() {
+			update();
+		}, 3000);
+	});
+
+	function send() {
+		var userNo = '${accessor.no}';
+		var content = $('#message-content').val().trim();
+		$.ajax({
+			url : 'sendMessage.do',
+			dataType : 'json',
+			data : {
+				userNo : userNo,
+				roomNo : roomNo,
+				content : content
+			},
+			success : function(data) {
+				console.log(data);
+				if (data == 1) {
+					$('#message-content').val('');
+					$('#message-content').focus();
+				} else {
+					// 오류
+				}
+			}
+		});
+	}
+
+	function update() {
+		no = $('#msg-right li').last().attr('no');
+		$.ajax({
+			url : 'updateMessage.do',
+			dataType : 'json',
+			data : {
+				no : no,
+				roomNo : roomNo
+			},
+			success : function(data) {
+				console.log(data);
+			}
+		});
+	}
 </script>
 </html>

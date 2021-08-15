@@ -240,6 +240,15 @@
 		desc, post_no desc
 	</select>
 	
+	<update id="delPosts">
+	update bmp_post set post_del_date=sysdate
+		<where>
+			<foreach collection="list" item="item">
+				and post_no=#{item}
+			</foreach>
+		</where>
+	</update>
+	
 	<resultMap type="Post" id="postResultMap">
 		<id property="no" column="post_no" />
 		<result property="title" column="post_title" />

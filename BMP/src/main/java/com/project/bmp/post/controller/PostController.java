@@ -281,7 +281,7 @@ public class PostController {
 
 		return new Gson().toJson(result + "");
 	}
-	
+
 	@RequestMapping("admin/post")
 	public ModelAndView postList(HttpSession session, @RequestParam(value = "sort", defaultValue = "등록순") String sort,
 			@RequestParam(value = "keyword", defaultValue = "") String keyword, ModelAndView mav,
@@ -296,7 +296,17 @@ public class PostController {
 		mav.setViewName("admin/post/list");
 		return mav;
 	}
-	
+
+	@ResponseBody
+	@RequestMapping("admin/delPosts.do")
+	public String delPosts(@RequestParam(value = "posts[]") ArrayList<String> posts) {
+		String msg = "error";
+		int result = pService.delPosts(posts);
+		if (result > 0)
+			msg = "success";
+		return new Gson().toJson(msg);
+	}
+
 	public ListInfo getListInfo(HttpSession session, String sort, String keyword, int currentPage, int boardLimit,
 			String tab) {
 		User accessor = (User) session.getAttribute("accessor");

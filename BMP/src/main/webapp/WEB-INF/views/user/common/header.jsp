@@ -383,7 +383,7 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 			<div class="filter-right">
 				<c:choose>
 					<c:when test="${dList ne null or room ne null }">
-						<a id="write-btn" href="messagewrite">✎&nbsp;DM&nbsp;</a>
+						<a id="write-btn" href="messagewrite">✎&nbsp;Write&nbsp;</a>
 					</c:when>
 					<c:otherwise>
 						<a id="post-btn" href="postwrite">✎&nbsp;Post&nbsp;</a>
@@ -442,7 +442,7 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 		if ($(this).text() == '내 블로그')
 			location.href = 'blog?blog=${accessor.no}';
 		else if ($(this).text() == '설정')
-			location.href = 'profile';
+			location.href = 'setting';
 		else
 			location.href = 'signOut';
 	});

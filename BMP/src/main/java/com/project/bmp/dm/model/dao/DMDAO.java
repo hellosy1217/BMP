@@ -27,4 +27,12 @@ public class DMDAO {
 		return (Room) sqlSession.selectOne("dmMapper.getMessage", dm);
 	}
 
+	public int addMessage(SqlSessionTemplate sqlSession, DM dm) {
+		return sqlSession.insert("dmMapper.addMessage", dm);
+	}
+
+	public ArrayList<DM> updateMessage(SqlSessionTemplate sqlSession, DM dm) {
+		return (ArrayList) sqlSession.selectList("dmMapper.updateMessage", dm);
+	}
+
 }

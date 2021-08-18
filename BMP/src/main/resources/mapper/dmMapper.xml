@@ -35,7 +35,7 @@
 					left join bmp_dm using (room_no) where u2_no=#{userNo} and u2_out_date is null)
 			left join ulist using (user_no)
 		where room_no=#{roomNo}
-		order by dm_reg_date
+		order by dm_reg_date, dm_no
 	</select>
 	
 	<insert id="addMessage" parameterType="DM">
@@ -47,6 +47,7 @@
 		select dm_no, dm_content, dm_reg_date, dm_read_date, user_no
 		from bmp_dm
 		where room_no=#{roomNo} and dm_no>#{no}
+		order by dm_reg_date
 	</select>
 
 	<resultMap type="Room" id="roomResultMap">

@@ -58,6 +58,7 @@ table {
 
 #msg-right li {
 	display: flex;
+	margin-top: 5px;
 }
 
 #msg-right li>div {
@@ -71,20 +72,44 @@ table {
 	justify-content: flex-end;
 }
 
-.sendMessage>div {
+.sendMessage>div, .receiveMessage>div {
 	background: pink;
 	border-radius: 8px;
 }
 
-.receiveMessage>div {
-	background: #f4f4f4;
-	border-radius: 8px;
-}
-
 #msg-right input {
-	border: 1px solid;
+	border: 1px solid #f4f4f4;
 	font-size: 16px;
 	padding: 8px 10px 6px;
+	border-radius: 4px;
+}
+
+#msg-right #input {
+	padding: 10px 30px;
+	border-top: 1px solid #f4f4f4;
+	display: flex;
+	justify-content: space-between;
+}
+
+#sendBtn {
+	border-radius: 4px;
+	color: white;
+	font-weight: bold;
+	letter-spacing: .02em;
+	-webkit-appearance: none;
+	padding: 9px 12px 7px;
+	font-size: 14px;
+	text-align: center;
+	cursor: pointer;
+	background: #ea4c89;
+}
+
+#sendBtn:hover {
+	background: #dd417c;
+}
+
+#message-content {
+	width: calc(100% - 93px);
 }
 </style>
 </head>
@@ -153,12 +178,9 @@ table {
 				content : content
 			},
 			success : function(data) {
-				console.log(data);
 				if (data == 1) {
 					$('#message-content').val('');
 					$('#message-content').focus();
-				} else {
-					// 오류
 				}
 			}
 		});
@@ -166,17 +188,29 @@ table {
 
 	function update() {
 		no = $('#msg-right li').last().attr('no');
-		$.ajax({
-			url : 'updateMessage.do',
-			dataType : 'json',
-			data : {
-				no : no,
-				roomNo : roomNo
-			},
-			success : function(data) {
-				console.log(data);
-			}
-		});
+		$
+				.ajax({
+					url : 'updateMessage.do',
+					dataType : 'json',
+					data : {
+						no : no,
+						roomNo : roomNo
+					},
+					success : function(data) {
+						if (data != null) {
+							var cls = "receiveMessage";
+							for (var i = 0; i < data.length; i++) {
+								if (data[i].userNo == '${accessor.no}')
+									cls = "sendMessage";
+								var str = '<li class="' 
+									+ cls + '" no="' 
+									+ data[i].no + '"><div>'
+										+ data[i].content + '</div></li>';
+								$('#msg-right ol').append(str);
+							}
+						}
+					}
+				});
 	}
 </script>
 </html>

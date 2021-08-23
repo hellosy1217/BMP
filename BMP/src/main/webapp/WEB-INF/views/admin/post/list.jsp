@@ -356,16 +356,6 @@ html, body {
 		<div id="container">
 			<div class="filter">
 				<div id="filter-left">
-					<div id="changeBtn">
-						<c:choose>
-							<c:when test="${listInfo.sort eq 'admin' }">
-								<a class="btns">회원</a>
-							</c:when>
-							<c:otherwise>
-								<a class="btns">관리자</a>
-							</c:otherwise>
-						</c:choose>
-					</div>
 					<div class="select">
 						<c:choose>
 							<c:when test="${listInfo.sort eq 'admin' }">
@@ -412,7 +402,7 @@ html, body {
 											class="" for="checkbox${post.no }"></label>
 									</div>
 								</td>
-								<td>${post.title}</td>
+								<td>${fn:substring(post.title, 0, 20)}</td>
 								<td>${post.nickname }</td>
 								<td>${post.count }</td>
 								<td>${post.countLike }</td>
@@ -511,16 +501,16 @@ html, body {
 	});
 
 	$('#delete-submit').on('click', function() {
-		var users = [];
+		var posts = [];
 		$('input[type=checkbox]:checked').each(function() {
-			var user = $(this).val();
-			users.push(user);
+			var post = $(this).val();
+			posts.push(post);
 		});
 		$.ajax({
 			type : 'post',
-			url : 'delUsers.do',
+			url : 'delPosts.do',
 			data : {
-				users : users
+				posts : posts
 			},
 			dataType : 'json',
 			success : function(data) {

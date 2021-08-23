@@ -160,10 +160,10 @@ img {
 						<li class="click" link="/bmp/admin">Dashboard</li>
 						<li class="click" link="/bmp/admin/user">User</li>
 						<li>
-							<p class="toggle">Post</p>
-							<ol class="toggle-dropdown">
+							<p class="click" link="/bmp/admin/post">Post</p>
+							<!-- <ol class="toggle-dropdown">
 								<li class="click" link="/bmp/admin/post">신고 게시글 목록</li>
-							</ol>
+							</ol> -->
 						</li>
 						<li><p class="click" link="/bmp/admin/report">Report</p>
 						<li class="click" link="/bmp/admin/setting">Setting</li>

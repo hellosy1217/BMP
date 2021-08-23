@@ -223,4 +223,15 @@ public class Post {
 		this.fileList = fileList;
 	}
 
+	@Override
+	public String toString() {
+		return "Post [no=" + no + ", title=" + title + ", content=" + content + ", count=" + count + ", regDate="
+				+ regDate + ", editDate=" + editDate + ", delDate=" + delDate + ", hideDate=" + hideDate + ", userNo="
+				+ userNo + ", fileName=" + fileName + ", countComment=" + countComment + ", tagList=" + tagList
+				+ ", countLike=" + countLike + ", like=" + like + ", repost=" + repost + ", nickname=" + nickname
+				+ ", profileFile=" + profileFile + ", commentList=" + commentList + ", fileList=" + fileList + "]";
+	}
+	
+	
+
 }

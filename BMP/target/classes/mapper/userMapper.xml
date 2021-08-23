@@ -124,7 +124,7 @@
 		and follow_permission='Y') using (user_no)
 		order by follow_no desc
 	</select>
-
+	
 	<insert id="addBlock">
 		<selectKey keyProperty="no" resultType="int" order="BEFORE">
 			select
@@ -192,7 +192,7 @@
 		update bmp_user set user_del_date=sysdate
 		<where>
 			<foreach collection="list" item="item">
-				and user_no=#{item}
+				or user_no=#{item}
 			</foreach>
 		</where>
 	</update>

@@ -325,7 +325,7 @@ public class UserController {
 	public String follow(Follow follow) {
 		int result = 0;
 
-		if (follow.getPermission() == ' ') {
+		if (follow.getPermission() != 'Y' && follow.getPermission() != 'N') {
 			User user = uService.getFollow(follow);
 			if (user.getUserPrivate() == 'Y')
 				follow.setPermission('N');

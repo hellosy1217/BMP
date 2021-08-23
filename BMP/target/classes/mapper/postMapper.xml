@@ -222,8 +222,9 @@
 		select post_no, post_title, post_count, countlike, countcomment, post_reg_date, post_del_date, user_nickname
 		from plist
 		left join bmp_user using (user_no)
+		where post_del_date is null
 		<if test="keyword != ''">
-			where ((tag_name like '#'||#{keyword}||'%') or (post_title like '%'||#{keyword}||'%') or 
+			and ((tag_name like '#'||#{keyword}||'%') or (post_title like '%'||#{keyword}||'%') or 
 	 			(post_content like '%'||#{keyword}||'%') or (user_nickname like #{keyword}||'%'))
 		</if>
 		<choose>
@@ -240,11 +241,11 @@
 		desc, post_no desc
 	</select>
 	
-	<update id="delPosts">
+	<update id="delPosts" parameterType="java.util.ArrayList">
 	update bmp_post set post_del_date=sysdate
 		<where>
 			<foreach collection="list" item="item">
-				and post_no=#{item}
+				or post_no=#{item}
 			</foreach>
 		</where>
 	</update>

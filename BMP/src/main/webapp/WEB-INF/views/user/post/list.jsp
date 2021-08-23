@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -137,7 +138,7 @@
 				<div class="post-content">
 					<div no="${post.no }" blog="${post.userNo }">
 						<div>
-							<p class="post-title">${post.title }</p>
+							<p class="post-title">${fn:substring(post.title, 0, 20)}</p>
 							<p class="date">${post.regDate }</p>
 						</div>
 						<c:choose>

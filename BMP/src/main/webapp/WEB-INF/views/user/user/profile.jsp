@@ -310,11 +310,7 @@
 			},
 			success : function(data) {
 				followed = data;
-				if (text == 'Follow')
-					$('#follow-btn').text('Following');
-				else
-					$('#follow-btn').text('Follow');
-
+				location.reload(true);
 			}
 		});
 	}

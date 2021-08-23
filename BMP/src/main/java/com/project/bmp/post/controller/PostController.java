@@ -95,7 +95,7 @@ public class PostController {
 				}
 			}
 		}
-
+		
 		pService.addPost(post);
 		int result = post.getNo();
 
@@ -304,6 +304,8 @@ public class PostController {
 		int result = pService.delPosts(posts);
 		if (result > 0)
 			msg = "success";
+		System.out.println(posts.toString());
+		System.out.println("삭제실행: "+result);
 		return new Gson().toJson(msg);
 	}
 

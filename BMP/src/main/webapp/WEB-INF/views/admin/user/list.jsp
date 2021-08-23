@@ -629,12 +629,7 @@ html, body {
 	});
 
 	$('#mail-cancel').on('click', function() {
-		$('.dialog').css('opacity', '0');
-		setTimeout(function() {
-			$('.dialog').css('display', 'none');
-			$('#mail-title').val('');
-			$('#mail-content').val('');
-		}, 2000);
+		dialogClose();
 	});
 
 	$('#mail-submit').on('click', function() {
@@ -660,7 +655,7 @@ html, body {
 					emailArr : emailArr
 				},
 				success : function(data) {
-					console.log(data);
+					dialogClose();
 				}
 			});
 
@@ -691,6 +686,15 @@ html, body {
 			$('#Follow').attr('class', 'selected');
 
 		$('#form_sort').val(sort);
+	}
+	
+	function dialogClose(){
+		$('.dialog').css('opacity', '0');
+		setTimeout(function() {
+			$('.dialog').css('display', 'none');
+			$('#mail-title').val('');
+			$('#mail-content').val('');
+		}, 2000);
 	}
 </script>
 </html>

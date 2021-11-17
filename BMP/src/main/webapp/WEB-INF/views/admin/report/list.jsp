@@ -18,6 +18,7 @@ html, body {
 	display: flex;
 	padding-left: 269px;
 	background: #f4f4f4;
+	height: 100%;
 }
 
 #container {
@@ -389,7 +390,7 @@ html, body {
 			<div id="bottom-btns">
 				<div>
 					<a class="btns" id="checkAllBtn">전체 선택</a><a class="btns"
-						id="deleteBtn">선택 삭제</a><a class="btns" id="mailBtn">메일 전송</a>
+						id="deleteBtn">선택 삭제</a>
 				</div>
 				<div>
 					<c:import url="../../common/paging.jsp" />

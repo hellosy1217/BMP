@@ -303,6 +303,7 @@ public class UserController {
 		User accessor = (User) session.getAttribute("accessor");
 		User profile = uService.getProfile(new Follow(no, accessor.getNo()));
 		ArrayList<User> fList = uService.getFollowList(new User(accessor.getNo(), no, 0));
+		System.out.println(fList.toString());
 		mav.addObject("fList", fList);
 		mav.addObject("profile", profile);
 		mav.setViewName("user/post/blog");
@@ -387,6 +388,11 @@ public class UserController {
 	public String delUsers(@RequestParam(value = "users[]") ArrayList<String> users) {
 		int result = uService.delUsers(users);
 		return new Gson().toJson(result);
+	}
+	
+	@RequestMapping("admin/setting")
+	public String setting() {
+		return "admin/common/setting";
 	}
 
 	@ResponseBody

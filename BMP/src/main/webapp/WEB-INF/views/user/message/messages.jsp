@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -18,6 +19,10 @@
 	border: 0;
 	background: transparent;
 	font-family: sans-serif;
+}
+
+body {
+	background: #f4f4f4 !important;
 }
 
 table {
@@ -196,7 +201,7 @@ table {
 									<span></span>
 								</p>
 								<p>${dm.content }</p></td>
-							<td class="time">7분 전</td>
+							<td class="time"><fmt:formatDate value="${dm.regDate }" pattern="MM월 dd일"/></td>
 							</tr>
 						</c:forEach>
 					</table>

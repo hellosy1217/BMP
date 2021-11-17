@@ -18,6 +18,7 @@ html, body {
 	display: flex;
 	padding-left: 269px;
 	background: #f4f4f4;
+	height: 100%;
 }
 
 #container {

@@ -16,7 +16,6 @@ public class VisitSessionListener implements HttpSessionListener {
 
 	@Override
 	public void sessionCreated(HttpSessionEvent se) {
-		System.out.println("sessioncreated 실행... ");
 		HttpSession session = se.getSession();
 		WebApplicationContext wac = WebApplicationContextUtils
 				.getRequiredWebApplicationContext(session.getServletContext());
@@ -24,8 +23,7 @@ public class VisitSessionListener implements HttpSessionListener {
 				.getRequest();
 		VisitService vService = (VisitService) wac.getBean("vService");
 		int result = vService.addVisit(req.getRemoteAddr());
-		
-		System.out.println("session 완 : "+result);
+		session.setAttribute("visit", result);
 	}
 
 	@Override

@@ -196,7 +196,7 @@
 			</foreach>
 		</where>
 	</update>
-
+	
 	<resultMap type="User" id="userResultMap">
 		<id property="no" column="user_no" />
 		<result property="email" column="user_email" />

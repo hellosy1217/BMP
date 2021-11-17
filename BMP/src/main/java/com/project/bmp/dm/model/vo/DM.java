@@ -6,11 +6,11 @@ public class DM {
 	private int no;
 	private String content;
 	private Date regDate;
-	private Date readDate;
 	private int roomNo;
 	private int userNo;
 	private String nickname;
 	private String fileName;
+	private Date readDate;
 
 	public DM() {
 	}
@@ -27,7 +27,6 @@ public class DM {
 		this.no = no;
 		this.content = content;
 		this.regDate = regDate;
-		this.readDate = readDate;
 		this.roomNo = roomNo;
 		this.userNo = userNo;
 		this.nickname = nickname;
@@ -56,14 +55,6 @@ public class DM {
 
 	public void setRegDate(Date regDate) {
 		this.regDate = regDate;
-	}
-
-	public Date getReadDate() {
-		return readDate;
-	}
-
-	public void setReadDate(Date readDate) {
-		this.readDate = readDate;
 	}
 
 	public int getRoomNo() {
@@ -98,10 +89,18 @@ public class DM {
 		this.fileName = fileName;
 	}
 
+	public Date getReadDate() {
+		return readDate;
+	}
+
+	public void setReadDate(Date readDate) {
+		this.readDate = readDate;
+	}
+
 	@Override
 	public String toString() {
-		return "DM [no=" + no + ", content=" + content + ", regDate=" + regDate + ", readDate=" + readDate + ", roomNo="
-				+ roomNo + ", userNo=" + userNo + ", nickname=" + nickname + ", fileName=" + fileName + "]";
+		return "DM [no=" + no + ", content=" + content + ", regDate=" + regDate + ", roomNo=" + roomNo + ", userNo="
+				+ userNo + ", nickname=" + nickname + ", fileName=" + fileName + "]";
 	}
 
 }

@@ -18,4 +18,11 @@ public interface DMService {
 
 	ArrayList<DM> updateMessage(DM dm);
 
+	int updateReadDate(Room room);
+
+	int findRoom(Room room);
+
+	int addRoom(Room room);
+
+
 }

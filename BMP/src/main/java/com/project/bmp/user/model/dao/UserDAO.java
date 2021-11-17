@@ -6,6 +6,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.project.bmp.dm.model.vo.DM;
 import com.project.bmp.post.model.vo.ListInfo;
 import com.project.bmp.user.model.vo.Block;
 import com.project.bmp.user.model.vo.Follow;

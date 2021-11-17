@@ -160,7 +160,7 @@ public class PostController {
 		User profile = null;
 
 		if (post != null) {
-			pService.addCount(post.getUserNo());
+			pService.addCount(post.getNo());
 			profile = uService.getProfile(new Follow(post.getUserNo(), userNo));
 		}
 		if (profile != null) {

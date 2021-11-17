@@ -2,6 +2,7 @@ package com.project.bmp.user.model.service;
 
 import java.util.ArrayList;
 
+import com.project.bmp.dm.model.vo.DM;
 import com.project.bmp.post.model.vo.ListInfo;
 import com.project.bmp.user.model.vo.Block;
 import com.project.bmp.user.model.vo.Follow;

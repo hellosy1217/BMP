@@ -35,4 +35,17 @@ public class DMDAO {
 		return (ArrayList) sqlSession.selectList("dmMapper.updateMessage", dm);
 	}
 
+	public int updateReadDate(SqlSessionTemplate sqlSession, Room room) {
+		return sqlSession.update("dmMapper.updateReadDate", room);
+	}
+
+	public int findRoom(SqlSessionTemplate sqlSession, Room room) {
+		return sqlSession.selectOne("dmMapper.findRoom", room);
+	}
+
+	public int addRoom(SqlSessionTemplate sqlSession, Room room) {
+		return sqlSession.insert("dmMapper.addRoom", room);
+	}
+
+
 }

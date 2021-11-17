@@ -45,4 +45,20 @@ public class DMServiceImpl implements DMService {
 		return dDAO.updateMessage(sqlSession, dm);
 	}
 
+	@Override
+	public int updateReadDate(Room room) {
+		return dDAO.updateReadDate(sqlSession, room);
+	}
+
+	@Override
+	public int findRoom(Room room) {
+		return dDAO.findRoom(sqlSession, room);
+	}
+
+	@Override
+	public int addRoom(Room room) {
+		return dDAO.addRoom(sqlSession, room);
+	}
+
+
 }

@@ -8,52 +8,76 @@
 			or (u2_no=#{no} and u2_out_date is null)
 	</select>
 	<select id="getList" resultMap="dmResultMap2">
-		select r.room_no, dm_no, dm_content, dm_reg_date, dm_read_date, d.user_no, user_nickname, file_name
-		from 
-			(select room_no, user_no, max(dm_no) KEEP (DENSE_RANK LAST ORDER BY dm_read_date) dm_no 
-			 from (select room_no, u2_no user_no, dm_no, dm_content, dm_reg_date, dm_read_date, user_no send_user_no from bmp_room
-        		left join bmp_dm using (room_no) where u1_no=#{no} and u1_out_date is null
-       		 union
-        	 select room_no, u1_no user_no, dm_no, dm_content, dm_reg_date, dm_read_date, user_no send_user_no from bmp_room
-        		left join bmp_dm using (room_no) where u2_no=#{no} and u2_out_date is null)
-			 group by room_no, user_no) r
-    		left join bmp_dm d using (dm_no)
-    		left join ulist on (d.user_no=ulist.user_no)
-		order by dm_reg_date desc
+		select room_no, user_no, read_date, user_nickname, file_name, dm_content
+		from
+			((select room_no, u2_no user_no, u1_read_date read_date
+			  from bmp_room
+			  where u1_no=#{no} and u1_out_date is null)
+			union
+			 (select room_no, u1_no user_no, u2_read_date read_date
+			  from bmp_room
+			  where u2_no=#{no} and u2_out_date is null))
+		left join bmp_user using (user_no)
+		left join bmp_file using (user_no)
+		left join 
+			(select room_no, max(dm_content) KEEP (DENSE_RANK LAST ORDER BY dm_reg_date) dm_content
+			 from bmp_dm
+			 group by room_no) using (room_no)
 	</select>
 	
 	<select id="getMessage" resultMap="roomResultMap">
-		select room_no, user_no, dm_no, dm_content, dm_reg_date, dm_read_date, send_user_no, file_name
-		from (select room_no, u2_no user_no, dm_no, dm_content, dm_reg_date, dm_read_date, user_no send_user_no 
-				from bmp_room
-					left join bmp_dm using (room_no) 
-				where u1_no=#{userNo} and u1_out_date is null
-			  union
-				select room_no, u1_no user_no, dm_no, dm_content, dm_reg_date, 
-					dm_read_date, user_no send_user_no 
-				from bmp_room
-					left join bmp_dm using (room_no) where u2_no=#{userNo} and u2_out_date is null)
-			left join ulist using (user_no)
+		select dm_no, dm_content, dm_reg_date, room_no, user_no send_user_no, user_nickname, file_name
+		from bmp_dm
+    		left join bmp_user using (user_no)
+    		left join bmp_file using (user_no)
 		where room_no=#{roomNo}
-		order by dm_reg_date, dm_no
+		order by dm_reg_date
 	</select>
 	
 	<insert id="addMessage" parameterType="DM">
 		insert into bmp_dm 
-		values (dm_seq.nextval,#{content},sysdate,null,#{roomNo},#{userNo})
+		values (dm_seq.nextval,#{content},sysdate,#{roomNo},#{userNo})
 	</insert>
 	
 	<select id="updateMessage" parameterType="DM" resultMap="dmResultMap2">
-		select dm_no, dm_content, dm_reg_date, dm_read_date, user_no
+		select dm_no, dm_content, dm_reg_date, user_no
 		from bmp_dm
 		where room_no=#{roomNo} and dm_no>#{no}
 		order by dm_reg_date
 	</select>
+	
+	<update id="updateReadDate" parameterType="Room">
+		<selectKey keyProperty="userNo2" resultType="int" order="BEFORE">
+			select u1_no from bmp_room where room_no=#{no}
+		</selectKey>
+		update bmp_room set 
+		<choose>
+			<when test="userNo2 == userNo">
+				u1_read_date=sysdate
+			</when>
+			<otherwise>
+				u2_read_date=sysdate
+			</otherwise>
+		</choose>
+		where room_no=#{no}
+	</update>
+	
+	<select id="findRoom" parameterType="Room" resultType="_int">
+		select room_no from bmp_room 
+		where (u1_no=#{userNo} and u2_no=#{userNo2}) 
+			or (u1_no=#{userNo2} and u2_no=#{userNo})
+	</select>
+	
+	<insert id="addRoom" parameterType="Room">
+		insert into bmp_room values
+			(room_seq.nextval,null,null,#{userNo},#{userNo2},null,null)
+	</insert>
 
 	<resultMap type="Room" id="roomResultMap">
 		<id property="no" column="room_no"/>
 		<result property="userNo" column="user_no"/>
 		<result property="fileName" column="file_name"/>
+		<result property="readDate" column="read_date"/>
 		<collection property="dmList" javaType="arraylist" resultMap="dmResultMap"/>
 	</resultMap>
 	
@@ -61,7 +85,6 @@
 		<id property="no" column="dm_no"/>
 		<result property="content" column="dm_content"/>
 		<result property="regDate" column="dm_reg_date"/>
-		<result property="readDate" column="dm_read_date"/>
 		<result property="userNo" column="send_user_no"/>
 	</resultMap>
 	
@@ -69,10 +92,10 @@
 		<id property="no" column="dm_no"/>
 		<result property="content" column="dm_content"/>
 		<result property="regDate" column="dm_reg_date"/>
-		<result property="readDate" column="dm_read_date"/>
 		<result property="roomNo" column="room_no"/>
 		<result property="userNo" column="user_no"/>
 		<result property="nickname" column="user_nickname"/>
 		<result property="fileName" column="file_name"/>
+		<result property="readDate" column="read_date"/>
 	</resultMap>
 </mapper>

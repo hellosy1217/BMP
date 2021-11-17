@@ -289,7 +289,19 @@
 		if ('${accessor.no}' == '${profile.no}')
 			location.href = 'messages';
 		else {
-			location.href = 'message';
+			$.ajax({
+				type : 'post',
+				url : 'findRoom.do',
+				dataType : 'json',
+				data : {
+					userNo : '${profile.no}',
+					userNo2 : '${accessor.no}'
+				},
+				success : function(data) {
+					alert(data);
+					location.href = 'message?no=' + data;
+				}
+			});
 		}
 	}
 

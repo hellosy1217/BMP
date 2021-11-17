@@ -51,29 +51,44 @@ public class DMController {
 	@RequestMapping("message")
 	public ModelAndView dm(HttpSession session, ModelAndView mav, int no) {
 		User accessor = (User) session.getAttribute("accessor");
-		User profile = uService.getProfile(new Follow(accessor.getNo(), accessor.getNo()));
 
 		DM dm = new DM(no, accessor.getNo());
 		Room room = dService.getMessage(dm);
+		User profile = uService.getProfile(new Follow(accessor.getNo(), accessor.getNo()));
+
+		Room r = new Room(no, accessor.getNo());
+		dService.updateReadDate(r);
+
 		mav.addObject("profile", profile);
 		mav.addObject("room", room);
 		mav.setViewName("user/message/message");
 		return mav;
 	}
-	
+
+	@ResponseBody
+	@RequestMapping("findRoom.do")
+	public String findRoom(Room room) {
+		int result = dService.findRoom(room);
+		System.out.println(result);
+		if (result == 0) {
+			result = dService.addRoom(room);
+		}
+		return new Gson().toJson(result);
+	}
+
 	@ResponseBody
 	@RequestMapping("sendMessage.do")
 	public String sendDM(DM dm) {
 		int result = dService.addMessage(dm);
-		
+
 		return new Gson().toJson(result);
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("updateMessage.do")
 	public String updateDM(DM dm) {
 		ArrayList<DM> dmList = dService.updateMessage(dm);
-		
+
 		return new Gson().toJson(dmList);
 	}
 }

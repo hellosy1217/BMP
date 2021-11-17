@@ -42,7 +42,7 @@
 		</where>
 	</select>
 	<update id="addCount">
-		update bmp_post set post_count=post_count+1 where post_no=#{no}
+		update bmp_post set post_count=(select post_count from bmp_post where post_no=#{no})+1 where post_no=#{no}
 	</update>
 	<select id="getPostList" resultMap="postResultMap" resultType="Post" parameterType="ListInfo">
 		select post_no, post_title, post_content, post_reg_date, post_del_date, post_hide_date, user_no, 

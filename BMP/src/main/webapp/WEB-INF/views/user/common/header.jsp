@@ -380,6 +380,13 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 					<li>보관함</li>
 				</ul>
 			</c:if>
+			<c:if test="${fList ne null }">
+				<ul id="blog-tab">
+					<li>팔로잉</li>
+					<li>팔로워</li>
+					<li>요청</li>
+				</ul>
+			</c:if>
 			<div class="filter-right">
 				<c:choose>
 					<c:when test="${dList ne null or room ne null }">
@@ -407,7 +414,7 @@ input::-webkit-search-decoration, input::-webkit-search-cancel-button,
 <script>
 	$(document).on('click', '#blog-tab li', function() {
 		var text = $(this).text();
-		var url = 'blog?blog=${listInfo.blogNo}';
+		var url = 'blog?blog=${listInfo.blogNo}'	
 		if (text == '보관함')
 			url += '&tab=hide';
 		else if (text == '좋아요')

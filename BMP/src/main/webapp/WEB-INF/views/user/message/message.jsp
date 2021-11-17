@@ -21,6 +21,10 @@
 	outline: none;
 }
 
+body {
+	background: #f4f4f4 !important;
+}
+
 table {
 	border-collapse: collapse;
 	width: 100%;
@@ -28,7 +32,6 @@ table {
 
 #msg {
 	display: flex;
-	background: #f4f4f4;
 }
 
 #msg-left {
@@ -73,7 +76,7 @@ table {
 }
 
 .sendMessage>div, .receiveMessage>div {
-	background: pink;
+	background: #f4f4f4;
 	border-radius: 8px;
 }
 
